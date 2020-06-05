@@ -1,0 +1,440 @@
+.top{
+	width: 100%;
+	height: 50px;
+}
+
+.title{
+	display: inline;
+}
+
+.title p{
+	text-align: center;
+	vertical-align: middle;
+	line-height: 50px;
+}
+
+.menu-buttons{
+	float: right;
+}
+
+#container {
+    width:100%;
+	text-align:center;
+	background-color: #2196F3;
+	height: 50px;
+}
+
+#left {
+	float:left;
+	margin-left: 10px;
+    margin-top: 5px;
+}
+
+#center {
+    display: inline-block;
+    margin:0 auto;
+    width:100px;
+    height: 20px;
+}
+
+#right {
+    float:right;
+    width:100px;
+	height: 20px;
+	line-height: 50px;
+	vertical-align: middle;
+	margin-right: 10px;
+}
+
+.error_wrapper {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    top: 0px;
+    left: 0px;
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+	z-index: 12;
+}
+
+.splashScreen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: #2196F3;
+    top: 0px;
+    left: 0px;
+    /*opacity: 0.7;
+    filter: alpha(opacity=70);*/
+	z-index: 15;
+	transition: transform 1.5s;
+}
+
+.splashScreenTranslate {
+	transform: translateY(1000px)
+}
+
+.splashScreenTitle{
+	color: white;
+	text-align: center;
+	font-size: xxx-large;
+	font-family : "Pacifico";
+	margin-bottom: 5px;
+	margin-top: auto;
+}
+
+.splashScreenText{
+	color: white;
+    font-size: x-large;
+    line-height: 10px;
+    text-align: center;
+}
+
+header{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 10;
+	background-color: dodgerblue;
+	overflow: hidden;
+}
+.headerstandard-inner h1{
+	float: left;
+}
+.headerstandard-inner nav{
+	position: absolute;
+	float: right;
+	margin-bottom: -10px;
+}
+.mydiv {
+	position: absolute;
+	z-index: 9;
+	background-color: #f1f1f1;
+	border: 1px solid #d3d3d3;
+	text-align: center;
+}
+.mydivheader {
+	padding: 10px;
+	cursor: move;
+	z-index: 10;
+	background-color: #2196F3;
+	color: #fff;
+}
+.resizable {
+	background: white;
+	width: 100px;
+	height: 100px;
+	position: absolute;
+	top: 100px;
+	left: 100px;
+}
+.contentTxt p{
+	width: 100%;
+	margin: 0;
+	position: absolute;
+	text-align: center;
+	vertical-align: middle;
+	z-index: 10;
+	top: 50%;
+}
+.resizable .resizers{
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+}
+.resizable .resizers .resizer{
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	/*magic to turn square into circle*/
+	background: white;
+	border: 3px solid #4286f4;
+	position: absolute;
+}
+.resizable .resizers .resizer.top-left {
+	left: -5px;
+	top: -5px;
+	cursor: nwse-resize;
+	/*resizer cursor*/
+}
+.resizable .resizers .resizer.top-right {
+	right: -5px;
+	top: -5px;
+	cursor: nesw-resize;
+}
+.resizable .resizers .resizer.bottom-left {
+	left: -5px;
+	bottom: -5px;
+	cursor: nesw-resize;
+}
+.resizable .resizers .resizer.bottom-right {
+	right: -5px;
+	bottom: -5px;
+	cursor: nwse-resize;
+}
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+* {
+	box-sizing: border-box;
+}
+/* Button used to open the contact form - fixed at the bottom of the page */
+.open-button {
+	background-color: #555;
+	color: white;
+	padding: 16px 20px;
+	border: none;
+	cursor: pointer;
+	opacity: 0.8;
+	position: fixed;
+	bottom: 23px;
+	right: 28px;
+	width: 280px;
+}
+
+.form-popup{
+	display: none;
+	border: 3px solid #f1f1f1;
+    position: absolute;
+    max-width: 800px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 13;
+    padding: 10px;
+    background: white;
+}
+
+.form-container {
+	width: max-content;
+	padding: 10px;
+	background-color: white;
+	width: initial;
+}
+/* Full-width input fields */
+.form-container input[type=text], .form-container input[type=password], .form-container select{
+	width: 100%;
+	padding: 15px;
+	margin: 5px 0 15px 0;
+	border: none;
+	background: #f1f1f1;
+}
+
+/* When the inputs get focus, do something */
+.form-container input[type=text]:focus, .form-container input[type=password]:focus, .form-container input[type=select]:focus {
+	background-color: #ddd;
+	outline: none;
+}
+
+/* Set a style for the submit/login button */
+.form-container .btn {
+	background-color: #4CAF50;
+	color: white;
+	padding: 16px 20px;
+	border: none;
+	cursor: pointer;
+	width: 100%;
+	margin-bottom:10px;
+	opacity: 0.8;
+}
+/* Add a red background color to the cancel button */
+.form-container .cancel {
+	background-color: red;
+}
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+	opacity: 1;
+}
+
+.formError ul{
+	color: crimson;
+    border: 3px solid;
+    margin: 5px;
+    border-radius: 7px;
+    /* list-style: none; */
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+ul.tabs{
+	padding: 0px;
+    font-size: 0;
+    margin: 0;
+    list-style-type: none;
+    text-align: left;
+    background: white;
+}
+ul.tabs li{
+	display: inline;
+	margin: 0;
+	margin-right:3px;
+}
+ul.tabs li a{
+	font: normal 12px Verdana;
+	text-decoration: none;
+	position: relative;
+	z-index: 1;
+	padding: 7px 16px;
+	border: 1px solid #CCC;
+	border-bottom-color:#B7B7B7;
+	color: #000;
+	background: #F0F0F0;
+	border-radius: 6px 6px 0px 0px;
+	-moz-border-radius: 6px 6px 0px 0px;
+	outline:none;
+}
+ul.tabs li a:hover{
+	border: 1px solid #B7B7B7;
+	background:#E0E0E0;
+}
+ul.tabs li.selected a{
+	position: relative;
+	top: 0px;
+	font-weight:bold;
+	background: white;
+	border: 1px solid #B7B7B7;
+	border-bottom-color: white;
+}
+.tabcontents{
+	border: 1px solid #B7B7B7;
+	padding: 10px;
+	background-color:#FFF;
+	border-radius: 0 2px 2px 2px;
+}
+
+.tabcontent{
+	display: block;
+    max-height: 600px;
+	overflow: overlay;
+	
+}
+
+.favorite {
+	width: inherit;
+    margin: 0;
+    position: absolute;
+    text-align: center;
+    vertical-align: middle;
+    z-index: 10;
+    top: 50%;
+}
+
+.buttons{
+	position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+body{
+	margin: 0px;
+	overflow: hidden;
+}
+
+
+#info { 
+    height: 20px; 
+    position: fixed; 
+    bottom:0%;
+    width:100%; 
+    background-color: #393838; 
+    opacity: 1;
+}
+.context-menu {
+	display: none;
+	min-width: 150px;
+	position: fixed;
+	z-index: 900;
+	padding:5px 0;
+	background: #fff;
+    border: 1px solid #CCC;
+	border-radius: 5px;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, .4);
+	font-weight: normal;
+}
+.context-menu.shown { display:block; }
+.context-menu a {
+	display: block;
+	padding: 3px 16px;
+	overflow: hidden;
+	text-decoration: none;
+	text-overflow: ellipsis;
+	line-height: 16px;
+	white-space: nowrap;
+	font-size: 10.5pt;
+	font-weight: normal;
+	color: #333;
+	cursor: default;
+}
+.context-menu a.bold { font-weight:bold; }
+.context-menu a.disabled { color:#B7B7B7; }
+.context-menu a:not(.disabled):hover {
+	color: #FFF;
+    background-color:#1D5DF3;
+	background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#5f87f8), color-stop(100%,#1d5df3));
+	background-image:linear-gradient(to bottom, #5f87f8 0%,#1d5df3 100%);
+}
+.context-menu a > img {
+	float: left;
+	margin-right: 5px;
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+}
+.context-menu hr {
+	border: 0;
+	height: 1px;
+	margin: 5px 1px;
+	background: #EEE;
+}
+
+.selectdiv {
+	position: relative;
+	/*Don't really need this just for demo styling*/
+	float: left;
+	min-width: 200px;
+  }
+  
+  .selectdiv:after {
+	  content: '\f078';
+	  font: normal normal normal 17px/1 FontAwesome;
+	  color: #0ebeff;
+	  right: 11px;
+	  top: 2px;
+	  height: 24px;
+	  padding: 15px 0px 0px 8px;
+	  border-left: 1px solid #0ebeff;
+	  position: absolute;
+	  pointer-events: none;
+  }
+  
+  /* IE11 hide native button (thanks Matt!) */
+  select::-ms-expand {
+  display: none;
+  }
+  
+  .selectdiv select {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	/* Add some styling */
+	
+	display: block;
+	width: 100%;
+	max-width: 320px;
+	height: 40px;
+	float: right;
+	margin: 5px 0px;
+	padding: 0px 24px;
+	font-size: 16px;
+	line-height: 1.75;
+	color: #333;
+	background-color: #ffffff;
+	background-image: none;
+	border: 1px solid #0ebeff;
+	-ms-word-break: normal;
+	word-break: normal;
+  }
