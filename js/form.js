@@ -290,14 +290,14 @@ function createTileForm() {
                </td>
             </tr>
             <tr>
-               <td colspan="2">
+               <td>
                   <label id="imgTypeLabel" for="imgType"><b>Type</b></label>
                   <select id="imgType" name="imgType" onchange="updateTileForm()">
                      <option value="single">Single</option>
                      <option value="slideshow">Slideshow</option>
                   </select>
                </td>
-               <td colspan="2"><label id="imgNbLabel" for="imgNb"><b>Images Number</b></label>
+               <td><label id="imgNbLabel" for="imgNb"><b>Images Number</b></label>
                   <select id = "imgNb" name="imgNb" value="2" onchange="updateTileForm()">
                </td>
             </tr>
@@ -329,7 +329,7 @@ function createTileForm() {
             </tr>
             <tr>
             <td colspan="2">
-            <label id="imgRefreshLabel" for="imgRefresh"><b>Refresh every</b>
+            <label id="imgRefreshLabel" for="imgRefresh"><b>Refresh every</b></label>
             <input type="text" placeholder="secondes" name="imgRefresh" id="imgRefresh" > 
             </td>
             </tr>

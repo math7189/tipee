@@ -280,10 +280,10 @@ class TipeeApp {
             var properties = [];
 
             for (var i = 0; i < nbToggles; i++) {
-                var properties = {};
-                propertie['name'] = document.getElementById('togglesName' + i).value;
-                propertie['url'] = document.getElementById('togglesURL' + i).value;
-                properties.push(propertie);
+                var property = {};
+                property['name'] = document.getElementById('togglesName' + i).value;
+                property['url'] = document.getElementById('togglesURL' + i).value;
+                properties.push(property);
             }
 
             if (idTile == '') {
@@ -1370,14 +1370,17 @@ function fillTileForm(tile) {
             }
         }
         else if (tile instanceof TipeeTileImage) {
-            setValueSectectInput('imgType', tile.imgType);
+            
             setValueSectectInput('imgNb', tile.imgNb);
             document.getElementById('imgSlideInterval').value = tile.imgSlideInterval;
             document.getElementById('imgRefresh').value = tile.imgRefresh;
 
-            if (tile.imgNb == 1)
+            if (tile.imgNb == 1){
                 document.getElementById('imgSingleSrc').value = tile.imgSrc[0];
+                setValueSectectInput('imgType', 'Single');
+            }
             else {
+                setValueSectectInput('imgType', 'Slideshow');
                 for (var i = 0; i < tile.imgNb; i++) {
                     document.getElementById('imgSingleSrc' + i).value = tile.imgSrc[i];
                 }
