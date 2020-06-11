@@ -469,7 +469,7 @@ class TipeeApp {
         else {
             var selectedScene;
             for (var i = 0; i < this.scenes.length; i++) {
-                if (this.scenes[i].sceneName == selectedScene)
+                if (this.scenes[i].sceneName == selectSceneInput.value)
                     selectedScene = this.scenes[i];
             }
             this.showNewTileButton();
