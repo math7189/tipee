@@ -302,7 +302,6 @@ function createTileForm() {
                </td>
             </tr>
             <tr>
-               <td>&nbsp;</td>
                <td><label id="imgSlideIntervalLabel" for="imgSlideInterval"><b>Interval</b></label>
                   <input type="text" placeholder="Interval en s" name="imgSlideInterval" id="imgSlideInterval" >
             </tr>

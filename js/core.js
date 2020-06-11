@@ -1370,6 +1370,7 @@ function fillTileForm(tile) {
             }
         }
         else if (tile instanceof TipeeTileImage) {
+            setValueSectectInput('imgType', tile.imgType);
             setValueSectectInput('imgNb', tile.imgNb);
             document.getElementById('imgSlideInterval').value = tile.imgSlideInterval;
             document.getElementById('imgRefresh').value = tile.imgRefresh;
