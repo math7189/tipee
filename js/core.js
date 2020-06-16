@@ -1406,6 +1406,14 @@ function fillTileForm(tile) {
                 }
             }
         }
+        else if (tile instanceof TipeeTileToggles) {
+            
+            setValueSectectInput('togglesNb', tile.nbToggles);
+                for (var i = 0; i < tile.imgNb; i++) {
+                    document.getElementById('togglesName' + i).value = JSON.parse(tile.togglesProperties[i]).name;
+                }
+            
+        }
     }
     else {
         document.getElementById('idTile').value = '';
