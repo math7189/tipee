@@ -313,6 +313,7 @@ class TipeeApp {
 
             var arrayText = [];
             var arrayImg = [];
+            var arrayTog = [];
             elementScene.tiles.forEach(tile => {
                 if (tile instanceof TipeeTileText) {
                     var test = tile.toJSON();
@@ -322,9 +323,14 @@ class TipeeApp {
                     var test = tile.toJSON();
                     arrayImg.push(test);
                 }
+                else if (tile instanceof TipeeTileToggles) {
+                    var test = tile.toJSON();
+                    arrayTog.push(test);
+                }
             });
             scene['tipeeTileText'] = arrayText;
             scene['tipeeTileImage'] = arrayImg;
+            scene['tipeeTileToggle'] = arrayTog;
             arrayScene['scenes'].push(scene);
         });
 
@@ -1293,6 +1299,13 @@ function loadJSON(json) {
                 t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
                 t.borderSize, t.contentBackgroundColor, t.title, t.imgNb, t.imgSrc, t.imgSlideInterval,
                 t.imgRefresh);
+        });
+
+        var tarrayTog = t.tipeeTileToggles;
+        tarrayImg.forEach(t => {
+            var test = new TipeeTileToggles(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
+                t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
+                t.borderSize, t.contentBackgroundColor, t.title, t.nbToggles, t.togglesProperties);
         });
     });
 
