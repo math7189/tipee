@@ -1202,7 +1202,7 @@ class TipeeTileToggles extends TipeeTile {
         var htmlContent = '<div class="buttons"><table>';
 
         for (let i = 0; i < that.nbToggles; i++) {
-            if (i+1 % 2 == 1) {
+            if ((i+1) % 2 == 1) {
                 htmlContent += "<tr><td><button id='" + this.idTile + "-button-" + i +
                     "' type='button'>" + this.togglesProperties[i].name + "</button></td>"
             }
@@ -1230,6 +1230,13 @@ class TipeeTileToggles extends TipeeTile {
 
     trigger(requestUrl) {
         requestPOST(requestUrl);
+    }
+
+    toJSON() {
+        var valueDict = this.toJSONBase();
+        valueDict['nbToggles'] = this.nbToggles;
+        valueDict['togglesProperties'] = this.togglesProperties;
+        return valueDict;
     }
 }
 
