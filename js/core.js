@@ -330,7 +330,7 @@ class TipeeApp {
             });
             scene['tipeeTileText'] = arrayText;
             scene['tipeeTileImage'] = arrayImg;
-            scene['tipeeTileToggle'] = arrayTog;
+            scene['tipeeTileToggles'] = arrayTog;
             arrayScene['scenes'].push(scene);
         });
 
