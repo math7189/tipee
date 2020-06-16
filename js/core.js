@@ -1309,7 +1309,7 @@ function loadJSON(json) {
         });
 
         var tarrayTog = t.tipeeTileToggles;
-        tarrayImg.forEach(t => {
+        tarrayTog.forEach(t => {
             var test = new TipeeTileToggles(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
                 t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
                 t.borderSize, t.contentBackgroundColor, t.title, t.nbToggles, t.togglesProperties);
