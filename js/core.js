@@ -1412,6 +1412,7 @@ function fillTileForm(tile) {
                 for (var i = 0; i < tile.nbToggles; i++) {
                     console.log(tile.togglesProperties[i])
                     document.getElementById('togglesName' + i).value = tile.togglesProperties[i].name;
+                    document.getElementById('togglesURL' + i).value = tile.togglesProperties[i].url;
                 }
             
         }
