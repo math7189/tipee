@@ -337,17 +337,56 @@ function createTileForm() {
             <select id = 'togglesNb' name="togglesNb" value="2" onchange="updateTileForm()">
             </td>
             <tr id="togglesPropBlock"> 
-            <input type="text" placeholder="URL image" name="togglesName0" id="togglesName0" > 
-            <input type="text" placeholder="URL image" name="togglesName1" id="togglesName1" > 
-            <input type="text" placeholder="URL image" name="togglesName2" id="togglesName2" > 
-            <input type="text" placeholder="URL image" name="togglesName3" id="togglesName3" > 
-            <input type="text" placeholder="URL image" name="togglesName4" id="togglesName4" > 
-            <input type="text" placeholder="URL image" name="togglesName5" id="togglesName5" > 
-            <input type="text" placeholder="URL image" name="togglesName6" id="togglesName6" > 
-            <input type="text" placeholder="URL image" name="togglesName7" id="togglesName7" > 
-            <input type="text" placeholder="URL image" name="togglesName8" id="togglesName8" > 
-            <input type="text" placeholder="URL image" name="togglesName9" id="togglesName9" > 
+            <td><input type="text" placeholder="URL image" name="togglesName0" id="togglesName0" ></td> 
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL0" > </td> 
             </tr>
+            <td><input type="text" placeholder="URL image" name="togglesName1" id="togglesName1" > </td> 
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL1" > </td> 
+            </tr>
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName2" id="togglesName2" > </td> 
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL2" > </td> 
+            </tr>
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName3" id="togglesName3" > </td> 
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL3" > </td> 
+            </tr>
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName4" id="togglesName4" > </td> 
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL4" > </td> 
+            </tr>
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName5" id="togglesName5" > </td> 
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL5" > </td> 
+            </tr>
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName6" id="togglesName6" > </td> 
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL6" > </td> 
+            </tr>
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName7" id="togglesName7" > </td> 
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL7" > </td> 
+            </tr>
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName8" id="togglesName8" > </td> 
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL8" > </td> 
+            </tr>
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName9" id="togglesName9" > </td> 
+            <td>
+            <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL9" > </td> 
+            </tr>
+            <td>
+            
          </table>
       </div>
       <div class="tabcontent" id="tab_div2" style="display: none;">
