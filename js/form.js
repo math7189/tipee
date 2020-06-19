@@ -333,9 +333,11 @@ function createTileForm() {
             <input type="text" placeholder="secondes" name="imgRefresh" id="imgRefresh" > 
             </td>
             </tr>
+            <tr>
             <td><label id="togglesNbLabel" for="togglesNb"><b>Toggles number</b></label>
             <select id = 'togglesNb' name="togglesNb" value="2" onchange="updateTileForm()">
             </td>
+            </tr>
             <tr id="togglesPropBlock"> 
             <td><input type="text" placeholder="URL image" name="togglesName0" id="togglesName0" ></td> 
             <td>
