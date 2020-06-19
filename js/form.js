@@ -333,7 +333,7 @@ function createTileForm() {
             <input type="text" placeholder="secondes" name="imgRefresh" id="imgRefresh" > 
             </td>
             </tr>
-            <tr>
+            <tr colspan="2">
             <td><label id="togglesNbLabel" for="togglesNb"><b>Toggles number</b></label>
             <select id = 'togglesNb' name="togglesNb" value="2" onchange="updateTileForm()">
             </td>
