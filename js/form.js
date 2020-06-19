@@ -675,7 +675,7 @@ function updateTileForm() {
       textColor.style.display = "block";
 
       var nb = togglesNb.value;
-      for (var i = 0; i < nbImg; i++) {
+      for (var i = 0; i < nb; i++) {
          var elem = document.getElementById("togglesName" + i);
          elem.style.display = "block";
          var elem2 = document.getElementById("togglesURL" + i);
