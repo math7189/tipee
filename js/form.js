@@ -338,7 +338,7 @@ function createTileForm() {
             <select id = 'togglesNb' name="togglesNb" value="2" onchange="updateTileForm()">
             </td>
             </tr>
-            <tr id="togglesPropBlock"> 
+            <tr id="togglesPropBlock" > 
             <td><input type="text" placeholder="URL image" name="togglesName0" id="togglesName0" ></td> 
             <td>
             <input type="text" placeholder="URL image" name="togglesName0" id="togglesURL0" > </td> 
@@ -588,6 +588,12 @@ function updateTileForm() {
    togglesNbLabel.style.display = "none";
    togglesNb.style.display = "none";
    togglesPropBlock.style.display = "none";
+   for (var i = 0; i < 10; i++) {
+      var elem = document.getElementById("togglesName" + i);
+      elem.style.display = "none";
+      var elem1 = document.getElementById("togglesURL" + i);
+      elem1.style.display = "none";
+   }
 
    if (idTile.value != '') {
       deletebtn.style.display = "block";
