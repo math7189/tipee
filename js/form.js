@@ -338,59 +338,59 @@ function createTileForm() {
             <select id = 'togglesNb' name="togglesNb" value="2" onchange="updateTileForm()">
             </td>
             </tr>
-            <tr id="togglesPropBlock" > 
+            <tr id="togglesPropTr0" > 
             <td><input type="text" placeholder="URL image" name="togglesName0" id="togglesName0" ></td> 
             <td>
             <input type="text" placeholder="URL image" name="togglesName0" id="togglesURL0" > </td> 
             </tr>
-            <tr>
+            <tr id="togglesPropTr1">
             <td><input type="text" placeholder="URL image" name="togglesName1" id="togglesName1" > </td> 
             <td>
             <input type="text" placeholder="URL image" name="togglesName1" id="togglesURL1" > </td> 
             </tr>
-            <tr>
+            <tr id="togglesPropTr2">
             <td>
             <input type="text" placeholder="URL image" name="togglesName2" id="togglesName2" > </td> 
             <td>
             <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL2" > </td> 
             </tr>
-            <tr>
+            <tr id="togglesPropTr3">
             <td>
             <input type="text" placeholder="URL image" name="togglesName3" id="togglesName3" > </td> 
             <td>
             <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL3" > </td> 
             </tr>
-            <tr>
+            <tr id="togglesPropTr4">
             <td>
             <input type="text" placeholder="URL image" name="togglesName4" id="togglesName4" > </td> 
             <td>
             <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL4" > </td> 
             </tr>
-            <tr>
+            <tr id="togglesPropTr5">
             <td>
             <input type="text" placeholder="URL image" name="togglesName5" id="togglesName5" > </td> 
             <td>
             <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL5" > </td> 
             </tr>
-            <tr>
+            <tr id="togglesPropTr6">
             <td>
             <input type="text" placeholder="URL image" name="togglesName6" id="togglesName6" > </td> 
             <td>
             <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL6" > </td> 
             </tr>
-            <tr>
+            <tr id="togglesPropTr7">
             <td>
             <input type="text" placeholder="URL image" name="togglesName7" id="togglesName7" > </td> 
             <td>
             <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL7" > </td> 
             </tr>
-            <tr>
+            <tr id="togglesPropTr8">
             <td>
             <input type="text" placeholder="URL image" name="togglesName8" id="togglesName8" > </td> 
             <td>
             <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL8" > </td> 
             </tr>
-            <tr>
+            <tr id="togglesPropTr9">
             <td>
             <input type="text" placeholder="URL image" name="togglesName9" id="togglesName9" > </td> 
             <td>
@@ -543,7 +543,6 @@ function updateTileForm() {
    var imgRefreshLabel = document.getElementById("imgRefreshLabel");
    var togglesNbLabel = document.getElementById("togglesNbLabel");
    var togglesNb = document.getElementById("togglesNb");
-   var togglesPropBlock = document.getElementById("togglesPropBlock");
 
    reqLabel.style.display = "none";
    requestUrl.style.display = "none";
@@ -587,12 +586,9 @@ function updateTileForm() {
    imgRefreshLabel.style.display = "none";
    togglesNbLabel.style.display = "none";
    togglesNb.style.display = "none";
-   togglesPropBlock.style.display = "none";
    for (var i = 0; i < 10; i++) {
-      var elem = document.getElementById("togglesName" + i);
+      var elem = document.getElementById("togglesPropTr" + i);
       elem.style.display = "none";
-      var elem1 = document.getElementById("togglesURL" + i);
-      elem1.style.display = "none";
    }
 
    if (idTile.value != '') {
@@ -665,7 +661,6 @@ function updateTileForm() {
    else if (type.value == "toggles") {
       togglesNbLabel.style.display = "block";
       togglesNb.style.display = "block";
-      togglesPropBlock.style.display = "block";
       textStyleLabel.style.display = "block";
       textFontLabel.style.display = "block";
       textFont.style.display = "block";
@@ -676,10 +671,8 @@ function updateTileForm() {
 
       var nb = togglesNb.value;
       for (var i = 0; i < nb; i++) {
-         var elem = document.getElementById("togglesName" + i);
+         var elem = document.getElementById("togglesPropTr" + i);
          elem.style.display = "block";
-         var elem2 = document.getElementById("togglesURL" + i);
-         elem2.style.display = "block";
       }
    }
 
