@@ -1409,7 +1409,8 @@ function fillTileForm(tile) {
         else if (tile instanceof TipeeTileToggles) {
             
             setValueSectectInput('togglesNb', tile.nbToggles);
-                for (var i = 0; i < tile.imgNb; i++) {
+                for (var i = 0; i < tile.nbToggles; i++) {
+                    console.log(tile.togglesProperties[i])
                     document.getElementById('togglesName' + i).value = JSON.parse(tile.togglesProperties[i]).name;
                 }
             
