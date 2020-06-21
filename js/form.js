@@ -474,10 +474,7 @@ function createTileForm() {
          </table>
       </div>
       <div id='tileForm_errorloc' class="formError"></div>
-      
-   </form>
-</div>
-<table style="">
+      <table style="">
          <tr>
             <td>
                <button type="submit" class="btn">OK</button>
@@ -490,7 +487,8 @@ function createTileForm() {
             </td>
          </tr>
       </table>
-`;
+   </form>
+</div>`;
 }
 
 function createTileFormInputs() {
