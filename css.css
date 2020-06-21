@@ -264,12 +264,11 @@ ul.tabs{
     margin: 0;
     list-style-type: none;
     text-align: left;
-    background: white;
+	background: white;
+	display: flex;
 }
 ul.tabs li{
-	display: inline;
-	margin: 0;
-	margin-right:3px;
+	width: 25%;
 }
 ul.tabs li a{
 	font: normal 12px Verdana;
@@ -284,6 +283,7 @@ ul.tabs li a{
 	border-radius: 6px 6px 0px 0px;
 	-moz-border-radius: 6px 6px 0px 0px;
 	outline:none;
+	display:block;
 }
 ul.tabs li a:hover{
 	border: 1px solid #B7B7B7;
@@ -298,10 +298,8 @@ ul.tabs li.selected a{
 	border-bottom-color: white;
 }
 .tabcontents{
-	border: 1px solid #B7B7B7;
 	padding: 10px;
 	background-color:#FFF;
-	border-radius: 0 2px 2px 2px;
 }
 
 .tabcontent{
