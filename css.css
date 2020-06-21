@@ -195,16 +195,12 @@ body {
 }
 
 .form-popup{
-	display: none;
-	border: 3px solid #f1f1f1;
     position: absolute;
     max-width: 800px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 13;
-    padding: 10px;
-    background: white;
 }
 
 .form-container {
@@ -260,12 +256,12 @@ body {
 
 ul.tabs{
 	padding: 0px;
-    font-size: 0;
+    /* font-size: 0; */
     margin: 0;
     list-style-type: none;
-    text-align: left;
-	background: white;
-	display: flex;
+    /* text-align: left; */
+    /* background: white; */
+    display: flex;
 }
 ul.tabs li{
 	width: 25%;
@@ -273,29 +269,19 @@ ul.tabs li{
 ul.tabs li a{
 	font: normal 12px Verdana;
 	text-decoration: none;
-	position: relative;
 	z-index: 1;
 	padding: 7px 16px;
-	border: 1px solid #CCC;
-	border-bottom-color:#B7B7B7;
-	color: #000;
-	background: #F0F0F0;
-	border-radius: 6px 6px 0px 0px;
-	-moz-border-radius: 6px 6px 0px 0px;
+	color: white;
+	background: rgb(66, 60, 60);
 	outline:none;
 	display:block;
 }
 ul.tabs li a:hover{
-	border: 1px solid #B7B7B7;
-	background:#E0E0E0;
+	background:rgb(114, 111, 111);
 }
 ul.tabs li.selected a{
-	position: relative;
-	top: 0px;
 	font-weight:bold;
-	background: white;
-	border: 1px solid #B7B7B7;
-	border-bottom-color: white;
+	background: 4286f4;
 }
 .tabcontents{
 	padding: 10px;
