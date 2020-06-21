@@ -220,7 +220,8 @@ function showActiveTab(elem) {
 
 function createTileForm() {
    var tileFormDiv = document.getElementById("tileFormDiv");
-   tileFormDiv.innerHTML = `<ul id="tab_ul" class="tabs">
+   tileFormDiv.innerHTML = `<p>New tile</p>
+   <ul id="tab_ul" class="tabs">
    <li class="selected"><a rel="tab_div1" href="#" onclick="javascript:showActiveTab(this);">Générals</a></li>
    <li class=""><a rel="tab_div2" href="#" onclick="javascript:showActiveTab(this);">Style</a></li>
    <li class=""><a rel="tab_div3" href="#" onclick="javascript:showActiveTab(this);">Avancés</a></li>
@@ -473,7 +474,10 @@ function createTileForm() {
          </table>
       </div>
       <div id='tileForm_errorloc' class="formError"></div>
-      <table style="">
+      
+   </form>
+</div>
+<table style="">
          <tr>
             <td>
                <button type="submit" class="btn">OK</button>
@@ -486,8 +490,7 @@ function createTileForm() {
             </td>
          </tr>
       </table>
-   </form>
-</div>`;
+`;
 }
 
 function createTileFormInputs() {
