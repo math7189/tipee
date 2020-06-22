@@ -339,6 +339,7 @@ function createTileForm() {
             <select id = 'togglesNb' name="togglesNb" value="2" onchange="updateTileForm()">
             </td>
             </tr>
+            <table id="itemsTable">
             <tr id="togglesPropTr0" > 
             <td><input type="text" placeholder="URL image" name="togglesName0" id="togglesName0" ></td> 
             <td>
@@ -397,7 +398,7 @@ function createTileForm() {
             <td>
             <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL9" > </td> 
             </tr>
-            
+            </table>
             
          </table>
       </div>
