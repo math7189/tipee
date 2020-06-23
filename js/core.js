@@ -372,6 +372,7 @@ class TipeeApp {
     createSceneFormValidator() {
         this.formNewSCeneValidator.EnableOnPageErrorDisplaySingleBox();
         this.formNewSCeneValidator.EnableMsgsTogether();
+        this.formNewSCeneValidator.EnableFocusOnError(false);
 
         this.formNewSCeneValidator.addValidation('sceneName', 'req', 'Name is required');
         this.formNewSCeneValidator.addValidation('sceneName', 'maxlen=30', 'Max length for name is 30');
