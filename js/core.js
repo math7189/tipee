@@ -134,6 +134,7 @@ class TipeeApp {
 
         var tileForm = document.getElementById('tileForm');
         tileForm.addEventListener('submit', function (event) {
+            event.preventDefault();
             var errors = document.getElementById('tileForm_errorloc').innerHTML;
             if (errors == '') {
                 that.createOrUpdateTpTile();
