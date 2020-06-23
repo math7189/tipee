@@ -139,6 +139,7 @@ class TipeeApp {
             if (errors == '') {
                 that.createOrUpdateTpTile();
             }
+            return false;
         }, false);
 
         var sceneForm = document.getElementById('sceneForm');
