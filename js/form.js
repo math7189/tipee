@@ -1,5 +1,5 @@
 function openSceneForm() {
-   document.getElementById("sceneFormDiv").style.display = "block";
+   document.getElementById("sceneFormDiv").style.display = "flex";
    document.getElementById("error_wrapper").classList.add("error_wrapper");
 }
 
@@ -135,7 +135,7 @@ function createSceneForm() {
 }
 
 function openTileForm(tpTile) {
-   document.getElementById("tileFormDiv").style.display = "block";
+   document.getElementById("tileFormDiv").style.display = "flex";
    document.getElementById("error_wrapper").classList.add("error_wrapper");
    fillTileForm(tpTile);
    updateTileForm();
@@ -220,7 +220,7 @@ function showActiveTab(elem) {
 
 function createTileForm() {
    var tileFormDiv = document.getElementById("tileFormDiv");
-   tileFormDiv.innerHTML = `<p>New tile</p>
+   tileFormDiv.innerHTML = `<p class="formTitle">New tile</p>
    <ul id="tab_ul" class="tabs">
    <li class="selected"><a rel="tab_div1" href="#" onclick="javascript:showActiveTab(this);">Générals</a></li>
    <li class=""><a rel="tab_div2" href="#" onclick="javascript:showActiveTab(this);">Style</a></li>
@@ -475,7 +475,10 @@ function createTileForm() {
          </table>
       </div>
       <div id='tileForm_errorloc' class="formError"></div>
-      <table style="">
+      <table style="
+      bottom: 0;
+      position: absolute;
+  ">
          <tr>
             <td>
                <button type="submit" class="btn">OK</button>

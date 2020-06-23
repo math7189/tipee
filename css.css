@@ -202,7 +202,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 13;
-    display: flex;
+    
 	flex-flow: column;
 	border-radius: 10px;
     overflow: hidden;
@@ -301,6 +301,12 @@ ul.tabs li.selected a{
 	height: 250px;
     overflow: auto;
     display: block;
+}
+
+.formTitle{
+	background: white;
+    padding: 10px;
+    margin: 0;
 }
 
 .favorite {
