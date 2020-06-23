@@ -392,8 +392,8 @@ class TipeeApp {
     createTileFormValidator() {
         this.formTileValidator.EnableOnPageErrorDisplaySingleBox();
         this.formTileValidator.EnableMsgsTogether();
-        this.formNewSCeneValidator.EnableFocusOnError(false);
-        
+        this.formTileValidator.EnableFocusOnError(false);
+
         this.formTileValidator.addValidation('title', 'req', 'Title is required');
         this.formTileValidator.addValidation('title', 'maxlen=30', 'Max length for title is 30');
 
