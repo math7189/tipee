@@ -208,6 +208,7 @@ class TipeeApp {
             var textBefore = document.getElementById('textBefore').value;
             var textAfter = document.getElementById('textAfter').value;
             var requestRefresh = document.getElementById('requestRefresh').value;
+            var reqType = document.getElementById('reqType').value;
             var operation = document.getElementById('operation').value;
 
             var responseField;
@@ -224,7 +225,7 @@ class TipeeApp {
                 var newTile = new TipeeTileText(myApp.activeScene, 200, 200, width, height,
                     false, headerColor, headerFontColor, headerFont, headerFontSize,
                     borderColor, borderSize, contentBackgroundColor, title,
-                    requestUrl, responseType, responseField, textBefore, textAfter,
+                    requestUrl, reqType, responseType, responseField, textBefore, textAfter,
                     parseInt(requestRefresh), textColor, textFont, textFontSize,
                     operation);
                 newTile.draw();
@@ -240,6 +241,7 @@ class TipeeApp {
                 tileToBeUpdtated.textAfter = textAfter;
                 tileToBeUpdtated.requestRefresh = parseInt(requestRefresh);
                 tileToBeUpdtated.operation = operation;
+                tileToBeUpdtated.reqType = reqType;
             }
         }
         else if (type == 'image') {
@@ -584,7 +586,7 @@ class TipeeScene {
         if (tileToBeDuplicated.type == 'text') {
             var newTile = new TipeeTileText(tileToBeDuplicated.scene, tileToBeDuplicated.x, tileToBeDuplicated.y, tileToBeDuplicated.width, tileToBeDuplicated.height, false, tileToBeDuplicated.headerColor,
                 tileToBeDuplicated.headerFontColor, tileToBeDuplicated.headerFont, tileToBeDuplicated.headerFontSize, tileToBeDuplicated.borderColor, tileToBeDuplicated.borderSize,
-                tileToBeDuplicated.contentBackgroundColor, tileToBeDuplicated.title, tileToBeDuplicated.requestUrl, tileToBeDuplicated.responseType, tileToBeDuplicated.responseField, tileToBeDuplicated.textBefore,
+                tileToBeDuplicated.contentBackgroundColor, tileToBeDuplicated.title, tileToBeDuplicated.requestUrl, tileToBeDuplicated.reqType, tileToBeDuplicated.responseType, tileToBeDuplicated.responseField, tileToBeDuplicated.textBefore,
                 tileToBeDuplicated.textAfter, tileToBeDuplicated.requestRefresh, tileToBeDuplicated.textColor, tileToBeDuplicated.textFont, tileToBeDuplicated.textFontSize, tileToBeDuplicated.operation);
             newTile.draw();
         }
@@ -1054,12 +1056,13 @@ class TipeeTile {
 
 class TipeeTileText extends TipeeTile {
     constructor(scene, x, y, width, height, isLocked, headerColor, headerFontColor, headerFont,
-        headerFontSize, borderColor, borderSize, contentBackgroundColor, title, requestUrl, responseType,
+        headerFontSize, borderColor, borderSize, contentBackgroundColor, title, requestUrl, reqType, responseType,
         responseField, textBefore, textAfter, requestRefresh, textColor, textFont, textFontSize, operation) {
         super(scene, x, y, width, height, isLocked, headerColor, headerFontColor, headerFont,
             headerFontSize, borderColor, borderSize, contentBackgroundColor, title);
         this.scene.tiles.push(this);
         this.requestUrl = requestUrl;
+        this.reqType = reqType;
         this.responseType = responseType;
         this.responseField = responseField;
         this.textBefore = textBefore;
@@ -1095,12 +1098,12 @@ class TipeeTileText extends TipeeTile {
         if (this.requestRefresh > 0) {
             request(that.requestUrl, that.responseType, that.responseField, that.operation, performSomeAction);
             that.intervalId = setInterval(function () {
-                request(that.requestUrl, that.responseType, that.responseField, that.operation,
+                request(that.requestUrl, that.reqType, that.responseType, that.responseField, that.operation,
                     performSomeAction);
             }, 1000 * this.requestRefresh);
         }
         else {
-            request(that.requestUrl, that.responseType, that.responseField, that.operation, performSomeAction);
+            request(that.requestUrl, that.reqType, that.responseType, that.responseField, that.operation, performSomeAction);
         }
     }
 
@@ -1111,6 +1114,7 @@ class TipeeTileText extends TipeeTile {
         valueDict['responseField'] = this.responseField;
         valueDict['textBefore'] = this.textBefore;
         valueDict['textAfter'] = this.textAfter;
+        valueDict['reqType'] = this.reqType;
         valueDict['requestRefresh'] = this.requestRefresh;
         valueDict['textColor'] = this.textColor;
         valueDict['textFont'] = this.textFont;
@@ -1384,6 +1388,7 @@ function fillTileForm(tile) {
             setValueSectectInput('textFontSize', tile.textFontSize);
             document.getElementById('requestUrl').value = tile.requestUrl;
             setValueSectectInput('responseType', tile.responseType);
+            document.getElementById('reqType').value = tile.reqType;
             document.getElementById('textBefore').value = tile.textBefore;
             document.getElementById('textAfter').value = tile.textAfter;
             document.getElementById('requestRefresh').value = parseInt(tile.requestRefresh);
@@ -1438,6 +1443,7 @@ function fillTileForm(tile) {
         setValueSectectInput('textFont', 'Montez');
         setValueSectectInput('textFontSize', '20');
         document.getElementById('requestUrl').value = '';
+        document.getElementById('reqType').value = '';
         document.getElementById('responseField').value = '';
         document.getElementById('textBefore').value = '';
         document.getElementById('textAfter').value = '';

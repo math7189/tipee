@@ -92,10 +92,13 @@ function requestPOST(urlRequest) {
     }
 }
 
-function request(urlRequest, responseType, responseField, operation, callback) {
+function request(urlRequest, reqType, responseType, responseField, operation, callback) {
     const Http1 = new XMLHttpRequest();
     const url1 = "https://cors-anywhere.herokuapp.com/" + urlRequest;
+    if(reqType == "GET")
     Http1.open("GET", url1);
+    else if(reqType == "POST")
+    Http1.open("POST", url1);
     Http1.overrideMimeType('text/xml');
     Http1.setRequestHeader('Access-Control-Allow-Headers', '*');
     Http1.setRequestHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
@@ -142,6 +145,8 @@ function request(urlRequest, responseType, responseField, operation, callback) {
         }
     }
 }
+
+
 
     function requestLogin(urlRequest, password, callback) {
         const Http1 = new XMLHttpRequest();

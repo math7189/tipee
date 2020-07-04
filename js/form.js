@@ -277,6 +277,9 @@ function createTileForm() {
                <td><label id="refreshLabel" for"requestRefresh"><b>Request refresh</b></label>
                   <input type="text" placeholder="Enter refresh" id = "requestRefresh" name="requestRefresh">
                </td>
+               <td><label id="reqTypeLabel" for"reqType"><b>Request type</b></label>
+                  <input type="text" placeholder="Enter type" id = "reqType" name="reqType">
+               </td>
             </tr>
             <tr>
                <td>
@@ -530,6 +533,8 @@ function updateTileForm() {
    var textAfter = document.getElementById("textAfter");
    var textAfterLabel = document.getElementById("textAfterLabel");
    var requestRefresh = document.getElementById("requestRefresh");
+   var reqTypeLabel = document.getElementById("reqTypeLabel");
+   var reqType = document.getElementById("reqType");
    var refreshLabel = document.getElementById("refreshLabel");
    var operation = document.getElementById("operation");
    var operationLabel = document.getElementById("operationLabel");
@@ -567,6 +572,8 @@ function updateTileForm() {
    textAfter.style.display = "none";
    textAfterLabel.style.display = "none";
    requestRefresh.style.display = "none";
+   reqTypeLabel.style.display = "none";
+   reqType.style.display = "none";
    refreshLabel.style.display = "none";
    operation.style.display = "none";
    operationLabel.style.display = "none";
@@ -629,6 +636,8 @@ function updateTileForm() {
       textColorLabel.style.display = "block";
       textFontSizeLabel.style.display = "block";
       textColor.style.display = "block";
+      reqTypeLabel.style.display = "block";
+      reqType.style.display = "block";
 
       if (responseType.value == "XML") {
          responseFieldChildLabel.style.display = "block";
