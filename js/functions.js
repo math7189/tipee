@@ -128,11 +128,15 @@ function request(urlRequest, reqType, responseType, responseField, operation, ca
             else if (responseType == "JSON") {
                 if (Http1.responseText != "") {
                     var json = JSON.parse(Http1.responseText);
+                    if(responseField!=""){
                     var fields = responseField.split('.')
                     var requestResult = '';
                     
                         for(var i = 0; i<fields.length; i++)
                             json = json[fields[i]];
+                        }
+
+                        
 
                         if (operation == 'kelvinToCelcius')
                             requestResult = kelvinToCelcius(json);
