@@ -1096,7 +1096,7 @@ class TipeeTileText extends TipeeTile {
             "' !important; font-size: " + this.textFontSize + "px !important;";
 
         if (this.requestRefresh > 0) {
-            request(that.requestUrl, that.responseType, that.responseField, that.operation, performSomeAction);
+            request(that.requestUrl, that.reqType, that.responseType, that.responseField, that.operation, performSomeAction);
             that.intervalId = setInterval(function () {
                 request(that.requestUrl, that.reqType, that.responseType, that.responseField, that.operation,
                     performSomeAction);
