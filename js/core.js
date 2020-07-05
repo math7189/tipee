@@ -23,11 +23,11 @@ class TipeeApp {
         openSigninSignupForm();
         updateSigninSignupForm('signin');
 
-        this.formLoginValidator = new Validation('signinSignupForm');
+        this.formLoginValidator = new Validator('signinSignupForm');
         this.createSigninSignupFormValidator();
         this.formTileValidator = new ValidationForm('tileForm');
         this.createTileFormValidator();
-        this.formNewSCeneValidator = new Validation('sceneForm');
+        this.formNewSCeneValidator = new Validator('sceneForm');
         this.createSceneFormValidator();
 
         if (sessionStorage.length > 0) {
