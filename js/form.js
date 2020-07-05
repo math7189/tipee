@@ -477,7 +477,7 @@ function createTileForm() {
             </tr>
          </table>
       </div>
-      <div id='tileForm_errorloc' class="formError"></div>
+      <div id='tileForm_errorloc' class="formError"><ul id=tileForm_errorUL></ul></div>
       <table style="
       bottom: 0;
       position: absolute;
@@ -690,6 +690,6 @@ function updateTileForm() {
       }
    }
 
-   myApp.formTileValidator.clearAllValidations();
+   //myApp.formTileValidator.clearAllValidations();
    myApp.createTileFormValidator();
 }

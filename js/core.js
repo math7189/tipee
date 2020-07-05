@@ -135,7 +135,7 @@ class TipeeApp {
         var tileForm = document.getElementById('tileForm');
         tileForm.addEventListener('submit', function (event) {
             event.preventDefault();
-            var errors = document.getElementById('tileForm_errorloc').innerHTML;
+            var errors = document.getElementById('tileForm_errorUL');
             errors.innerHTML = "";
             formTileValidator.checkFields();
             if (errors.children.length  == 0) {
