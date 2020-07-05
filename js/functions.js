@@ -1,4 +1,4 @@
-class ValidationForm {
+class ValidationForm2 {
     constructor(form) {
        this.form = form;
        this.formobj = document.forms[form]

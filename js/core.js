@@ -23,7 +23,7 @@ class TipeeApp {
         openSigninSignupForm();
         updateSigninSignupForm('signin');
 
-        this.formLoginValidator = new Validation('signinSignupForm');
+        this.formLoginValidator = new ValidationForm2('signinSignupForm');
         this.createSigninSignupFormValidator();
         this.formTileValidator = new ValidationForm('tileForm');
         this.createTileFormValidator();
