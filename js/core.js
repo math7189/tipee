@@ -137,7 +137,7 @@ class TipeeApp {
             event.preventDefault();
             var errors = document.getElementById('tileForm_errorUL');
             errors.innerHTML = "";
-            formTileValidator.checkFields();
+            that.formTileValidator.checkFields();
             if (errors.children.length  == 0) {
                 that.createOrUpdateTpTile();
             }
