@@ -137,6 +137,7 @@ function createSceneForm() {
 function openTileForm(tpTile) {
    document.getElementById("tileFormDiv").style.display = "flex";
    document.getElementById("error_wrapper").classList.add("error_wrapper");
+   document.getElementById('tileForm_errorloc').style.display = "none";
    fillTileForm(tpTile);
    updateTileForm();
 }
