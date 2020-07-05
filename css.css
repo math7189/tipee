@@ -248,6 +248,14 @@ body {
 	opacity: 1;
 }
 
+.formError{
+	display: block;
+    /* top: 10px; */
+    position: sticky;
+    bottom: 15px;
+    float: right;
+}
+
 .formError ul{
 	color: crimson;
     border: 3px solid;
@@ -255,7 +263,8 @@ body {
     border-radius: 7px;
     /* list-style: none; */
     padding-top: 5px;
-    padding-bottom: 5px;
+	padding-bottom: 5px;
+	
 }
 
 ul.tabs{
