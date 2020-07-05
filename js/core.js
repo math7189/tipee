@@ -1306,7 +1306,7 @@ function loadJSON(json) {
         tarrayTxt.forEach(t => {
             var test = new TipeeTileText(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
                 t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
-                t.borderSize, t.contentBackgroundColor, t.title, t.requestUrl, t.responseType, t.responseField,
+                t.borderSize, t.contentBackgroundColor, t.title, t.requestUrl, t.reqType, t.responseType, t.responseField,
                 t.textBefore, t.textAfter, t.requestRefresh, t.textColor, t.textFont, t.textFontSize,
                 t.operation);
         });
