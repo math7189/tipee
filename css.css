@@ -249,7 +249,6 @@ body {
 }
 
 .formError{
-	display: block;
     /* top: 10px; */
     position: sticky;
     bottom: 15px;

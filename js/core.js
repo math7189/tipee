@@ -140,9 +140,11 @@ class TipeeApp {
             that.formTileValidator.checkFields();
             if (errors.children.length  == 0) {
                 that.createOrUpdateTpTile();
+                document.getElementById('tileForm_errorloc').style.display = "none";
             }
             else{
                 alert("plop");
+                document.getElementById('tileForm_errorloc').style.display = "block";
             }
             return false;
         }, true);
