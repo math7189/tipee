@@ -145,7 +145,7 @@ function closeTileForm() {
    document.getElementById("tileFormDiv").style.display = "none";
    document.getElementById("idTile").value = "";
    document.getElementById("error_wrapper").classList.remove("error_wrapper");
-   document.getElementById("tileForm_errorloc").innerHTML = "";
+   //document.getElementById("tileForm_errorloc").innerHTML = "";
 }
 
 function initSelectNumberInput(inputId, min, max, deflt) {
