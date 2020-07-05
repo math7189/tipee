@@ -25,9 +25,9 @@ class ValidationForm {
 
     checkFields() {
        var errors = document.getElementById(this.form + "_errorUL");
-       for (var i = 0; i < myValid.fields.length; i++) {
-          for (var j = 0; j < myValid.fields[i].rules.length; j++) {
-             var result = myValid.fields[i].rules[j].validate(myValid.fields[i].name)
+       for (var i = 0; i < this.fields.length; i++) {
+          for (var j = 0; j < this.fields[i].rules.length; j++) {
+             var result = this.fields[i].rules[j].validate(this.fields[i].name)
              if (result != null) {
                 var li = document.createElement("li");
                 li.appendChild(document.createTextNode(result));
