@@ -23,11 +23,11 @@ class TipeeApp {
         openSigninSignupForm();
         updateSigninSignupForm('signin');
 
-        this.formLoginValidator = new Validator('signinSignupForm');
+        this.formLoginValidator = new Validation('signinSignupForm');
         this.createSigninSignupFormValidator();
-        this.formTileValidator = new Validator('tileForm');
+        this.formTileValidator = new ValidationForm('tileForm');
         this.createTileFormValidator();
-        this.formNewSCeneValidator = new Validator('sceneForm');
+        this.formNewSCeneValidator = new Validation('sceneForm');
         this.createSceneFormValidator();
 
         if (sessionStorage.length > 0) {
@@ -136,7 +136,9 @@ class TipeeApp {
         tileForm.addEventListener('submit', function (event) {
             event.preventDefault();
             var errors = document.getElementById('tileForm_errorloc').innerHTML;
-            if (errors == '') {
+            errors.innerHTML = "";
+            formTileValidator.checkFields();
+            if (errors.children.length  == 0) {
                 that.createOrUpdateTpTile();
             }
             else{
@@ -395,14 +397,17 @@ class TipeeApp {
     }
 
     createTileFormValidator() {
-        this.formTileValidator.EnableOnPageErrorDisplaySingleBox();
-        this.formTileValidator.EnableMsgsTogether();
-        this.formTileValidator.EnableFocusOnError(false);
+        //this.formTileValidator.EnableOnPageErrorDisplaySingleBox();
+        //this.formTileValidator.EnableMsgsTogether();
+        //this.formTileValidator.EnableFocusOnError(false);
 
-        this.formTileValidator.addValidation('title', 'req', 'Title is required');
-        this.formTileValidator.addValidation('title', 'maxlen=30', 'Max length for title is 30');
+        //this.formTileValidator.addValidation('title', 'req', 'Title is required');
+        //this.formTileValidator.addValidation('title', 'maxlen=30', 'Max length for title is 30');
 
-        if (document.getElementById('type').value == 'image') {
+        this.formTileValidator.addValidation("title", "req", "Name is required");
+        this.formTileValidator.addValidation("title", "min=2", "Name min is 2");
+
+        /*if (document.getElementById('type').value == 'image') {
 
             this.formTileValidator.addValidation('imgRefresh', 'req', 'Img Refresh is required');
             this.formTileValidator.addValidation('imgRefresh', 'num', 'Refresh should be a number');
@@ -420,7 +425,7 @@ class TipeeApp {
         this.formTileValidator.addValidation('width', 'req', 'Width is required');
         this.formTileValidator.addValidation('width', 'num', 'Width should be a number');
         this.formTileValidator.addValidation('height', 'req', 'Height is required');
-        this.formTileValidator.addValidation('height', 'num', 'Height should be a number');
+        this.formTileValidator.addValidation('height', 'num', 'Height should be a number');*/
     }
 
     createScene() {

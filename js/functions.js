@@ -1,3 +1,82 @@
+class ValidationForm {
+    constructor(form) {
+       this.form = form;
+       this.formobj = document.forms[form]
+       this.fields = [];
+    }
+
+    addValidation(field, rule, errorMessage) {
+
+       var exists = false;
+       var r = new Rule(rule, errorMessage);
+       for(var i=0; i<this.fields.length; i++){
+          if(this.fields[i].name == field){
+             this.fields[i].rules.push(r);
+             exists = true;
+          }
+       }
+
+       if(!exists){
+          var f = new Field(field);
+          f.rules.push(r)
+          this.fields.push(f);
+       }
+    }
+
+    checkFields() {
+       var errors = document.getElementById("errorsUL");
+       for (var i = 0; i < myValid.fields.length; i++) {
+          for (var j = 0; j < myValid.fields[i].rules.length; j++) {
+             var result = myValid.fields[i].rules[j].validate(myValid.fields[i].name)
+             if (result != null) {
+                var li = document.createElement("li");
+                li.appendChild(document.createTextNode(result));
+                errors.appendChild(li);
+                break;
+             }
+          }
+       }
+    }
+ }
+
+ class Field {
+    constructor(field) {
+       this.name = field;
+       this.rules = [];
+    }
+ }
+
+ class Rule {
+    constructor(rule, message) {
+       this.rule = rule;
+       this.message = message;
+    }
+
+    validate(field) {
+       var value = document.getElementById(field).value;
+       if (this.rule == 'req') {
+          if (value != '')
+             return null;
+          else
+             return this.message;
+       }
+       else if(this.rule.startsWith("min")){
+          var minlength = this.rule.split("=")[1];
+          if(value.length >= minlength)
+             return null;
+          else
+             return this.message;
+       }
+       else if(this.rule.startsWith("max")){
+          var maxlength = this.rule.split("=")[1];
+          if(value.length < maxlength)
+             return null;
+          else
+             return this.message;
+       }
+    }
+ }
+
 function createUI() {
     var body = document.getElementsByTagName("body")[0];
     body.innerHTML = ` 
@@ -136,7 +215,7 @@ function request(urlRequest, reqType, responseType, responseField, operation, ca
                             json = json[fields[i]];
                         }
 
-                        
+
 
                         if (operation == 'kelvinToCelcius')
                             requestResult = kelvinToCelcius(json);
