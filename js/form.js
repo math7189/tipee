@@ -42,9 +42,9 @@ function createSigninSignupForm() {
       </tr>
       <tr id='passwordTr'>
          <td id='passwordTd'>
-            <input type="text" placeholder="Enter password" id="password" name="pasword" type="password">
+            <input type="password" placeholder="Enter password" id="password" name="pasword">
          </td>
-         <td><input type="text" placeholder="Retype password" id="repassword" name="repasword" type="password"></td>
+         <td><input type="password" placeholder="Retype password" id="repassword" name="repasword" ></td>
       </tr>
       <tr id='firstLastNameTr'>
          <td>
