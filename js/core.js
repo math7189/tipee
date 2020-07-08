@@ -421,7 +421,7 @@ class TipeeApp {
         this.formTileValidator.addValidation('width', 'req', 'Width is required');
         this.formTileValidator.addValidation('width', 'num', 'Width should be a number');
         this.formTileValidator.addValidation('height', 'req', 'Height is required');
-        this.formTileValidator.addValidation('height', 'num', 'Height should be a number');*/
+        this.formTileValidator.addValidation('height', 'num', 'Height should be a number');
     }
 
     createScene() {
