@@ -208,6 +208,18 @@ body {
     overflow: hidden;
 }
 
+.form-popup-2{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 13;
+    display: none;
+	flex-flow: column;
+	border-radius: 10px;
+    overflow: hidden;
+}
+
 .form-container {
 	padding: 10px;
 	background-color: white;
@@ -250,9 +262,9 @@ body {
 
 .formError{
     /* top: 10px; */
-    position: sticky;
+	position: absolute;
     bottom: 15px;
-    float: right;
+    right: 10px;
 }
 
 .formError ul{
@@ -263,6 +275,7 @@ body {
     /* list-style: none; */
     padding-top: 5px;
 	padding-bottom: 5px;
+	padding-right: 15px;
 	
 }
 

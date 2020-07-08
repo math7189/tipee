@@ -399,28 +399,22 @@ class TipeeApp {
     }
 
     createTileFormValidator() {
-        //this.formTileValidator.EnableOnPageErrorDisplaySingleBox();
-        //this.formTileValidator.EnableMsgsTogether();
-        //this.formTileValidator.EnableFocusOnError(false);
+        this.formTileValidator.addValidation("title", "req", "Title is required");
+        this.formTileValidator.addValidation("title", "minlen=2", "Title min is 2");
+        this.formTileValidator.addValidation("title", "maxlen=30", "Title max is 30");
 
-        //this.formTileValidator.addValidation('title', 'req', 'Title is required');
-        //this.formTileValidator.addValidation('title', 'maxlen=30', 'Max length for title is 30');
-
-        this.formTileValidator.addValidation("title", "req", "Name is required");
-        this.formTileValidator.addValidation("title", "min=2", "Name min is 2");
-
-        /*if (document.getElementById('type').value == 'image') {
+        if (document.getElementById('type').value == 'image') {
 
             this.formTileValidator.addValidation('imgRefresh', 'req', 'Img Refresh is required');
             this.formTileValidator.addValidation('imgRefresh', 'num', 'Refresh should be a number');
-            this.formTileValidator.addValidation('imgRefresh', 'greaterthan=59',
+            this.formTileValidator.addValidation('imgRefresh', 'greater=59',
                 'Refresh should be minumum 60s');
             if (document.getElementById('imgType').value == 'slideshow') {
                 this.formTileValidator.addValidation('imgSlideInterval', 'req',
                     'Interval is required');
                 this.formTileValidator.addValidation('imgSlideInterval', 'num',
                     'Interval should be a number');
-                this.formTileValidator.addValidation('imgSlideInterval', 'greaterthan=0',
+                this.formTileValidator.addValidation('imgSlideInterval', 'greater=0',
                     'Interval should be minumum 1s');
             }
         }

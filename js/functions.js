@@ -60,20 +60,34 @@ class ValidationForm {
           else
              return this.message;
        }
-       else if(this.rule.startsWith("min")){
+       else if(this.rule.startsWith("minlen")){
           var minlength = this.rule.split("=")[1];
           if(value.length >= minlength)
              return null;
           else
              return this.message;
        }
-       else if(this.rule.startsWith("max")){
+       else if(this.rule.startsWith("maxlen")){
           var maxlength = this.rule.split("=")[1];
           if(value.length < maxlength)
              return null;
           else
              return this.message;
        }
+       else if(this.rule == "num"){
+           if(value.match(/^[\-\+]?[\d\,]*\.?[\d]*$/))
+                return null;
+            else
+                return this.message;
+       }
+       else if(this.rule.startsWith("greater")){
+           var than = this.rule.split("=")[1];
+           if(parseFloat(value) > parseFloat(than))
+               return null
+           else
+                return this.message;
+       }
+
     }
  }
 
@@ -141,9 +155,9 @@ function createUI() {
       <p>Creates dashboards easily with Tipee</p>
       <p>Signin to your dashboards! Don't have an account yet? Just signup!</p>
    </div>
-   <div class="form-popup" id="signinSignupFormDiv"></div>
+   <div class="form-popup-2" id="signinSignupFormDiv"></div>
 </div>
-<div class="form-popup" id="sceneFormDiv"></div>
+<div class="form-popup-2" id="sceneFormDiv"></div>
 <div class="form-popup" id="tileFormDiv"></div>
 <button id='addTile' class="open-button" onclick="openTileForm(null)">Add tile</button>
 <div id="info"> Math </div>`;
