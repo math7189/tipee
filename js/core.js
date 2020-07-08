@@ -304,6 +304,10 @@ class TipeeApp {
                     title, nbToggles, properties);
                 newTile.draw();
             }
+            else{
+                tileToBeUpdtated.nbToggles = nbToggles;
+                tileToBeUpdtated.properties = properties;
+            }
         }
 
         if (idTile != '') {

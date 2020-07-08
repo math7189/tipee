@@ -30,7 +30,7 @@ function createSigninSignupForm() {
    <table>
       <tr>
          <td colspan="2">
-            <input type="text" placeholder="Enter login" id="login" name="login">
+            <input type="text" placeholder="Enter login" id="login" name="login"  autocomplete="username">
          </td>
          <td>&nbsp;</td>
       </tr>
@@ -42,9 +42,9 @@ function createSigninSignupForm() {
       </tr>
       <tr id='passwordTr'>
          <td id='passwordTd'>
-            <input type="password" placeholder="Enter password" id="password" name="pasword">
+            <input type="password" placeholder="Enter password" id="password" name="pasword" autocomplete="current-password">
          </td>
-         <td><input type="password" placeholder="Retype password" id="repassword" name="repasword" ></td>
+         <td><input type="password" placeholder="Retype password" id="repassword" name="repasword" autocomplete="new-password"></td>
       </tr>
       <tr id='firstLastNameTr'>
          <td>
@@ -61,7 +61,7 @@ function createSigninSignupForm() {
       </tr>
       <tr>
          <td colspan="2">
-            <div id='signinSignupForm_errorloc' class="formError"></div>
+            <div id='signinSignupForm_errorloc' class="formError2"></div>
          </td>
       </tr>
       <tr>
@@ -119,7 +119,7 @@ function createSceneForm() {
       </tr>
       <tr>
          <td colspan="2">
-            <div id='sceneForm_errorloc' class="formError"></div>
+            <div id='sceneForm_errorloc' class="formError2"></div>
          </td>
          <td>
       <tr>
