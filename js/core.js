@@ -1219,12 +1219,12 @@ class TipeeTileToggles extends TipeeTile {
 
         for (let i = 0; i < that.nbToggles; i++) {
             if ((i+1) % 2 == 1) {
-                htmlContent += "<tr><td><button id='" + this.idTile + "-button-" + i +
-                    "' type='button'>" + this.togglesProperties[i].name + "</button></td>"
+                htmlContent += "<tr><td><button id='" + that.idTile + "-button-" + i +
+                    "' type='button'>" + that.togglesProperties[i].name + "</button></td>"
             }
             else {
-                htmlContent += "<td><button  id='" + this.idTile + "-button-" + i + "' type='button'>" +
-                    this.togglesProperties[i].name + "</button></td></tr>"
+                htmlContent += "<td><button  id='" + that.idTile + "-button-" + i + "' type='button'>" +
+                that.togglesProperties[i].name + "</button></td></tr>"
             }
         }
 
