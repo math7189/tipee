@@ -273,7 +273,7 @@ body {
     right: 10px;
 }
 
-.formError ul{
+.formError .formError2 ul{
 	color: crimson;
     border: 3px solid;
     margin: 5px;
