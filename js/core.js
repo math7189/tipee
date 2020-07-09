@@ -72,18 +72,18 @@ class TipeeApp {
                                     myApp.changeScene()
                                 }
                             };
-                            document.getElementById('signinSignupForm_errorUL').style.display = "none";
+                            document.getElementById('signinSignupForm_errorloc').style.display = "none";
                             requestGET('/nodejs/dashboard/' + login, 'JSON', 'data', '', getUserDashboardCallback)
                             document.getElementById('splashScreen').classList.add('splashScreenTranslate');
                         }
                         else if (returned_data == 2) {
-                            document.getElementById('signinSignupForm_errorUL').style.display = "block";
+                            document.getElementById('signinSignupForm_errorloc').style.display = "block";
                             var li = document.createElement("li");
                             li.appendChild(document.createTextNode("Login and password not match"));
                             errors.appendChild(li);
                         }
                         else if (returned_data == 3) {
-                            document.getElementById('signinSignupForm_errorUL').style.display = "block";
+                            document.getElementById('signinSignupForm_errorloc').style.display = "block";
                             var li = document.createElement("li");
                             li.appendChild(document.createTextNode('Login does not exists'));
                             errors.appendChild(li);
@@ -127,12 +127,14 @@ class TipeeApp {
                                 document.getElementById('splashScreen').classList.add('splashScreenTranslate');
                             }
                             else if (return_value == 2) {
+                                document.getElementById('signinSignupForm_errorloc').style.display = "block";
                                 var li = document.createElement("li");
                             li.appendChild(document.createTextNode('Login already exists'));
                             errors.appendChild(li);
  
                             }
                             else if (return_value == 3) {
+                                document.getElementById('signinSignupForm_errorloc').style.display = "block";
                                 var li = document.createElement("li");
                             li.appendChild(document.createTextNode('Email already exists'));
                             errors.appendChild(li);
