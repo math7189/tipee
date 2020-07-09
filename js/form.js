@@ -61,7 +61,7 @@ function createSigninSignupForm() {
       </tr>
       <tr>
          <td colspan="2">
-            <div id='signinSignupForm_errorloc' class="formError2"></div>
+            <div id='signinSignupForm_errorloc' class="formError2"><ul id=signinSignupForm_errorUL></ul></div>
          </td>
       </tr>
       <tr>
@@ -119,7 +119,7 @@ function createSceneForm() {
       </tr>
       <tr>
          <td colspan="2">
-            <div id='sceneForm_errorloc' class="formError2"></div>
+            <div id='sceneForm_errorloc' class="formError2"><ul id=sceneForm_errorUL></ul></div>
          </td>
          <td>
       <tr>

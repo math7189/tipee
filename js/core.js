@@ -23,11 +23,11 @@ class TipeeApp {
         openSigninSignupForm();
         updateSigninSignupForm('signin');
 
-        this.formLoginValidator = new Validator('signinSignupForm');
+        this.formLoginValidator = new ValidationForm('signinSignupForm');
         this.createSigninSignupFormValidator();
         this.formTileValidator = new ValidationForm('tileForm');
         this.createTileFormValidator();
-        this.formNewSCeneValidator = new Validator('sceneForm');
+        this.formNewSCeneValidator = new ValidationForm('sceneForm');
         this.createSceneFormValidator();
 
         if (sessionStorage.length > 0) {
@@ -51,8 +51,10 @@ class TipeeApp {
 
         var loginForm = document.getElementById('signinSignupForm');
         loginForm.addEventListener('submit', function (event) {
-            var errors = document.getElementById('signinSignupForm_errorloc').innerHTML;
-            if (errors == '') {
+            var errors = document.getElementById('signinSignupForm_errorUL');
+            errors.innerHTML = "";
+            that.formLoginValidator.checkFields();
+            if (errors.children.length  == 0) {
                 if (document.getElementById('signin').style.display == 'none') {
                     var login = document.getElementById('login').value;
                     var password = document.getElementById('password').value;
@@ -70,15 +72,21 @@ class TipeeApp {
                                     myApp.changeScene()
                                 }
                             };
-
+                            document.getElementById('signinSignupForm_errorUL').style.display = "none";
                             requestGET('/nodejs/dashboard/' + login, 'JSON', 'data', '', getUserDashboardCallback)
                             document.getElementById('splashScreen').classList.add('splashScreenTranslate');
                         }
                         else if (returned_data == 2) {
-                            errors.innerHTML = 'Login and password not match'
+                            document.getElementById('signinSignupForm_errorUL').style.display = "block";
+                            var li = document.createElement("li");
+                            li.appendChild(document.createTextNode("Login and password not match"));
+                            errors.appendChild(li);
                         }
                         else if (returned_data == 3) {
-                            errors.innerHTML = 'Login does not exists'
+                            document.getElementById('signinSignupForm_errorUL').style.display = "block";
+                            var li = document.createElement("li");
+                            li.appendChild(document.createTextNode('Login does not exists'));
+                            errors.appendChild(li);
                         }
                     };
 
@@ -119,10 +127,15 @@ class TipeeApp {
                                 document.getElementById('splashScreen').classList.add('splashScreenTranslate');
                             }
                             else if (return_value == 2) {
-                                errors.innerHTML = 'Login already exists';
+                                var li = document.createElement("li");
+                            li.appendChild(document.createTextNode('Login already exists'));
+                            errors.appendChild(li);
+ 
                             }
                             else if (return_value == 3) {
-                                errors.innerHTML = 'Email already exists';
+                                var li = document.createElement("li");
+                            li.appendChild(document.createTextNode('Email already exists'));
+                            errors.appendChild(li);
                             }
                         }
 
@@ -143,7 +156,6 @@ class TipeeApp {
                 document.getElementById('tileForm_errorloc').style.display = "none";
             }
             else{
-                alert("plop");
                 document.getElementById('tileForm_errorloc').style.display = "block";
             }
             return false;
@@ -151,10 +163,17 @@ class TipeeApp {
 
         var sceneForm = document.getElementById('sceneForm');
         sceneForm.addEventListener('submit', function (event) {
-            var errors = document.getElementById('sceneForm_errorloc').innerHTML;
-            if (errors == '') {
+            var errors = document.getElementById('sceneForm_errorUL');
+            errors.innerHTML = "";
+            that.formNewSCeneValidator.checkFields();
+            if (errors.children.length  == 0) {
                 that.createScene();
+                document.getElementById('sceneForm_errorloc').style.display = "none";
             }
+            else{
+                document.getElementById('sceneForm_errorloc').style.display = "block";
+            }
+            return false;
         }, false);
 
 
@@ -383,18 +402,11 @@ class TipeeApp {
     }
 
     createSceneFormValidator() {
-        this.formNewSCeneValidator.EnableOnPageErrorDisplaySingleBox();
-        this.formNewSCeneValidator.EnableMsgsTogether();
-        this.formNewSCeneValidator.EnableFocusOnError(false);
-
         this.formNewSCeneValidator.addValidation('sceneName', 'req', 'Name is required');
         this.formNewSCeneValidator.addValidation('sceneName', 'maxlen=30', 'Max length for name is 30');
     }
 
     createSigninSignupFormValidator() {
-        this.formLoginValidator.EnableOnPageErrorDisplaySingleBox();
-        this.formLoginValidator.EnableMsgsTogether();
-
         this.formLoginValidator.addValidation('login', 'req', 'Login is required');
         this.formLoginValidator.addValidation('login', 'maxlen=50', 'Max length for login is 50');
 
