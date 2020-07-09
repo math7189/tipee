@@ -261,7 +261,8 @@ body {
 }
 
 .formError{
-    /* top: 10px; */
+	/* top: 10px; */
+	display: none;
 	position: absolute;
     bottom: 15px;
     right: 10px;
@@ -270,7 +271,8 @@ body {
 .formError2{
     /* top: 10px; */
     bottom: 15px;
-    right: 10px;
+	right: 10px;
+	display: none;
 }
 
 .formError ul{
