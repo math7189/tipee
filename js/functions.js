@@ -6,7 +6,7 @@ class ValidationForm {
     }
 
     clearAllValidations(){
-        this.fields = null;
+        this.fields = [];
     }
 
     addValidation(field, rule, errorMessage) {
