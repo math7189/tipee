@@ -5,6 +5,10 @@ class ValidationForm {
        this.fields = [];
     }
 
+    clearAllValidations(){
+        this.fields = null;
+    }
+
     addValidation(field, rule, errorMessage) {
 
        var exists = false;

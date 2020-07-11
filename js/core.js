@@ -177,8 +177,6 @@ class TipeeApp {
             }
             return false;
         }, false);
-
-
     }
 
     loadSession() {
@@ -327,7 +325,7 @@ class TipeeApp {
             }
             else{
                 tileToBeUpdtated.nbToggles = nbToggles;
-                tileToBeUpdtated.properties = properties;
+                tileToBeUpdtated.togglesProperties = properties;
             }
         }
 

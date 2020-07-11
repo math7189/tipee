@@ -691,6 +691,6 @@ function updateTileForm() {
       }
    }
 
-   //myApp.formTileValidator.clearAllValidations();
+   myApp.formTileValidator.clearAllValidations();
    myApp.createTileFormValidator();
 }
