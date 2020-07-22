@@ -743,7 +743,7 @@ class TipeeTile {
                             if (this.testCollision(elements[m])) {
                                 col += 1
                                 if(k==j-5 && l== i-5){
-                                    alert("No space")
+                                    
                                     //resize
                                     
                                     //findPos
