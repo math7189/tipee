@@ -912,7 +912,7 @@ class TipeeTile {
                         for (var j = 0; j < allEmements.length; j++) {
                             var r2 = allEmements[j];
 
-                            if (!r2.isDragging) {
+                            if (!r2.isDragging && r2 != that) {
                                 if (that.testCollision(r2)) {
                                     that.resolveCollision(r2);
                                     r2.findAvailablePos(that.scene.tiles)
