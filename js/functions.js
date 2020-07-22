@@ -151,6 +151,7 @@ function createUI() {
    <a href="javascript:;" data="delete" onClick='myApp.activeScene.deleteTileById(this.parentElement.id)'>Delete</a>
 </menu>
 <div class"scene" id='scene'>
+<div class="mydivShadow" id='shadow'></div>
 </div>
 <div id="error_wrapper"></div>
 <div id="splashScreen">

@@ -251,6 +251,24 @@ class TipeeApp {
                     requestUrl, reqType, responseType, responseField, textBefore, textAfter,
                     parseInt(requestRefresh), textColor, textFont, textFontSize,
                     operation);
+                
+                    var test = newTile.findAvailablePos(this.activeScene.tiles);
+               var tour = 0
+               while(!test){
+                    if(tour == this.activeScene.tiles.length-1)
+                        tour = 0
+                    this.activeScene.tiles[tour].autoResize()
+                    var list = [];
+                    for(i=0; i<this.activeScene.tiles.length; i++){
+                        if(this.activeScene.tiles[i] != this){
+                            list.push(this.activeScene.tiles[i])
+                        this.activeScene.tiles[i].findAvailablePos(list)
+                        }
+                    }
+                    tour+=1
+                    test = newTile.findAvailablePos(this.activeScene.tiles)
+               }
+
                 newTile.draw();
             }
             else {
@@ -697,11 +715,88 @@ class TipeeTile {
         return this.y;
     }
 
+    findAvailablePos(list) {
+        var elem = document.getElementById('info');
+        var BB = elem.getBoundingClientRect();
+
+        var i = Math.round(BB.width / this.scene.gridX)
+        var j = Math.round(BB.top / this.scene.gridY)
+
+         console.log("i " + i + "j " + j)
+
+        loop1:
+        for (var k = 0; k < j-4; k++) {
+            this.y = k * this.scene.gridY + 50
+            loop2:
+            for (var l = 0; l < i-4; l++) {
+
+                this.x = l * this.scene.gridX
+                var col = 0
+                var elements = list;
+                if (elements.length > 1) {
+                    loop3:
+                    for (var m = 0; m < elements.length; m++) {
+                        if (this != elements[m]) {
+
+                            if (this.testCollision(elements[m])) {
+                                col += 1
+                                if(k==j-5 && l== i-5){
+                                    alert("No space")
+                                    //resize
+                                    
+                                    //findPos
+                                    return false;
+                                }
+                                break loop3;
+                                
+                            }
+                       }
+
+                    }
+                    if (col == 0){
+                        //break loop1
+                        const element = document.getElementById(this.idTile + ' resizable');
+                    if(element != null){
+                    element.style.top = this.y + 'px';
+                    element.style.left = this.x + 'px';}
+                    return true;
+                    }
+                }
+                else
+                {
+                    //break loop1
+                    const element = document.getElementById(this.idTile + ' resizable');
+                    if(element != null){
+                    element.style.top = this.y + 'px';
+                    element.style.left = this.x + 'px';}
+                    return true;
+                }
+                    //break loop1;
+            }
+        }
+    }
+
+    autoResize(){
+        var oldWidth = this.width;
+        var oldHeight = this.height;
+
+        if(oldWidth / this.scene.gridX > 1)
+            this.width = this.scene.gridX * ((oldWidth / this.scene.gridX) -1);
+        if(oldHeight / this.scene.gridX > 1)    
+            this.height = this.scene.gridX * ((oldHeight / this.scene.gridX) -1);
+
+            const element = document.getElementById(this.idTile + ' resizable');
+            element.style.width = this.width + 'px';
+            element.style.height = this.width + 'px';
+    }
+
     // determines if a collision is present between two rectangles
     testCollision(tile) {
+
+
         // using early outs cuts back on performance costs
-        if (this.top() > tile.bottom() || this.right() < tile.left() ||
-            this.bottom() < tile.top() || this.left() > tile.right()) {
+        if (this.top() >= tile.bottom() || this.right() <= tile.left() ||
+            this.bottom() <= tile.top() || this.left() >= tile.right()) {
             return false;
         }
         return true;
@@ -744,6 +839,7 @@ class TipeeTile {
             pos3 = 0,
             pos4 = 0;
         var divbase = elmnt.id.split(' ')[0]
+        var allEmements = that.scene.tiles;
 
         if (document.getElementById(divbase + 'header')) {
             // if present, the header is where you move the DIV from:
@@ -798,8 +894,17 @@ class TipeeTile {
                     if (elmnt.offsetLeft - pos1 + that.width > BB.width)
                         that.x = BB.width - that.width;
 
-                    elmnt.style.top = that.y + 'px';
-                    elmnt.style.left = that.x + 'px';
+                        elmnt.style.top = that.y + 'px';
+                        elmnt.style.left = that.x + 'px';
+                        elmnt.style.opacity = '80%';
+                        elmnt.style.zIndex = 9;
+
+                        const elementShadow = document.getElementById('shadow');
+                    elementShadow.style.top = Math.round((that.y) / that.scene.gridY) * that.scene.gridY + 'px';
+                    elementShadow.style.left = Math.round(that.x / that.scene.gridX) * that.scene.gridX + 'px';
+                    elementShadow.style.width = that.width + 'px';
+                    elementShadow.style.height = that.height + 'px';
+                            elementShadow.style.display = "block"
 
                     if (allEmements.length > 1) {
                         for (var j = 0; j < allEmements.length; j++) {
@@ -808,6 +913,7 @@ class TipeeTile {
                             if (!r2.isDragging) {
                                 if (that.testCollision(r2)) {
                                     that.resolveCollision(r2);
+                                    r2.findAvailablePos(that.scene.tiles)
                                     elmnt.style.top = that.y + 'px';
                                     elmnt.style.left = that.x + 'px';
                                 }
@@ -819,7 +925,28 @@ class TipeeTile {
         }
 
         function closeDragElement() {
-            // stop moving when mouse button is released:
+            elmnt.style.top = Math.round(that.y / that.scene.gridY) * that.scene.gridY + 'px';
+            elmnt.style.left = Math.round(that.x / that.scene.gridX) * that.scene.gridX + 'px';
+
+            that.y = Math.round(that.y / that.scene.gridY) * that.scene.gridY
+            that.x = Math.round(that.x / that.scene.gridX) * that.scene.gridX
+
+            if (allEmements.length > 1) {
+                for (var j = 0; j < allEmements.length; j++) {
+                    var r2 = allEmements[j];
+
+                    if (!r2.isDragging && r2 != that) {
+                        if (that.testCollision(r2)) {
+                            that.resolveCollision(r2);
+                            elmnt.style.top = that.y + 'px';
+                            elmnt.style.left = that.x + 'px';
+                        }
+                    }
+                }
+            }
+            const elementShadow = document.getElementById('shadow');
+            elementShadow.style.display = "none"
+            elmnt.style.opacity = '100%';
             document.onmouseup = null;
             document.onmousemove = null;
             that.isDragging = false
@@ -829,18 +956,23 @@ class TipeeTile {
     makeResizableDiv(div) {
         var that = this;
         const element = document.getElementById(div + ' resizable');
+        const elementShadow = document.getElementById('shadow');
         var resizers = [];
         resizers.push(document.getElementById(div + ' resizers top-left'))
         resizers.push(document.getElementById(div + ' resizers top-right'))
         resizers.push(document.getElementById(div + ' resizers bottom-left'))
         resizers.push(document.getElementById(div + ' resizers bottom-right'))
-        const minimum_size = 20;
+        const minimum_size = this.scene.gridX;
         let original_width = 0;
         let original_height = 0;
         let original_x = 0;
         let original_y = 0;
         let original_mouse_x = 0;
         let original_mouse_y = 0;
+        var top;
+        var left;
+
+
 
         for (let i = 0; i < resizers.length; i++) {
             const currentResizer = resizers[i];
@@ -870,53 +1002,83 @@ class TipeeTile {
                         if (width > minimum_size) {
                             element.style.width = width + 'px';
                             that.height = height;
+                            
                         }
                         if (height > minimum_size) {
                             element.style.height = height + 'px'
                             that.width = width;
                         }
+                        top = that.y;
+                        left = that.x;
+                        elementShadow.style.width = Math.round(element.clientWidth / that.scene.gridX) * that.scene.gridX + 'px';
+                            elementShadow.style.height = Math.round(element.clientHeight / that.scene.gridX) * that.scene.gridX + 'px'
+                            elementShadow.style.display = "block"
+
                     } else if (currentResizer.classList.contains('bottom-left')) {
                         const height = original_height + (e.pageY - original_mouse_y)
                         const width = original_width - (e.pageX - original_mouse_x)
                         if (height > minimum_size) {
                             element.style.height = height + 'px'
                             that.width = width
+                            left = that.x;
                         }
                         if (width > minimum_size) {
                             element.style.width = width + 'px'
                             element.style.left = original_x + (e.pageX - original_mouse_x) + 'px'
+                            elementShadow.style.left = Math.round((original_x + (e.pageX - original_mouse_x) ) / that.scene.gridX) * that.scene.gridX + 'px';
+                            left = elementShadow.style.left;
                             that.x = original_x + (e.pageX - original_mouse_x)
                             that.height = height
                         }
+                        top = that.y;
+
                     } else if (currentResizer.classList.contains('top-right')) {
                         const width = original_width + (e.pageX - original_mouse_x)
                         const height = original_height - (e.pageY - original_mouse_y)
                         if (width > minimum_size) {
                             element.style.width = width + 'px'
                             that.height = height
+                            top = that.y;
                         }
                         if (height > minimum_size) {
                             element.style.height = height + 'px'
                             element.style.top = original_y + (e.pageY - original_mouse_y) + 'px'
+                            elementShadow.style.top = Math.round((original_y + (e.pageY - original_mouse_y) ) / that.scene.gridX) * that.scene.gridX + 'px';
                             that.y = original_y + (e.pageY - original_mouse_y)
                             that.width = width
+                            top = elementShadow.style.top
                         }
+                        left = that.x;
+                   
                     } else {
                         const width = original_width - (e.pageX - original_mouse_x)
                         const height = original_height - (e.pageY - original_mouse_y)
                         if (width > minimum_size) {
                             element.style.width = width + 'px'
                             element.style.left = original_x + (e.pageX - original_mouse_x) + 'px'
+                            elementShadow.style.left = Math.round((original_x + (e.pageX - original_mouse_x) ) / that.scene.gridX) * that.scene.gridX + 'px';
                             that.x = original_x + (e.pageX - original_mouse_x)
                             that.height = height
+                            left = elementShadow.style.left
+                            top = that.y;
                         }
                         if (height > minimum_size) {
                             element.style.height = height + 'px'
                             element.style.top = original_y + (e.pageY - original_mouse_y) + 'px'
+                            elementShadow.style.top = Math.round((original_y + (e.pageY - original_mouse_y) ) / that.scene.gridX) * that.scene.gridX + 'px';
                             that.y = original_y + (e.pageY - original_mouse_y)
                             that.width = width
+                            top = elementShadow.style.top
+                            left = that.x
                         }
+                        
                     }
+                    elementShadow.style.width = Math.round(element.clientWidth / that.scene.gridX) * that.scene.gridX + 'px';
+                            elementShadow.style.height = Math.round(element.clientHeight / that.scene.gridX) * that.scene.gridX + 'px'
+                            elementShadow.style.display = "block"
+
+                            element.style.opacity = '80%';
+                            element.style.zIndex = 9;
                 }
             }
 

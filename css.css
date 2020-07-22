@@ -115,6 +115,15 @@ header{
 	border: 1px solid #d3d3d3;
 	text-align: center;
 }
+
+.mydivShadow {
+	position: absolute;
+	z-index: 8;
+	background-color: #d4cece;
+	border: 2px dashed #6e6565f8;
+	text-align: center;
+	display: none;
+}
 .mydivheader {
 	padding: 10px;
 	cursor: move;
