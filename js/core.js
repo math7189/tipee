@@ -1086,6 +1086,21 @@ class TipeeTile {
 
             function stopResize() {
                 if (!that.isDragging) {
+                    
+
+                    element.style.width = Math.round(element.clientWidth / that.scene.gridX) * that.scene.gridX + 'px';
+                    that.height = Math.round(element.clientHeight / that.scene.gridX) * that.scene.gridX;
+
+                    element.style.height = Math.round(element.clientHeight / that.scene.gridX) * that.scene.gridX + 'px'
+                    that.width = Math.round(element.clientWidth / that.scene.gridX) * that.scene.gridX;
+
+
+                    element.style.top =  Math.round(element.offsetTop / that.scene.gridX) * that.scene.gridX + 'px';
+                    that.x = Math.round(element.offsetTop / that.scene.gridX) * that.scene.gridX + 'px';
+
+                    element.style.left = Math.round(element.offsetLeft / that.scene.gridX) * that.scene.gridX + 'px';
+                    that.y = Math.round(element.offsetLeft / that.scene.gridX) * that.scene.gridX + 'px';
+
                     window.removeEventListener('mousemove', resize)
                     currentResizer.removeEventListener('mousedown', prepareResize)
 
@@ -1104,6 +1119,9 @@ class TipeeTile {
                     var tright = document.getElementById(div + ' resizers top-right');
                     tright.setAttribute('class', '');
                     tright.style.cssText = '';
+
+                    elementShadow.style.display = "none"
+                    element.style.opacity = '100%';
                 }
             }
         }
