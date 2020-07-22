@@ -564,6 +564,8 @@ class TipeeScene {
         this.tiles = [];
         this.sceneName;
         this.isActive;
+        this.gridX = 50;
+        this.gridY = 50;
         this.idScene = Math.random().toString(36).substring(2, 15) +
             Math.random().toString(36).substring(2, 15);
         myApp.scenes.push(this);
