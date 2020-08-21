@@ -521,6 +521,11 @@ class TipeeApp {
 
         if (alreadyExists) {
             console.log('Already exists');
+            var errors = document.getElementById('sceneForm_errorUL');
+            document.getElementById('sceneForm_errorloc').style.display = "block";
+                            var li = document.createElement("li");
+                            li.appendChild(document.createTextNode("Password does not match"));
+                            errors.appendChild(li);
         }
         else {
             var newScene = new TipeeScene();
