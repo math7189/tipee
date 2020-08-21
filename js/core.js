@@ -53,9 +53,9 @@ class TipeeApp {
         loginForm.addEventListener('submit', function (event) {
             var errors = document.getElementById('signinSignupForm_errorUL');
             errors.innerHTML = "";
-            
+
             that.formLoginValidator.checkFields();
-            if (errors.children.length  == 0) {
+            if (errors.children.length == 0) {
                 document.getElementById('signinSignupForm_errorloc').style.display = "none";
                 if (document.getElementById('signin').style.display == 'none') {
                     var login = document.getElementById('login').value;
@@ -131,25 +131,25 @@ class TipeeApp {
                             else if (return_value == 2) {
                                 document.getElementById('signinSignupForm_errorloc').style.display = "block";
                                 var li = document.createElement("li");
-                            li.appendChild(document.createTextNode('Login already exists'));
-                            errors.appendChild(li);
- 
+                                li.appendChild(document.createTextNode('Login already exists'));
+                                errors.appendChild(li);
+
                             }
                             else if (return_value == 3) {
                                 document.getElementById('signinSignupForm_errorloc').style.display = "block";
                                 var li = document.createElement("li");
-                            li.appendChild(document.createTextNode('Email already exists'));
-                            errors.appendChild(li);
+                                li.appendChild(document.createTextNode('Email already exists'));
+                                errors.appendChild(li);
                             }
                         }
 
                         requestCreateUser('/nodejs/users/', formData, createUserCallback);
                     }
-                    else{
+                    else {
                         document.getElementById('signinSignupForm_errorloc').style.display = "block";
-                            var li = document.createElement("li");
-                            li.appendChild(document.createTextNode("Password does not match"));
-                            errors.appendChild(li);
+                        var li = document.createElement("li");
+                        li.appendChild(document.createTextNode("Password does not match"));
+                        errors.appendChild(li);
                     }
                 }
             }
@@ -161,11 +161,11 @@ class TipeeApp {
             var errors = document.getElementById('tileForm_errorUL');
             errors.innerHTML = "";
             that.formTileValidator.checkFields();
-            if (errors.children.length  == 0) {
+            if (errors.children.length == 0) {
                 that.createOrUpdateTpTile();
                 document.getElementById('tileForm_errorloc').style.display = "none";
             }
-            else{
+            else {
                 document.getElementById('tileForm_errorloc').style.display = "block";
             }
             return false;
@@ -176,25 +176,26 @@ class TipeeApp {
             var errors = document.getElementById('sceneForm_errorUL');
             errors.innerHTML = "";
             that.formNewSCeneValidator.checkFields();
-            if (errors.children.length  == 0) {
+            if (errors.children.length == 0) {
                 var isCreated = that.createScene();
-                if(!isCreated){
-                var errors = document.getElementById('sceneForm_errorUL');
-            document.getElementById('sceneForm_errorloc').style.display = "block";
-                            var li = document.createElement("li");
-                            li.appendChild(document.createTextNode("Scene already exists"));
-                            errors.appendChild(li);}
+                if (!isCreated) {
+                    var errors = document.getElementById('sceneForm_errorUL');
+                    document.getElementById('sceneForm_errorloc').style.display = "block";
+                    var li = document.createElement("li");
+                    li.appendChild(document.createTextNode("Scene already exists"));
+                    errors.appendChild(li);
+                } else
 
-                document.getElementById('sceneForm_errorloc').style.display = "none";
+                    document.getElementById('sceneForm_errorloc').style.display = "none";
             }
-            else{
+            else {
                 document.getElementById('sceneForm_errorloc').style.display = "block";
             }
             return false;
         }, false);
     }
 
-    logout(){
+    logout() {
         this.login = ""
         sessionStorage.clear();
         document.location.reload(true);
@@ -306,23 +307,23 @@ class TipeeApp {
                     requestUrl, reqType, responseType, responseField, textBefore, textAfter,
                     parseInt(requestRefresh), textColor, textFont, textFontSize,
                     operation);
-                
-                    var test = newTile.findAvailablePos(this.activeScene.tiles);
-               var tour = 0
-               while(!test){
-                    if(tour == this.activeScene.tiles.length-1)
+
+                var test = newTile.findAvailablePos(this.activeScene.tiles);
+                var tour = 0
+                while (!test) {
+                    if (tour == this.activeScene.tiles.length - 1)
                         tour = 0
                     this.activeScene.tiles[tour].autoResize()
                     var list = [];
-                    for(i=0; i<this.activeScene.tiles.length; i++){
-                        if(this.activeScene.tiles[i] != this){
+                    for (i = 0; i < this.activeScene.tiles.length; i++) {
+                        if (this.activeScene.tiles[i] != this) {
                             list.push(this.activeScene.tiles[i])
-                        this.activeScene.tiles[i].findAvailablePos(list)
+                            this.activeScene.tiles[i].findAvailablePos(list)
                         }
                     }
-                    tour+=1
+                    tour += 1
                     test = newTile.findAvailablePos(this.activeScene.tiles)
-               }
+                }
 
                 newTile.draw();
             }
@@ -396,7 +397,7 @@ class TipeeApp {
                     title, nbToggles, properties);
                 newTile.draw();
             }
-            else{
+            else {
                 tileToBeUpdtated.nbToggles = nbToggles;
                 tileToBeUpdtated.togglesProperties = properties;
             }
@@ -528,7 +529,7 @@ class TipeeApp {
 
         if (alreadyExists) {
             return false;
-            
+
         }
         else {
             var newScene = new TipeeScene();
@@ -659,13 +660,13 @@ class TipeeScene {
             }
         }
 
-        if(tileToBeDeleted!=null){
+        if (tileToBeDeleted != null) {
             this.removeElement(tileId + ' resizable');
 
             if (tileToBeDeleted.intervalId != null)
                 clearInterval(tileToBeDeleted.intervalId)
             this.tiles.splice(index, 1);
-        } 
+        }
     }
 
     duplicateTileById(tileId) {
@@ -774,7 +775,7 @@ class TipeeTile {
         return this.y;
     }
 
-    findClosestAvailablePos(tile){
+    findClosestAvailablePos(tile) {
         var possiblePos = [];
 
         var oldx = this.x;
@@ -788,10 +789,10 @@ class TipeeTile {
         var i = Math.round(BB.width / this.scene.gridX)
         var j = Math.round(BB.top / this.scene.gridY)
 
-        for (var k = 0; k < j-4; k++) {
+        for (var k = 0; k < j - 4; k++) {
             this.y = k * this.scene.gridY + 50
             loop2:
-            for (var l = 0; l < i-4; l++) {
+            for (var l = 0; l < i - 4; l++) {
 
                 this.x = l * this.scene.gridX
                 var col = 0
@@ -803,13 +804,13 @@ class TipeeTile {
 
                             if (this.testCollision(elements[m])) {
                                 col += 1
-                                if(k==j-5 && l== i-5){
+                                if (k == j - 5 && l == i - 5) {
                                     //return false;
                                 }
                                 break loop3;
-                                
+
                             }
-                       }
+                        }
                     }
                     if (col == 0) {
                         var valueDict = {};
@@ -823,7 +824,7 @@ class TipeeTile {
                             possiblePos.push(valueDict)
                     }
                 }
-                else{
+                else {
                     var valueDict = {};
                     valueDict['x'] = this.x;
                     valueDict['y'] = this.y;
@@ -880,13 +881,13 @@ class TipeeTile {
         var i = Math.round(BB.width / this.scene.gridX)
         var j = Math.round(BB.top / this.scene.gridY)
 
-         console.log("i " + i + "j " + j)
+        console.log("i " + i + "j " + j)
 
         loop1:
-        for (var k = 0; k < j-4; k++) {
+        for (var k = 0; k < j - 4; k++) {
             this.y = k * this.scene.gridY + 50
             loop2:
-            for (var l = 0; l < i-4; l++) {
+            for (var l = 0; l < i - 4; l++) {
 
                 this.x = l * this.scene.gridX
                 var col = 0
@@ -898,54 +899,55 @@ class TipeeTile {
 
                             if (this.testCollision(elements[m])) {
                                 col += 1
-                                if(k==j-5 && l== i-5){
-                                    
+                                if (k == j - 5 && l == i - 5) {
+
                                     //resize
-                                    
+
                                     //findPos
                                     return false;
                                 }
                                 break loop3;
-                                
+
                             }
-                       }
+                        }
 
                     }
-                    if (col == 0){
+                    if (col == 0) {
                         //break loop1
                         const element = document.getElementById(this.idTile + ' resizable');
-                    if(element != null){
-                    element.style.top = this.y + 'px';
-                    element.style.left = this.x + 'px';}
-                    return true;
+                        if (element != null) {
+                            element.style.top = this.y + 'px';
+                            element.style.left = this.x + 'px';
+                        }
+                        return true;
                     }
                 }
-                else
-                {
+                else {
                     //break loop1
                     const element = document.getElementById(this.idTile + ' resizable');
-                    if(element != null){
-                    element.style.top = this.y + 'px';
-                    element.style.left = this.x + 'px';}
+                    if (element != null) {
+                        element.style.top = this.y + 'px';
+                        element.style.left = this.x + 'px';
+                    }
                     return true;
                 }
-                    //break loop1;
+                //break loop1;
             }
         }
     }
 
-    autoResize(){
+    autoResize() {
         var oldWidth = this.width;
         var oldHeight = this.height;
 
-        if(oldWidth / this.scene.gridX > 1)
-            this.width = this.scene.gridX * ((oldWidth / this.scene.gridX) -1);
-        if(oldHeight / this.scene.gridX > 1)    
-            this.height = this.scene.gridX * ((oldHeight / this.scene.gridX) -1);
+        if (oldWidth / this.scene.gridX > 1)
+            this.width = this.scene.gridX * ((oldWidth / this.scene.gridX) - 1);
+        if (oldHeight / this.scene.gridX > 1)
+            this.height = this.scene.gridX * ((oldHeight / this.scene.gridX) - 1);
 
-            const element = document.getElementById(this.idTile + ' resizable');
-            element.style.width = this.width + 'px';
-            element.style.height = this.width + 'px';
+        const element = document.getElementById(this.idTile + ' resizable');
+        element.style.width = this.width + 'px';
+        element.style.height = this.width + 'px';
     }
 
     // determines if a collision is present between two rectangles
@@ -1062,7 +1064,7 @@ class TipeeTile {
                 document.onmouseup = closeDragElement;
                 document.ontouchend = closeDragElement;
 
-                
+
                 // call a function whenever the cursor moves:
                 document.onmousemove = elementDrag;
                 document.ontouchmove = elementDrag;
@@ -1102,18 +1104,18 @@ class TipeeTile {
                     if (elmnt.offsetLeft - pos1 + that.width > BB.width)
                         that.x = BB.width - that.width;
 
-                        elmnt.style.top = that.y + 'px';
-                        elmnt.style.left = that.x + 'px';
-                        that.move(that.x, that.y)
-                        elmnt.style.opacity = '80%';
-                        elmnt.style.zIndex = 9;
+                    elmnt.style.top = that.y + 'px';
+                    elmnt.style.left = that.x + 'px';
+                    that.move(that.x, that.y)
+                    elmnt.style.opacity = '80%';
+                    elmnt.style.zIndex = 9;
 
-                        const elementShadow = document.getElementById('shadow');
+                    const elementShadow = document.getElementById('shadow');
                     elementShadow.style.top = Math.round((that.y) / that.scene.gridY) * that.scene.gridY + 'px';
                     elementShadow.style.left = Math.round(that.x / that.scene.gridX) * that.scene.gridX + 'px';
                     elementShadow.style.width = that.width + 'px';
                     elementShadow.style.height = that.height + 'px';
-                            elementShadow.style.display = "block"
+                    elementShadow.style.display = "block"
 
                     if (allEmements.length > 1) {
                         for (var j = 0; j < allEmements.length; j++) {
@@ -1219,7 +1221,7 @@ class TipeeTile {
                         if (width > minimum_size) {
                             element.style.width = width + 'px';
                             that.height = height;
-                            
+
                         }
                         if (height > minimum_size) {
                             element.style.height = height + 'px'
@@ -1228,8 +1230,8 @@ class TipeeTile {
                         top = that.y;
                         left = that.x;
                         elementShadow.style.width = Math.round(element.clientWidth / that.scene.gridX) * that.scene.gridX + 'px';
-                            elementShadow.style.height = Math.round(element.clientHeight / that.scene.gridX) * that.scene.gridX + 'px'
-                            elementShadow.style.display = "block"
+                        elementShadow.style.height = Math.round(element.clientHeight / that.scene.gridX) * that.scene.gridX + 'px'
+                        elementShadow.style.display = "block"
 
                     } else if (currentResizer.classList.contains('bottom-left')) {
                         const height = original_height + (e.pageY - original_mouse_y)
@@ -1242,7 +1244,7 @@ class TipeeTile {
                         if (width > minimum_size) {
                             element.style.width = width + 'px'
                             element.style.left = original_x + (e.pageX - original_mouse_x) + 'px'
-                            elementShadow.style.left = Math.round((original_x + (e.pageX - original_mouse_x) ) / that.scene.gridX) * that.scene.gridX + 'px';
+                            elementShadow.style.left = Math.round((original_x + (e.pageX - original_mouse_x)) / that.scene.gridX) * that.scene.gridX + 'px';
                             left = elementShadow.style.left;
                             that.x = original_x + (e.pageX - original_mouse_x)
                             that.height = height
@@ -1260,20 +1262,20 @@ class TipeeTile {
                         if (height > minimum_size) {
                             element.style.height = height + 'px'
                             element.style.top = original_y + (e.pageY - original_mouse_y) + 'px'
-                            elementShadow.style.top = Math.round((original_y + (e.pageY - original_mouse_y) ) / that.scene.gridX) * that.scene.gridX + 'px';
+                            elementShadow.style.top = Math.round((original_y + (e.pageY - original_mouse_y)) / that.scene.gridX) * that.scene.gridX + 'px';
                             that.y = original_y + (e.pageY - original_mouse_y)
                             that.width = width
                             top = elementShadow.style.top
                         }
                         left = that.x;
-                   
+
                     } else {
                         const width = original_width - (e.pageX - original_mouse_x)
                         const height = original_height - (e.pageY - original_mouse_y)
                         if (width > minimum_size) {
                             element.style.width = width + 'px'
                             element.style.left = original_x + (e.pageX - original_mouse_x) + 'px'
-                            elementShadow.style.left = Math.round((original_x + (e.pageX - original_mouse_x) ) / that.scene.gridX) * that.scene.gridX + 'px';
+                            elementShadow.style.left = Math.round((original_x + (e.pageX - original_mouse_x)) / that.scene.gridX) * that.scene.gridX + 'px';
                             that.x = original_x + (e.pageX - original_mouse_x)
                             that.height = height
                             left = elementShadow.style.left
@@ -1282,26 +1284,26 @@ class TipeeTile {
                         if (height > minimum_size) {
                             element.style.height = height + 'px'
                             element.style.top = original_y + (e.pageY - original_mouse_y) + 'px'
-                            elementShadow.style.top = Math.round((original_y + (e.pageY - original_mouse_y) ) / that.scene.gridX) * that.scene.gridX + 'px';
+                            elementShadow.style.top = Math.round((original_y + (e.pageY - original_mouse_y)) / that.scene.gridX) * that.scene.gridX + 'px';
                             that.y = original_y + (e.pageY - original_mouse_y)
                             that.width = width
                             top = elementShadow.style.top
                             left = that.x
                         }
-                        
+
                     }
                     elementShadow.style.width = Math.round(element.clientWidth / that.scene.gridX) * that.scene.gridX + 'px';
-                            elementShadow.style.height = Math.round(element.clientHeight / that.scene.gridX) * that.scene.gridX + 'px'
-                            elementShadow.style.display = "block"
+                    elementShadow.style.height = Math.round(element.clientHeight / that.scene.gridX) * that.scene.gridX + 'px'
+                    elementShadow.style.display = "block"
 
-                            element.style.opacity = '80%';
-                            element.style.zIndex = 9;
+                    element.style.opacity = '80%';
+                    element.style.zIndex = 9;
                 }
             }
 
             function stopResize() {
                 if (!that.isDragging) {
-                    
+
 
                     element.style.width = Math.round(element.clientWidth / that.scene.gridX) * that.scene.gridX + 'px';
                     that.height = Math.round(element.clientHeight / that.scene.gridX) * that.scene.gridX;
@@ -1310,7 +1312,7 @@ class TipeeTile {
                     that.width = Math.round(element.clientWidth / that.scene.gridX) * that.scene.gridX;
 
 
-                    element.style.top =  Math.round(element.offsetTop / that.scene.gridX) * that.scene.gridX + 'px';
+                    element.style.top = Math.round(element.offsetTop / that.scene.gridX) * that.scene.gridX + 'px';
                     that.x = Math.round(element.offsetTop / that.scene.gridX) * that.scene.gridX + 'px';
 
                     element.style.left = Math.round(element.offsetLeft / that.scene.gridX) * that.scene.gridX + 'px';
@@ -1339,7 +1341,7 @@ class TipeeTile {
                     element.style.opacity = '100%';
 
                     that.resize();
-                                }
+                }
             }
         }
     }
@@ -1541,18 +1543,18 @@ class TipeeTileTodo extends TipeeTile {
         var todos = that.todo;
         var elem = document.getElementById(that.idTile + ' content');
         elem.style.position = "absolute"
-        elem.style.top = document.getElementById(that.idTile +'header').offsetHeight + 'px'
+        elem.style.top = document.getElementById(that.idTile + 'header').offsetHeight + 'px'
         elem.style.overflow = 'auto';
         elem.style.width = 'inherit'
-        elem.style.height = that.height - document.getElementById(that.idTile +'header').offsetHeight + 'px'
+        elem.style.height = that.height - document.getElementById(that.idTile + 'header').offsetHeight + 'px'
         elem.innerHTML += "<ul id='todolist" + that.idTile + "'></ul>"
-        
+
 
         if (todos != "") {
             todos = that.todo.split(";")
             elem.innerHTML += '<div><input type="text" id="' + that.idTile + "new" + '" value="Cats">'
             //var todos = this.todo.split(";")
-            
+
 
             var list = document.getElementById("todolist" + that.idTile);
 
@@ -1561,65 +1563,65 @@ class TipeeTileTodo extends TipeeTile {
                 nelem.id = that.idTile + i;
                 nelem.appendChild(document.createTextNode(todos[i]));
                 var belem = document.createElement('button');
-                belem.id= that.idTile + "todo" + i;
+                belem.id = that.idTile + "todo" + i;
                 belem.innerText = "Del";
-                (function(index){
-                    belem.addEventListener('click', function(){
+                (function (index) {
+                    belem.addEventListener('click', function () {
                         console.log(index)
-        var toRemove = index;
-        todos.splice(toRemove, 1);
-        console.log(todos)
+                        var toRemove = index;
+                        todos.splice(toRemove, 1);
+                        console.log(todos)
 
-        var todosNew = ""
-    for(var i = 0; i < todos.length; i++){
-        if(todos[i] != "")
-        todosNew += todos[i] + ";"
-    }
-       
-    that.todo = todosNew;
+                        var todosNew = ""
+                        for (var i = 0; i < todos.length; i++) {
+                            if (todos[i] != "")
+                                todosNew += todos[i] + ";"
+                        }
 
-        var id = that.idTile.concat("",toRemove);
-        console.log(id)
-        var elem = document.getElementById(id);
-        console.log(elem)
-        elem.parentNode.removeChild(elem);
+                        that.todo = todosNew;
 
-        that.redraw()
+                        var id = that.idTile.concat("", toRemove);
+                        console.log(id)
+                        var elem = document.getElementById(id);
+                        console.log(elem)
+                        elem.parentNode.removeChild(elem);
+
+                        that.redraw()
                     })
                 })(i)
                 nelem.appendChild(belem);
                 list.appendChild(nelem);
             }
 
-            
 
-             /*for(var j = 0; j<todos.length; j++){
-                 var bt = document.getElementById(that.idTile + "todo" + j);
-                 bt.addEventListener('click', function (e) {
-                     console.log(bt)
-                     var toRemove = bt.getAttribute("id");
-                     toRemove = toRemove.split(that.idTile+"todo");
-                     console.log(toRemove[1])
-                     todos.splice(toRemove[1], 1);
-                     console.log(todos)
 
-                     var todosNew = ""
-                 for(var i = 0; i < todos.length; i++){
-                     if(todos[i] != "")
-                     todosNew += todos[i] + ";"
-                 }
-                    
-                 that.todo = todosNew;
+            /*for(var j = 0; j<todos.length; j++){
+                var bt = document.getElementById(that.idTile + "todo" + j);
+                bt.addEventListener('click', function (e) {
+                    console.log(bt)
+                    var toRemove = bt.getAttribute("id");
+                    toRemove = toRemove.split(that.idTile+"todo");
+                    console.log(toRemove[1])
+                    todos.splice(toRemove[1], 1);
+                    console.log(todos)
 
-                     var id = that.idTile.concat("",toRemove[1]);
-                     console.log(id)
-                     var elem = document.getElementById(id);
-                     console.log(elem)
-                     elem.parentNode.removeChild(elem);
+                    var todosNew = ""
+                for(var i = 0; i < todos.length; i++){
+                    if(todos[i] != "")
+                    todosNew += todos[i] + ";"
+                }
+                   
+                that.todo = todosNew;
 
-                     that.redraw()
-                 });
-             }*/
+                    var id = that.idTile.concat("",toRemove[1]);
+                    console.log(id)
+                    var elem = document.getElementById(id);
+                    console.log(elem)
+                    elem.parentNode.removeChild(elem);
+
+                    that.redraw()
+                });
+            }*/
         }
         else {
             todos = []
@@ -1647,11 +1649,11 @@ class TipeeTileTodo extends TipeeTile {
             alert(i)
         }
 
-        
+
     }
 
-     removeItem (index) {
-        
+    removeItem(index) {
+
     }
 
     resize() {
@@ -1837,13 +1839,13 @@ class TipeeTileToggles extends TipeeTile {
         var htmlContent = '<div class="buttons"><table>';
 
         for (let i = 0; i < that.nbToggles; i++) {
-            if ((i+1) % 2 == 1) {
+            if ((i + 1) % 2 == 1) {
                 htmlContent += "<tr><td><button id='" + that.idTile + "-button-" + i +
                     "' type='button'>" + that.togglesProperties[i].name + "</button></td>"
             }
             else {
                 htmlContent += "<td><button  id='" + that.idTile + "-button-" + i + "' type='button'>" +
-                that.togglesProperties[i].name + "</button></td></tr>"
+                    that.togglesProperties[i].name + "</button></td></tr>"
             }
         }
 
@@ -1976,7 +1978,7 @@ function lockTile(id) {
     var tileToLock;
     myApp.activeScene.tiles.forEach(tile => {
         if (tile.idTile == id)
-        tileToLock = tile;
+            tileToLock = tile;
     });
 
     if (tileToLock.isLocked)
@@ -2026,12 +2028,12 @@ function fillTileForm(tile) {
             }
         }
         else if (tile instanceof TipeeTileImage) {
-            
+
             setValueSectectInput('imgNb', tile.imgNb);
             document.getElementById('imgSlideInterval').value = tile.imgSlideInterval;
             document.getElementById('imgRefresh').value = tile.imgRefresh;
 
-            if (tile.imgNb == 1){
+            if (tile.imgNb == 1) {
                 document.getElementById('imgSingleSrc').value = tile.imgSrc[0];
                 setValueSectectInput('imgType', 'Single');
             }
@@ -2043,14 +2045,14 @@ function fillTileForm(tile) {
             }
         }
         else if (tile instanceof TipeeTileToggles) {
-            
+
             setValueSectectInput('togglesNb', tile.nbToggles);
-                for (var i = 0; i < tile.nbToggles; i++) {
-                    console.log(tile.togglesProperties[i])
-                    document.getElementById('togglesName' + i).value = tile.togglesProperties[i].name;
-                    document.getElementById('togglesURL' + i).value = tile.togglesProperties[i].url;
-                }
-            
+            for (var i = 0; i < tile.nbToggles; i++) {
+                console.log(tile.togglesProperties[i])
+                document.getElementById('togglesName' + i).value = tile.togglesProperties[i].name;
+                document.getElementById('togglesURL' + i).value = tile.togglesProperties[i].url;
+            }
+
         }
     }
     else {
