@@ -123,7 +123,7 @@ class TipeeApp {
                                     }
                                 };
 
-                                requestGET('/dashboard/' + login, 'JSON', 'data', '', getUserDashboardCallback);
+                                requestGET('/nodejs/dashboard/' + login, 'JSON', 'data', '', getUserDashboardCallback);
                                 document.getElementById('splashScreen').classList.add('splashScreenTranslate');
                             }
                             else if (return_value == 2) {
@@ -141,7 +141,7 @@ class TipeeApp {
                             }
                         }
 
-                        requestCreateUser('/users/', formData, createUserCallback);
+                        requestCreateUser('/nodejs/users/', formData, createUserCallback);
                     }
                     else{
                         document.getElementById('signinSignupForm_errorloc').style.display = "block";
