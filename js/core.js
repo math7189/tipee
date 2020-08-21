@@ -566,6 +566,8 @@ class TipeeApp {
         var scene = this.activeScene;
         if(scene != null)
             setValueSectectInput("sceneSelect", scene.sceneName)
+        else
+        setValueSectectInput("sceneSelect", "Select Dashboard")
     }
 
     changeScene() {
