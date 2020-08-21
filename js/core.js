@@ -143,6 +143,12 @@ class TipeeApp {
 
                         requestCreateUser('/users/', formData, createUserCallback);
                     }
+                    else{
+                        document.getElementById('signinSignupForm_errorloc').style.display = "block";
+                            var li = document.createElement("li");
+                            li.appendChild(document.createTextNode("Password does not match"));
+                            errors.appendChild(li);
+                    }
                 }
             }
         }, false);
