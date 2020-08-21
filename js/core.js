@@ -564,7 +564,7 @@ class TipeeApp {
     //
     reloadActiveScene(){
         var scene = this.activeScene;
-        setValueSectectInput("sceneSelect", scene)
+        setValueSectectInput("sceneSelect", scene.sceneName)
     }
 
     changeScene() {
