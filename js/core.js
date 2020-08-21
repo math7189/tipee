@@ -562,6 +562,11 @@ class TipeeApp {
         }
     }
     //
+    reloadActiveScene(){
+        var scene = this.activeScene;
+        setValueSectectInput(sceneSelect, scene)
+    }
+
     changeScene() {
         var selectSceneInput = document.getElementById('sceneSelect');
         var opts = selectSceneInput.options.length;

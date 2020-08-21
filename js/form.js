@@ -4,6 +4,7 @@ function openSceneForm() {
 }
 
 function closeSceneForm() {
+   myApp.reloadActiveScene()
    document.getElementById("sceneFormDiv").style.display = "none";
    document.getElementById("sceneName").value = "";
    document.getElementById("error_wrapper").classList.remove("error_wrapper");
