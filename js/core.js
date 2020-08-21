@@ -177,7 +177,14 @@ class TipeeApp {
             errors.innerHTML = "";
             that.formNewSCeneValidator.checkFields();
             if (errors.children.length  == 0) {
-                that.createScene();
+                var isCreated = that.createScene();
+                if(!isCreated){
+                var errors = document.getElementById('sceneForm_errorUL');
+            document.getElementById('sceneForm_errorloc').style.display = "block";
+                            var li = document.createElement("li");
+                            li.appendChild(document.createTextNode("Scene already exists"));
+                            errors.appendChild(li);}
+
                 document.getElementById('sceneForm_errorloc').style.display = "none";
             }
             else{
@@ -520,12 +527,8 @@ class TipeeApp {
         }
 
         if (alreadyExists) {
-            console.log('Already exists');
-            var errors = document.getElementById('sceneForm_errorUL');
-            document.getElementById('sceneForm_errorloc').style.display = "block";
-                            var li = document.createElement("li");
-                            li.appendChild(document.createTextNode("Password does not match"));
-                            errors.appendChild(li);
+            return false;
+            
         }
         else {
             var newScene = new TipeeScene();
@@ -554,6 +557,7 @@ class TipeeApp {
             this.setActiveScene(newScene);
             this.showNewTileButton();
             closeSceneForm();
+            return true;
         }
     }
     //
