@@ -181,7 +181,7 @@ class TipeeApp {
 
     logout(){
         this.login = ""
-        sessionStorage.setItem('user', JSON.stringify(this.login))
+        sessionStorage.clear();
         document.location.reload(true);
     }
 
