@@ -179,6 +179,12 @@ class TipeeApp {
         }, false);
     }
 
+    logout(){
+        this.login = ""
+        sessionStorage.setItem('user', JSON.stringify(this.login))
+        document.location.reload(true);
+    }
+
     loadSession() {
         if (sessionStorage.length > 0) {
             var obj = JSON.parse(sessionStorage.scenes);
@@ -1021,9 +1027,12 @@ class TipeeTile {
         if (document.getElementById(divbase + 'header')) {
             // if present, the header is where you move the DIV from:
             document.getElementById(divbase + 'header').onmousedown = dragMouseDown;
+            document.getElementById(divbase + 'header').ontouchstart = dragMouseDown;
         } else {
             // otherwise, move the DIV from anywhere inside the DIV:
             elmnt.onmousedown = dragMouseDown;
+            elmnt.ontouchstart = dragMouseDown;
+
         }
 
         function dragMouseDown(e) {
@@ -1034,8 +1043,13 @@ class TipeeTile {
                 pos3 = e.clientX;
                 pos4 = e.clientY;
                 document.onmouseup = closeDragElement;
+                document.ontouchend = closeDragElement;
+
+                
                 // call a function whenever the cursor moves:
                 document.onmousemove = elementDrag;
+                document.ontouchmove = elementDrag;
+
             }
         }
 

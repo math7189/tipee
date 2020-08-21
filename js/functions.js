@@ -126,6 +126,7 @@ function createUI() {
                      <li><a href="#" onclick="myApp.export()">Export</a></li>
                   </ul>
                </li>
+               <li><a href="#" onclick="myApp.logout()">Logout</a></li>
             </ul>
          </li>
       </ul>
