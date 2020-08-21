@@ -53,8 +53,10 @@ class TipeeApp {
         loginForm.addEventListener('submit', function (event) {
             var errors = document.getElementById('signinSignupForm_errorUL');
             errors.innerHTML = "";
+            
             that.formLoginValidator.checkFields();
             if (errors.children.length  == 0) {
+                document.getElementById('signinSignupForm_errorloc').style.display = "none";
                 if (document.getElementById('signin').style.display == 'none') {
                     var login = document.getElementById('login').value;
                     var password = document.getElementById('password').value;
