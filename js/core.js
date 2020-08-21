@@ -221,7 +221,41 @@ class TipeeApp {
             tileToBeUpdtated.borderSize = borderSize;
             tileToBeUpdtated.contentBackgroundColor = contentBackgroundColor;
         }
+        if (type == 'note') {
+            var textFont = document.getElementById('textFont').value;
+            var textFontSize = document.getElementById('textFontSize').value;
+            var textColor = document.getElementById('textColor').value;
 
+            if (idTile == '') {
+                var newTile = new TipeeTileNote(myApp.activeScene, 200, 200, width, height,
+                    false, headerColor, headerFontColor, headerFont, headerFontSize,
+                    borderColor, borderSize, contentBackgroundColor, title, textColor, textFont, textFontSize, " ");
+                newTile.draw();
+            }
+            else {
+                tileToBeUpdtated.textFont = textFont;
+                tileToBeUpdtated.textFontSize = textFontSize;
+                tileToBeUpdtated.textColor = textColor;
+            }
+        }
+
+        if (type == 'todo') {
+            var textFont = document.getElementById('textFont').value;
+            var textFontSize = document.getElementById('textFontSize').value;
+            var textColor = document.getElementById('textColor').value;
+
+            if (idTile == '') {
+                var newTile = new TipeeTileTodo(myApp.activeScene, 200, 200, width, height,
+                    false, headerColor, headerFontColor, headerFont, headerFontSize,
+                    borderColor, borderSize, contentBackgroundColor, title, textColor, textFont, textFontSize, "", "");
+                newTile.draw();
+            }
+            else {
+                tileToBeUpdtated.textFont = textFont;
+                tileToBeUpdtated.textFontSize = textFontSize;
+                tileToBeUpdtated.textColor = textColor;
+            }
+        }
         if (type == 'text') {
             var textFont = document.getElementById('textFont').value;
             var textFontSize = document.getElementById('textFontSize').value;
@@ -717,6 +751,105 @@ class TipeeTile {
         return this.y;
     }
 
+    findClosestAvailablePos(tile){
+        var possiblePos = [];
+
+        var oldx = this.x;
+        var oldy = this.y;
+
+        var newx, newy;
+
+        var elem = document.getElementById('info');
+        var BB = elem.getBoundingClientRect();
+
+        var i = Math.round(BB.width / this.scene.gridX)
+        var j = Math.round(BB.top / this.scene.gridY)
+
+        for (var k = 0; k < j-4; k++) {
+            this.y = k * this.scene.gridY + 50
+            loop2:
+            for (var l = 0; l < i-4; l++) {
+
+                this.x = l * this.scene.gridX
+                var col = 0
+                var elements = this.scene.tiles;
+                if (elements.length > 1) {
+                    loop3:
+                    for (var m = 0; m < elements.length; m++) {
+                        if (this != elements[m]) {
+
+                            if (this.testCollision(elements[m])) {
+                                col += 1
+                                if(k==j-5 && l== i-5){
+                                    //return false;
+                                }
+                                break loop3;
+                                
+                            }
+                       }
+                    }
+                    if (col == 0) {
+                        var valueDict = {};
+                        valueDict['x'] = this.x;
+                        valueDict['y'] = this.y;
+                        var dist = Math.sqrt((oldx - this.x) * (oldx - this.x) +
+                            (oldy - this.y) * (oldy - this.y))
+                        dist.toFixed(2);
+                        valueDict['dist'] = dist;
+                        if (dist != 0 && (oldy != this.y && oldx > this.x))
+                            possiblePos.push(valueDict)
+                    }
+                }
+                else{
+                    var valueDict = {};
+                    valueDict['x'] = this.x;
+                    valueDict['y'] = this.y;
+                    var dist = Math.sqrt((oldx - this.x) * (oldx - this.x) +
+                        (oldy - this.y) * (oldy - this.y))
+                    dist.toFixed(2);
+                    valueDict['dist'] = dist;
+                    if (dist != 0 && (oldx != this.x && oldy > this.y))
+                        possiblePos.push(valueDict)
+                    possiblePos.push(valueDict)
+                }
+            }
+        }
+
+        function compare(a, b) {
+            if (a.dist > b.dist) return 1;
+            if (b.dist > a.dist) return -1;
+
+            return 0;
+        }
+        possiblePos.sort(compare)
+
+
+
+        //alert(possiblePos[0])
+        const element = document.getElementById(this.idTile + ' resizable');
+        if (possiblePos.length > 0) {
+
+
+            if (element != null) {
+                element.style.top = possiblePos[0].y + 'px';
+                element.style.left = possiblePos[0].x + 'px';
+            }
+
+            this.x = possiblePos[0].x
+            this.y = possiblePos[0].y
+        }
+        else {
+            this.x = oldx
+            this.y = oldy
+            if (element != null) {
+                element.style.top = oldy + 'px';
+                element.style.left = oldx + 'px';
+            }
+
+        }
+
+    }
+
     findAvailablePos(list) {
         var elem = document.getElementById('info');
         var BB = elem.getBoundingClientRect();
@@ -804,9 +937,34 @@ class TipeeTile {
         return true;
     }
 
+    move(x, y) {
+        var allEmements = this.scene.tiles;
+
+        this.x = x
+        this.y = y
+
+        const element = document.getElementById(this.idTile + ' resizable');
+        element.style.top = this.y + 'px'
+        element.style.left = this.x + 'px'
+
+        if (allEmements.length > 1) {
+            for (var j = 0; j < allEmements.length; j++) {
+                var r2 = allEmements[j];
+
+                if (!r2.isDragging && r2 != this) {
+                    if (this.testCollision(r2)) {
+                        this.resolveCollision(r2);
+                        r2.move(r2.x, r2.y)
+                    }
+                }
+            }
+        }
+    }
     // push the calling rectangle out of the callee rectangle on the
     // axis that has the most overlap
     resolveCollision(tile) {
+        var elem = document.getElementById('info');
+        var BB = elem.getBoundingClientRect();
         var vector_x, vector_y;
         // get the distance between center points
         vector_x = this.centerX() - tile.centerX();
@@ -816,20 +974,37 @@ class TipeeTile {
         if (vector_y * vector_y > vector_x * vector_x) { // square to remove negatives
             // is the y vector pointing down?
             if (vector_y > 0) {
-                this.y = tile.y + tile.height;
+                if (tile.y - 50 >= 50)
+                    tile.y = tile.y - 50;
+                else
+                    this.y = tile.bottom();
             } else { // the y vector is pointing up
-                this.y = tile.y - this.height;
-                if (tile.y - this.height <= 0)
-                    this.y = 0;
+
+                if (tile.y + 50 + tile.height <= BB.top)
+                    tile.y = tile.y + 50;
                 else
                     this.y = tile.y - this.height;
+                //else
+                //  this.y = tile.y - this.height;
             }
         } else { // the x vector is longer than the y vector
             // is the x vector pointing right?
             if (vector_x > 0) {
-                this.x = tile.right();
+                if (tile.x - 50 >= 0) {
+                    tile.x = tile.x - 50;
+                    this.x -= 50;
+                }
+
+                else
+                    this.x = tile.x + tile.width
             } else { // the x vector is pointing left
-                this.x = tile.x - this.width;
+
+                if (tile.x + tile.width + 50 <= BB.width) {
+                    tile.x = tile.x + 50;
+                    this.x += 50
+                }
+                else
+                    this.x = tile.x - this.width
             }
         }
     }
@@ -898,6 +1073,7 @@ class TipeeTile {
 
                         elmnt.style.top = that.y + 'px';
                         elmnt.style.left = that.x + 'px';
+                        that.move(that.x, that.y)
                         elmnt.style.opacity = '80%';
                         elmnt.style.zIndex = 9;
 
@@ -914,10 +1090,18 @@ class TipeeTile {
 
                             if (!r2.isDragging && r2 != that) {
                                 if (that.testCollision(r2)) {
-                                    that.resolveCollision(r2);
-                                    r2.findAvailablePos(that.scene.tiles)
+                                    //that.resolveCollision(r2);
+                                    var list = [];
+
+                                    const r2elem = document.getElementById(r2.idTile + " resizable")
+                                    r2elem.style.top = r2.y + 'px'
+                                    r2elem.style.left = r2.x + 'px'
+
                                     elmnt.style.top = that.y + 'px';
                                     elmnt.style.left = that.x + 'px';
+
+                                    r2.move(r2.x, r2.y)
+                                    that.move(that.x, that.y)
                                 }
                             }
                         }
@@ -933,7 +1117,7 @@ class TipeeTile {
             that.y = Math.round(that.y / that.scene.gridY) * that.scene.gridY
             that.x = Math.round(that.x / that.scene.gridX) * that.scene.gridX
 
-            if (allEmements.length > 1) {
+            /*if (allEmements.length > 1) {
                 for (var j = 0; j < allEmements.length; j++) {
                     var r2 = allEmements[j];
 
@@ -945,7 +1129,7 @@ class TipeeTile {
                         }
                     }
                 }
-            }
+            }*/
             const elementShadow = document.getElementById('shadow');
             elementShadow.style.display = "none"
             elmnt.style.opacity = '100%';
@@ -1122,7 +1306,9 @@ class TipeeTile {
 
                     elementShadow.style.display = "none"
                     element.style.opacity = '100%';
-                }
+
+                    that.resize();
+                                }
             }
         }
     }
@@ -1250,6 +1436,214 @@ class TipeeTile {
             this.classList.remove('shown');
         });
         this.dragElement(newdiv);
+    }
+}
+class TipeeTileNote extends TipeeTile {
+    constructor(scene, x, y, width, height, isLocked, headerColor, headerFontColor, headerFont,
+        headerFontSize, borderColor, borderSize, contentBackgroundColor, title, textColor, textFont, textFontSize, text) {
+        super(scene, x, y, width, height, isLocked, headerColor, headerFontColor, headerFont,
+            headerFontSize, borderColor, borderSize, contentBackgroundColor, title);
+        this.scene.tiles.push(this);
+
+        this.textColor = textColor;
+        this.textFont = textFont;
+        this.textFontSize = textFontSize;
+        this.text = text;
+        this.type = 'note';
+    }
+
+    draw() {
+        var that = this;
+        this.drawBase();
+
+        var elem = document.getElementById(that.idTile + ' content');
+        elem.innerHTML = `<textarea id='` + that.idTile + `textArea' class='contentTxt` + that.idTile + `'  style:'color: #` + that.textColor + `;'  id='` + that.idTile + `-txt'>`;
+        elem.style.cssText = "color: #" + that.textColor + " !important; font-family: '" + that.textFont + "' !important; font-size: " + that.textFontSize + "px !important;";
+
+
+
+        var txt = document.getElementById(that.idTile + 'textArea');
+        txt.addEventListener("focusout", function () {
+            that.text = txt.value;
+        })
+    }
+
+    resize() {
+        var header = document.getElementById(this.idTile + 'header');
+        var tile = document.getElementById(this.idTile + ' resizable');
+
+        var txt = document.getElementById(this.idTile + 'textArea');
+        txt.style.height = tile.style.height - header.style.height + 'px';
+    }
+
+
+    toJSON() {
+        var valueDict = this.toJSONBase();
+        valueDict['textColor'] = this.textColor;
+        valueDict['textFont'] = this.textFont;
+        valueDict['textFontSize'] = this.textFontSize;
+        valueDict['text'] = this.text;
+        return valueDict;
+    }
+
+}
+
+class TipeeTileTodo extends TipeeTile {
+    constructor(scene, x, y, width, height, isLocked, headerColor, headerFontColor, headerFont,
+        headerFontSize, borderColor, borderSize, contentBackgroundColor, title, textColor, textFont, textFontSize, todo, done) {
+        super(scene, x, y, width, height, isLocked, headerColor, headerFontColor, headerFont,
+            headerFontSize, borderColor, borderSize, contentBackgroundColor, title);
+        this.scene.tiles.push(this);
+
+        this.textColor = textColor;
+        this.textFont = textFont;
+        this.textFontSize = textFontSize;
+        this.todo = todo;
+        this.done = done;
+        this.type = 'note';
+    }
+
+    draw() {
+        var that = this;
+        this.drawBase();
+
+        var todos = that.todo;
+        var elem = document.getElementById(that.idTile + ' content');
+        elem.style.position = "absolute"
+        elem.style.top = document.getElementById(that.idTile +'header').offsetHeight + 'px'
+        elem.style.overflow = 'auto';
+        elem.style.width = 'inherit'
+        elem.style.height = that.height - document.getElementById(that.idTile +'header').offsetHeight + 'px'
+        elem.innerHTML += "<ul id='todolist" + that.idTile + "'></ul>"
+        
+
+        if (todos != "") {
+            todos = that.todo.split(";")
+            elem.innerHTML += '<div><input type="text" id="' + that.idTile + "new" + '" value="Cats">'
+            //var todos = this.todo.split(";")
+            
+
+            var list = document.getElementById("todolist" + that.idTile);
+
+            for (var i = 0; i < todos.length; i++) {
+                var nelem = document.createElement("li");
+                nelem.id = that.idTile + i;
+                nelem.appendChild(document.createTextNode(todos[i]));
+                var belem = document.createElement('button');
+                belem.id= that.idTile + "todo" + i;
+                belem.innerText = "Del";
+                (function(index){
+                    belem.addEventListener('click', function(){
+                        console.log(index)
+        var toRemove = index;
+        todos.splice(toRemove, 1);
+        console.log(todos)
+
+        var todosNew = ""
+    for(var i = 0; i < todos.length; i++){
+        if(todos[i] != "")
+        todosNew += todos[i] + ";"
+    }
+       
+    that.todo = todosNew;
+
+        var id = that.idTile.concat("",toRemove);
+        console.log(id)
+        var elem = document.getElementById(id);
+        console.log(elem)
+        elem.parentNode.removeChild(elem);
+
+        that.redraw()
+                    })
+                })(i)
+                nelem.appendChild(belem);
+                list.appendChild(nelem);
+            }
+
+            
+
+             /*for(var j = 0; j<todos.length; j++){
+                 var bt = document.getElementById(that.idTile + "todo" + j);
+                 bt.addEventListener('click', function (e) {
+                     console.log(bt)
+                     var toRemove = bt.getAttribute("id");
+                     toRemove = toRemove.split(that.idTile+"todo");
+                     console.log(toRemove[1])
+                     todos.splice(toRemove[1], 1);
+                     console.log(todos)
+
+                     var todosNew = ""
+                 for(var i = 0; i < todos.length; i++){
+                     if(todos[i] != "")
+                     todosNew += todos[i] + ";"
+                 }
+                    
+                 that.todo = todosNew;
+
+                     var id = that.idTile.concat("",toRemove[1]);
+                     console.log(id)
+                     var elem = document.getElementById(id);
+                     console.log(elem)
+                     elem.parentNode.removeChild(elem);
+
+                     that.redraw()
+                 });
+             }*/
+        }
+        else {
+            todos = []
+            elem.innerHTML += '<div><input type="text" id="' + that.idTile + "new" + '" value="Cats">'
+
+        }
+
+
+        var addButton = document.getElementById(this.idTile + "new");
+        addButton.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                todos.push(document.getElementById(that.idTile + "new").value);
+                var todosNew = ""
+                for (var i = 0; i < todos.length; i++) {
+                    if (todos[i] != "")
+                        todosNew += todos[i] + ";"
+                }
+
+                that.todo = todosNew;
+                that.redraw();
+            }
+        });
+
+        function test(i) {
+            alert(i)
+        }
+
+        
+    }
+
+     removeItem (index) {
+        
+    }
+
+    resize() {
+        var header = document.getElementById(this.idTile + 'header');
+        var tile = document.getElementById(this.idTile + ' resizable');
+
+        var txt = document.getElementById(this.idTile + 'textArea');
+        txt.style.height = tile.style.height - header.style.height + 'px';
+    }
+
+
+    toJSON() {
+        var valueDict = this.toJSONBase();
+        valueDict['textColor'] = this.textColor;
+        valueDict['textFont'] = this.textFont;
+        valueDict['textFontSize'] = this.textFontSize;
+        valueDict['text'] = this.text;
+        return valueDict;
+    }
+
+    redraw() {
+        this.scene.removeElement(this.idTile + ' resizable');
+        this.draw();
     }
 }
 
