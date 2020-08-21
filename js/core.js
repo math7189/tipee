@@ -1956,6 +1956,8 @@ function loadJSON(json) {
                 t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
                 t.borderSize, t.contentBackgroundColor, t.title, t.nbToggles, t.togglesProperties);
         });
+        if(select.options.length > 2)
+        document.getElementById('sceneSelect').options[0].style.display = 'none'
     });
 
     myApp.activeScene = activeSceneFromFile;
