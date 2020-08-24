@@ -78,6 +78,7 @@ function createSigninSignupForm() {
 }
 
 function updateSigninSignupForm(action) {
+   
    if (action == "signin") {
       document.getElementById("passwordTd").colSpan = "2";
       document.getElementById("btvalLogTd").colSpan = "2";
@@ -93,7 +94,7 @@ function updateSigninSignupForm(action) {
    }
    else {
       document.getElementById("passwordTd").colSpan = "1";
-      document.getElementById("btvalLogTd").colSpan = "1";
+      document.getElementById("btvalLogTd").colSpan = "2";
       document.getElementById("signTd").colSpan = "2";
       document.getElementById("repassword").style.display = "block";
       document.getElementById("lastname").style.display = "block";
@@ -102,7 +103,7 @@ function updateSigninSignupForm(action) {
       document.getElementById("signin").style.display = "block";
       document.getElementById("signup").style.display = "none";
       document.getElementById("forgot").style.display = "none";
-      document.getElementById("btCancelLog").style.display = "block";
+      document.getElementById("btCancelLog").style.display = "none";
    }
 }
 
@@ -136,6 +137,7 @@ function createSceneForm() {
 }
 
 function openTileForm(tpTile) {
+   
    document.getElementById("tileFormDiv").style.display = "flex";
    document.getElementById("error_wrapper").classList.add("error_wrapper");
    document.getElementById('tileForm_errorloc').style.display = "none";
@@ -224,17 +226,28 @@ function createTileForm() {
    var tileFormDiv = document.getElementById("tileFormDiv");
    tileFormDiv.innerHTML = `<p class="formTitle">New tile</p>
    <ul id="tab_ul" class="tabs">
-   <li class="selected"><a rel="tab_div1" href="#" onclick="javascript:showActiveTab(this);">Générals</a></li>
+   <li class="selected"><a rel="tab_div1" href="#" onclick="javascript:showActiveTab(this);">Generals</a></li>
+   <li class=""><a rel="tab_div3" href="#" onclick="javascript:showActiveTab(this);">Settings</a></li>
    <li class=""><a rel="tab_div2" href="#" onclick="javascript:showActiveTab(this);">Style</a></li>
-   <li class=""><a rel="tab_div3" href="#" onclick="javascript:showActiveTab(this);">Avancés</a></li>
    <li class=""><a rel="tab_div4" href="#" onclick="javascript:showActiveTab(this);">Tab 4</a></li>
 </ul>
 <div class="tabcontents">
    <form id='tileForm' action="javascript:void(0);" class="form-container">
       <div class="tabcontent" id="tab_div1" style="display: block;">
          <table>
-            <tr>
+         <tr>
                <td colspan="2">
+                  <input type="text" placeholder="Enter Title" id = "idTile" name="idTile" style="display:none">
+                  <label for="title"><b>Title</b></label>
+                  <input type="text" placeholder="Enter Title" id = "title" name="title">
+               </td>
+               <td>&nbsp;</td>
+            </tr>
+            <tr>
+               <td colspan="2" style="
+               margin-top: 5px;
+               padding-top: 5px;
+           ">
                   <label id="typeLabel" for="type"><b>Type</b></label>
                   <select id="type" name="type" onchange="updateTileForm()">
                      <option value="text">Texte</option>
@@ -246,15 +259,104 @@ function createTileForm() {
                </td>
                <td>&nbsp;</td>
             </tr>
+            
             <tr>
-               <td colspan="2">
-                  <input type="text" placeholder="Enter Title" id = "idTile" name="idTile" style="display:none">
-                  <label for="title"><b>Title</b></label>
-                  <input type="text" placeholder="Enter Title" id = "title" name="title">
-               </td>
-               <td>&nbsp;</td>
+            <td colspan="2">
+            <label>
+  <input type="radio" name="test" value="text" checked onclick="updateType(this)">
+  <img src='tempsnip.png'>
+</label>
+
+<label>
+  <input type="radio" name="test" value="image" onclick="updateType(this)">
+  <img src='tempsnip.png'>
+</label>
+<label>
+  <input type="radio" name="test" value="3" checked>
+  <img src='tempsnip.png'>
+</label>
+
+<label>
+  <input type="radio" name="test" value="4">
+  <img src='tempsnip.png'>
+</label>
+<label>
+  <input type="radio" name="test" value="5" checked>
+  <img src='tempsnip.png'>
+</label>
+
+<label>
+  <input type="radio" name="test" value="6">
+  <img src='tempsnip.png'>
+</label>
+            </td>
+            <td>&nbsp;</td>
+            </tr>
+            
+            
+            </table>
+            
+         </table>
+      </div>
+      <div class="tabcontent" id="tab_div2" style="display: none;">
+         <table>
+            <tr>
+               <td>Header</td>
             </tr>
             <tr>
+               <td><label for="headerFont"><b>Font</b></label>
+                  <select id = 'headerFont' onChange = "return applyFontInput('headerFont');" name="headerFont">
+               </td>
+               <td><label for="headerFontSize"><b>Font size</b></label>
+                  <select id = 'headerFontSize' name="headerFontSize" value="20">
+               </td>
+               <td><label for="color"><b>Font Color</b></label>
+                  <input readonly type="text" placeholder="Pick a color" name="headerFontColor" id ="headerFontColor" 
+                     class="jscolor" value="FFFFFF">
+               </td>
+            </tr>
+            <tr>
+               <td><label for="color"><b>Background Color</b></label>
+                  <input readonly type="text" placeholder="Pick a color" name="headerColor" id ="headerColor" 
+                     class="jscolor" value='2196F3'>
+               </td>
+            </tr>
+            <tr>
+               <td>Tile</td>
+            </tr>
+            <tr>
+               <td><label for="color"><b>Background Color</b></label>
+                  <input readonly type="text" placeholder="Enter color" name="contentcolor" id ="contentBackgroundColor" 
+                     class="jscolor" value="FFFFFF">
+               </td>
+            </tr>
+            <tr>
+               <td><label for="borderSize"><b>Border size</b></label>
+                  <select id = 'borderSize' name="borderSize" value="3">
+               </td>
+               <td><label for="color"><b>Border Color</b></label>
+                  <input readonly type="text" placeholder="Enter color" name="borderColor" id ="borderColor" class="jscolor" value="2196F3">
+               </td>
+            </tr>
+            <tr>
+               <td id="textStyleLabel">Text</td>
+            </tr>
+            <tr>
+               <td><label id="textFontLabel" for="textFont"><b>Font</b></label>
+                  <select id = 'textFont' onChange = "return applyFontInput('textFont');" name="textFont">
+               </td>
+               <td><label id="textFontSizeLabel" for="textFontSize"><b>Font size</b></label>
+                  <select id = 'textFontSize' name="textFontSize" value="20">
+               </td>
+               <td><label id="textColorLabel" for="textColor"><b>Font Color</b></label>
+                  <input readonly type="text" placeholder="Pick a color" name="textColor" id ="textColor" class="jscolor" value="FFFFFF">
+               </td>
+            </tr>
+         </table>
+      </div>
+      <div class="tabcontent" id="tab_div3" style="display: none;">
+         <table>
+         <tr>
                <td colspan="3">
                   <label id="reqLabel" for="requestUrl"><b>Request URL</b></label>
                   <input type="text" placeholder="Enter URL" id = "requestUrl" name="requestUrl">
@@ -405,72 +507,11 @@ function createTileForm() {
             <td>
             <input type="text" placeholder="URL image" name="togglesName9" id="togglesURL9" > </td> 
             </tr>
-            </table>
-            
-         </table>
-      </div>
-      <div class="tabcontent" id="tab_div2" style="display: none;">
-         <table>
-            <tr>
-               <td>Header</td>
-            </tr>
-            <tr>
-               <td><label for="headerFont"><b>Font</b></label>
-                  <select id = 'headerFont' onChange = "return applyFontInput('headerFont');" name="headerFont">
-               </td>
-               <td><label for="headerFontSize"><b>Font size</b></label>
-                  <select id = 'headerFontSize' name="headerFontSize" value="20">
-               </td>
-               <td><label for="color"><b>Font Color</b></label>
-                  <input readonly type="text" placeholder="Pick a color" name="headerFontColor" id ="headerFontColor" 
-                     class="jscolor" value="FFFFFF">
-               </td>
-            </tr>
-            <tr>
-               <td><label for="color"><b>Background Color</b></label>
-                  <input readonly type="text" placeholder="Pick a color" name="headerColor" id ="headerColor" 
-                     class="jscolor" value='2196F3'>
-               </td>
-            </tr>
-            <tr>
-               <td>Tile</td>
-            </tr>
-            <tr>
-               <td><label for="color"><b>Background Color</b></label>
-                  <input readonly type="text" placeholder="Enter color" name="contentcolor" id ="contentBackgroundColor" 
-                     class="jscolor" value="FFFFFF">
-               </td>
-            </tr>
-            <tr>
-               <td><label for="borderSize"><b>Border size</b></label>
-                  <select id = 'borderSize' name="borderSize" value="3">
-               </td>
-               <td><label for="color"><b>Border Color</b></label>
-                  <input readonly type="text" placeholder="Enter color" name="borderColor" id ="borderColor" class="jscolor" value="2196F3">
-               </td>
-            </tr>
-            <tr>
-               <td id="textStyleLabel">Text</td>
-            </tr>
-            <tr>
-               <td><label id="textFontLabel" for="textFont"><b>Font</b></label>
-                  <select id = 'textFont' onChange = "return applyFontInput('textFont');" name="textFont">
-               </td>
-               <td><label id="textFontSizeLabel" for="textFontSize"><b>Font size</b></label>
-                  <select id = 'textFontSize' name="textFontSize" value="20">
-               </td>
-               <td><label id="textColorLabel" for="textColor"><b>Font Color</b></label>
-                  <input readonly type="text" placeholder="Pick a color" name="textColor" id ="textColor" class="jscolor" value="FFFFFF">
-               </td>
-            </tr>
-         </table>
-      </div>
-      <div class="tabcontent" id="tab_div3" style="display: none;">
-         <table>
          </table>
       </div>
       <div class="tabcontent" id="tab_div4" style="display: none;">
          <table>
+         
             <tr>
                <td><label for="width"><b>Width (px)</b></label>
                   <input type="text" placeholder="Enter width" id = "width" name="width" value="250">
@@ -500,6 +541,13 @@ function createTileForm() {
       </table>
    </form>
 </div>`;
+
+}
+
+function updateType(elm){
+   console.log(elm)
+   document.getElementById("type").value = elm.value;
+   document.getElementById("type").onchange();
 }
 
 function createTileFormInputs() {
@@ -610,12 +658,16 @@ function updateTileForm() {
    if (idTile.value != '') {
       deletebtn.style.display = "block";
       type.style.display = "none";
-      typeLabel.style.display = "none";
+      typeLabel.style.display = "block";
+for(var i = 0; i < document.getElementsByName("test").length; i++)
+      document.getElementsByName("test")[i].disabled = true;
    }
    else {
-      type.style.display = "block";
+      type.style.display = "none";
       typeLabel.style.display = "block";
       deletebtn.style.display = "none";
+      for(var i = 0; i < document.getElementsByName("test").length; i++)
+      document.getElementsByName("test")[i].disabled = false;
    }
 
    if (type.value == "text") {
@@ -693,7 +745,5 @@ function updateTileForm() {
          elem.style.display = "block";
       }
    }
-
-   myApp.formTileValidator.clearAllValidations();
    myApp.createTileFormValidator();
 }

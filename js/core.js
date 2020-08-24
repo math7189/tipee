@@ -6,6 +6,7 @@ class TipeeApp {
         this.formNewSCeneValidator;
         this.formLoginValidator;
         this.login;
+        this.mode = "dev"
 
         this.init();
     }
@@ -23,17 +24,15 @@ class TipeeApp {
         openSigninSignupForm();
         updateSigninSignupForm('signin');
 
-        this.formLoginValidator = new ValidationForm('signinSignupForm');
-        this.createSigninSignupFormValidator();
         this.formTileValidator = new ValidationForm('tileForm');
         this.createTileFormValidator();
         this.formNewSCeneValidator = new ValidationForm('sceneForm');
         this.createSceneFormValidator();
 
         if (sessionStorage.length > 0) {
-            var obj = JSON.parse(sessionStorage.user);
-            if (obj != null) {
-                that.login = obj;
+            var sessionLogin = JSON.parse(sessionStorage.user);
+            if (sessionLogin != null) {
+                that.login = sessionLogin;
             }
 
             var getUserDashboardCallback = function (returned_data) {
@@ -44,8 +43,11 @@ class TipeeApp {
                     myApp.changeScene()
                 }
             };
+
             closeSigninSignupForm();
-            requestGET('/nodejs/dashboard/' + that.login, 'JSON', 'data', '', getUserDashboardCallback)
+
+            if (that.mode != "dev")
+                requestGET('/nodejs/dashboard/' + that.login, 'JSON', 'data', '', getUserDashboardCallback)
             document.getElementById('splashScreen').classList.add('splashScreenTranslate');
         }
 
@@ -54,6 +56,13 @@ class TipeeApp {
             var errors = document.getElementById('signinSignupForm_errorUL');
             errors.innerHTML = "";
 
+            var action;
+            if (document.getElementById('signin').style.display == 'none')
+                action = "signin"
+            else
+                action = "signup"
+            that.createSigninSignupFormValidator(action)
+
             that.formLoginValidator.checkFields();
             if (errors.children.length == 0) {
                 document.getElementById('signinSignupForm_errorloc').style.display = "none";
@@ -61,9 +70,8 @@ class TipeeApp {
                     var login = document.getElementById('login').value;
                     var password = document.getElementById('password').value;
                     that.login = login;
-                    //do login
-                    var loginCallback = function (returned_data) {
 
+                    var loginCallback = function (returned_data) {
                         if (returned_data == 1) {
                             sessionStorage.setItem('user', JSON.stringify(login));
                             var getUserDashboardCallback = function (returned_data) {
@@ -75,7 +83,8 @@ class TipeeApp {
                                 }
                             };
                             document.getElementById('signinSignupForm_errorloc').style.display = "none";
-                            requestGET('/nodejs/dashboard/' + login, 'JSON', 'data', '', getUserDashboardCallback)
+                            if (that.mode != "dev")
+                                requestGET('/nodejs/dashboard/' + login, 'JSON', 'data', '', getUserDashboardCallback);
                             document.getElementById('splashScreen').classList.add('splashScreenTranslate');
                         }
                         else if (returned_data == 2) {
@@ -91,8 +100,10 @@ class TipeeApp {
                             errors.appendChild(li);
                         }
                     };
-
-                    requestLogin('/nodejs/user/' + login, password, loginCallback);
+                    if (that.mode != "dev")
+                        requestLogin('/nodejs/user/' + login, password, loginCallback);
+                    else
+                        loginCallback(1)
                 }
                 else {
                     var login = document.getElementById('login').value;
@@ -110,8 +121,6 @@ class TipeeApp {
                         formData['firstname'] = firstname;
                         formData['lastname'] = lastname;
 
-                        var json = JSON.stringify(formData);
-
                         var createUserCallback = function (return_value) {
                             if (return_value == 1) {
                                 var getUserDashboardCallback = function (returned_data) {
@@ -119,13 +128,13 @@ class TipeeApp {
                                     if (returned_data != '207')
                                         loadJSON(JSON.parse(returned_data));
                                     if (myApp.activeScene == null) {
-
                                         openSceneForm();
                                         myApp.changeScene();
                                     }
                                 };
 
-                                requestGET('/nodejs/dashboard/' + login, 'JSON', 'data', '', getUserDashboardCallback);
+                                if (that.mode != "dev")
+                                    requestGET('/nodejs/dashboard/' + login, 'JSON', 'data', '', getUserDashboardCallback);
                                 document.getElementById('splashScreen').classList.add('splashScreenTranslate');
                             }
                             else if (return_value == 2) {
@@ -142,8 +151,8 @@ class TipeeApp {
                                 errors.appendChild(li);
                             }
                         }
-
-                        requestCreateUser('/nodejs/users/', formData, createUserCallback);
+                        if (that.mode != "dev")
+                            requestCreateUser('/nodejs/users/', formData, createUserCallback);
                     }
                     else {
                         document.getElementById('signinSignupForm_errorloc').style.display = "block";
@@ -152,6 +161,9 @@ class TipeeApp {
                         errors.appendChild(li);
                     }
                 }
+            }
+            else {
+                document.getElementById('signinSignupForm_errorloc').style.display = "block";
             }
         }, false);
 
@@ -184,8 +196,8 @@ class TipeeApp {
                     var li = document.createElement("li");
                     li.appendChild(document.createTextNode("Scene already exists"));
                     errors.appendChild(li);
-                } else
-
+                }
+                else
                     document.getElementById('sceneForm_errorloc').style.display = "none";
             }
             else {
@@ -203,9 +215,11 @@ class TipeeApp {
 
     loadSession() {
         if (sessionStorage.length > 0) {
-            var obj = JSON.parse(sessionStorage.scenes);
-            if (obj != null) {
-                loadJSON(obj);
+            if (sessionStorage.scenes != null) {
+                var sessionScenes = JSON.parse(sessionStorage.scenes);
+                if (sessionScenes != null) {
+                    loadJSON(sessionScenes);
+                }
             }
         }
     }
@@ -369,6 +383,23 @@ class TipeeApp {
                     false, headerColor, headerFontColor, headerFont, headerFontSize,
                     borderColor, borderSize, contentBackgroundColor, title, nb,
                     src, imgSlideInterval, imgRefresh);
+                    var test = newTile.findAvailablePos(this.activeScene.tiles);
+                    var tour = 0
+                    while (!test) {
+                        if (tour == this.activeScene.tiles.length - 1)
+                            tour = 0
+                        this.activeScene.tiles[tour].autoResize()
+                        var list = [];
+                        for (i = 0; i < this.activeScene.tiles.length; i++) {
+                            if (this.activeScene.tiles[i] != this) {
+                                list.push(this.activeScene.tiles[i])
+                                this.activeScene.tiles[i].findAvailablePos(list)
+                            }
+                        }
+                        tour += 1
+                        test = newTile.findAvailablePos(this.activeScene.tiles)
+                    }
+                
                 newTile.draw();
                 newTile.refreshEvery();
             }
@@ -408,6 +439,18 @@ class TipeeApp {
         }
 
         closeTileForm();
+    }
+
+    demo() {
+        var demoscene = new TipeeScene()
+        demoscene.sceneName = "demo"
+        demoscene.sceneId = "demo"
+        demoscene.scene = document.getElementById('demo');
+        var texTile = new TipeeTileText(demoscene, 0, 0, 150, 150, true, "FFFFF", "black", "", "13", "blue", "2", "white", "Texte", "", "", "", "", "", "", "", "", "", "", "");
+        texTile.draw()
+
+        var imgTile = new TipeeTileImage(demoscene, 160, 0, 150, 150, true, "", "", "", "", "", "", "", "Image", 1, "", 0, 0);
+        imgTile.draw()
     }
 
     //TO DO
@@ -452,17 +495,20 @@ class TipeeApp {
         var performSomeActionInit = function (returned_data) {
             console.log(returned_data);
             if (returned_data == '207') {
-                requestCreateDashboard('/nodejs/dashboards?userId=' + that.login, json, function () { console.log('create success') })
+                if (that.mode != "dev")
+                    requestCreateDashboard('/nodejs/dashboards?userId=' + that.login, json, function () { console.log('create success') })
             }
             else {
                 var saveDoneCallback = function (returned) {
                     console.log(returned);
                 }
-                requestUpdateDashboard('/nodejs/dashboard/' + that.login, json, saveDoneCallback)
+                if (that.mode != "dev")
+                    requestUpdateDashboard('/nodejs/dashboard/' + that.login, json, saveDoneCallback)
             }
         };
 
-        requestGET('/nodejs/dashboard/' + this.login, 'JSON', 'data', '', performSomeActionInit)
+        if (that.mode != "dev")
+            requestGET('/nodejs/dashboard/' + this.login, 'JSON', 'data', '', performSomeActionInit)
     }
 
     //TO DO
@@ -480,12 +526,34 @@ class TipeeApp {
         this.formNewSCeneValidator.addValidation('sceneName', 'maxlen=30', 'Max length for name is 30');
     }
 
-    createSigninSignupFormValidator() {
-        this.formLoginValidator.addValidation('login', 'req', 'Login is required');
-        this.formLoginValidator.addValidation('login', 'maxlen=50', 'Max length for login is 50');
+    createSigninSignupFormValidator(action) {
+        this.formLoginValidator = new ValidationForm('signinSignupForm');
+        if (action == "signin") {
+            this.formLoginValidator.addValidation('login', 'req', 'Login is required');
+            this.formLoginValidator.addValidation('login', 'maxlen=50', 'Max length for login is 50');
 
-        this.formLoginValidator.addValidation('password', 'req', 'Password is required');
-        this.formLoginValidator.addValidation('password', 'maxlen=50', 'Max length for password is 50');
+            this.formLoginValidator.addValidation('password', 'req', 'Password is required');
+            this.formLoginValidator.addValidation('password', 'maxlen=50', 'Max length for password is 50');
+        }
+        else {
+            this.formLoginValidator.addValidation('login', 'req', 'Login is required');
+            this.formLoginValidator.addValidation('login', 'maxlen=50', 'Max length for login is 50');
+
+            this.formLoginValidator.addValidation('password', 'req', 'Password is required');
+            this.formLoginValidator.addValidation('password', 'maxlen=50', 'Max length for password is 50');
+            this.formLoginValidator.addValidation('password', 'minlen=8', 'Min length for password is 8');
+
+            this.formLoginValidator.addValidation('email', 'req', 'Email is required');
+            this.formLoginValidator.addValidation('email', 'email', 'Email should be a valid email format');
+
+            this.formLoginValidator.addValidation('repassword', 'req', 'Retype Password is required');
+            this.formLoginValidator.addValidation('repassword', 'same=password', 'Passwords should be identicals');
+
+            this.formLoginValidator.addValidation('firstname', 'req', 'Firstname is required');
+            this.formLoginValidator.addValidation('lastname', 'req', 'Lastname is required');
+
+
+        }
     }
 
     createTileFormValidator() {
@@ -561,13 +629,13 @@ class TipeeApp {
             return true;
         }
     }
-    //
-    reloadActiveScene(){
+    
+    reloadActiveScene() {
         var scene = this.activeScene;
-        if(scene != null)
+        if (scene != null)
             setValueSectectInput("sceneSelect", scene.sceneName)
         else
-        setValueSectectInput("sceneSelect", "default")
+            setValueSectectInput("sceneSelect", "default")
     }
 
     changeScene() {
@@ -627,6 +695,7 @@ class TipeeApp {
 class TipeeScene {
     constructor() {
         this.scene = document.getElementById('scene');
+        this.sceneId = "scene"
         this.tiles = [];
         this.sceneName;
         this.isActive;
@@ -634,7 +703,8 @@ class TipeeScene {
         this.gridY = 50;
         this.idScene = Math.random().toString(36).substring(2, 15) +
             Math.random().toString(36).substring(2, 15);
-        myApp.scenes.push(this);
+        if (this.sceneName != "demo")
+            myApp.scenes.push(this);
     }
 
     addDiv(parentDiv, content, attrs) {
@@ -757,6 +827,7 @@ class TipeeTile {
 
         this.isDragging = false;
         this.isClicked = false;
+        this.isResizing = false;
 
         this.idTile = Math.random().toString(36).substring(2, 15) +
             Math.random().toString(36).substring(2, 15);
@@ -788,8 +859,6 @@ class TipeeTile {
 
         var oldx = this.x;
         var oldy = this.y;
-
-        var newx, newy;
 
         var elem = document.getElementById('info');
         var BB = elem.getBoundingClientRect();
@@ -877,9 +946,7 @@ class TipeeTile {
                 element.style.top = oldy + 'px';
                 element.style.left = oldx + 'px';
             }
-
         }
-
     }
 
     findAvailablePos(list) {
@@ -889,13 +956,11 @@ class TipeeTile {
         var i = Math.round(BB.width / this.scene.gridX)
         var j = Math.round(BB.top / this.scene.gridY)
 
-        console.log("i " + i + "j " + j)
-
         loop1:
-        for (var k = 0; k < j - 4; k++) {
+        for (var k = 0; k < j - 5; k++) {
             this.y = k * this.scene.gridY + 50
             loop2:
-            for (var l = 0; l < i - 4; l++) {
+            for (var l = 0; l < i - 5; l++) {
 
                 this.x = l * this.scene.gridX
                 var col = 0
@@ -904,24 +969,16 @@ class TipeeTile {
                     loop3:
                     for (var m = 0; m < elements.length; m++) {
                         if (this != elements[m]) {
-
                             if (this.testCollision(elements[m])) {
                                 col += 1
                                 if (k == j - 5 && l == i - 5) {
-
-                                    //resize
-
-                                    //findPos
                                     return false;
                                 }
                                 break loop3;
-
                             }
                         }
-
                     }
                     if (col == 0) {
-                        //break loop1
                         const element = document.getElementById(this.idTile + ' resizable');
                         if (element != null) {
                             element.style.top = this.y + 'px';
@@ -931,7 +988,6 @@ class TipeeTile {
                     }
                 }
                 else {
-                    //break loop1
                     const element = document.getElementById(this.idTile + ' resizable');
                     if (element != null) {
                         element.style.top = this.y + 'px';
@@ -939,7 +995,6 @@ class TipeeTile {
                     }
                     return true;
                 }
-                //break loop1;
             }
         }
     }
@@ -960,8 +1015,6 @@ class TipeeTile {
 
     // determines if a collision is present between two rectangles
     testCollision(tile) {
-
-
         // using early outs cuts back on performance costs
         if (this.top() >= tile.bottom() || this.right() <= tile.left() ||
             this.bottom() <= tile.top() || this.left() >= tile.right()) {
@@ -1017,8 +1070,6 @@ class TipeeTile {
                     tile.y = tile.y + 50;
                 else
                     this.y = tile.y - this.height;
-                //else
-                //  this.y = tile.y - this.height;
             }
         } else { // the x vector is longer than the y vector
             // is the x vector pointing right?
@@ -1027,7 +1078,6 @@ class TipeeTile {
                     tile.x = tile.x - 50;
                     this.x -= 50;
                 }
-
                 else
                     this.x = tile.x + tile.width
             } else { // the x vector is pointing left
@@ -1049,7 +1099,6 @@ class TipeeTile {
             pos3 = 0,
             pos4 = 0;
         var divbase = elmnt.id.split(' ')[0]
-        var allEmements = that.scene.tiles;
 
         if (document.getElementById(divbase + 'header')) {
             // if present, the header is where you move the DIV from:
@@ -1059,7 +1108,6 @@ class TipeeTile {
             // otherwise, move the DIV from anywhere inside the DIV:
             elmnt.onmousedown = dragMouseDown;
             elmnt.ontouchstart = dragMouseDown;
-
         }
 
         function dragMouseDown(e) {
@@ -1072,11 +1120,9 @@ class TipeeTile {
                 document.onmouseup = closeDragElement;
                 document.ontouchend = closeDragElement;
 
-
                 // call a function whenever the cursor moves:
                 document.onmousemove = elementDrag;
                 document.ontouchmove = elementDrag;
-
             }
         }
 
@@ -1114,7 +1160,7 @@ class TipeeTile {
 
                     elmnt.style.top = that.y + 'px';
                     elmnt.style.left = that.x + 'px';
-                    that.move(that.x, that.y)
+
                     elmnt.style.opacity = '80%';
                     elmnt.style.zIndex = 9;
 
@@ -1131,8 +1177,6 @@ class TipeeTile {
 
                             if (!r2.isDragging && r2 != that) {
                                 if (that.testCollision(r2)) {
-                                    //that.resolveCollision(r2);
-                                    var list = [];
 
                                     const r2elem = document.getElementById(r2.idTile + " resizable")
                                     r2elem.style.top = r2.y + 'px'
@@ -1158,19 +1202,6 @@ class TipeeTile {
             that.y = Math.round(that.y / that.scene.gridY) * that.scene.gridY
             that.x = Math.round(that.x / that.scene.gridX) * that.scene.gridX
 
-            /*if (allEmements.length > 1) {
-                for (var j = 0; j < allEmements.length; j++) {
-                    var r2 = allEmements[j];
-
-                    if (!r2.isDragging && r2 != that) {
-                        if (that.testCollision(r2)) {
-                            that.resolveCollision(r2);
-                            elmnt.style.top = that.y + 'px';
-                            elmnt.style.left = that.x + 'px';
-                        }
-                    }
-                }
-            }*/
             const elementShadow = document.getElementById('shadow');
             elementShadow.style.display = "none"
             elmnt.style.opacity = '100%';
@@ -1196,10 +1227,7 @@ class TipeeTile {
         let original_y = 0;
         let original_mouse_x = 0;
         let original_mouse_y = 0;
-        var top;
-        var left;
-
-
+        var top,left;
 
         for (let i = 0; i < resizers.length; i++) {
             const currentResizer = resizers[i];
@@ -1223,17 +1251,19 @@ class TipeeTile {
 
             function resize(e) {
                 if (!that.isDragging && !that.isLocked) {
+                    that.isResizing = true;
                     if (currentResizer.classList.contains('bottom-right')) {
                         const width = original_width + (e.pageX - original_mouse_x);
                         const height = original_height + (e.pageY - original_mouse_y)
                         if (width > minimum_size) {
                             element.style.width = width + 'px';
                             that.height = height;
-
+                   
                         }
                         if (height > minimum_size) {
                             element.style.height = height + 'px'
                             that.width = width;
+                          
                         }
                         top = that.y;
                         left = that.x;
@@ -1298,7 +1328,6 @@ class TipeeTile {
                             top = elementShadow.style.top
                             left = that.x
                         }
-
                     }
                     elementShadow.style.width = Math.round(element.clientWidth / that.scene.gridX) * that.scene.gridX + 'px';
                     elementShadow.style.height = Math.round(element.clientHeight / that.scene.gridX) * that.scene.gridX + 'px'
@@ -1310,9 +1339,8 @@ class TipeeTile {
             }
 
             function stopResize() {
+                console.log("stopresize")
                 if (!that.isDragging) {
-
-
                     element.style.width = Math.round(element.clientWidth / that.scene.gridX) * that.scene.gridX + 'px';
                     that.height = Math.round(element.clientHeight / that.scene.gridX) * that.scene.gridX;
 
@@ -1321,13 +1349,10 @@ class TipeeTile {
 
 
                     element.style.top = Math.round(element.offsetTop / that.scene.gridX) * that.scene.gridX + 'px';
-                    that.x = Math.round(element.offsetTop / that.scene.gridX) * that.scene.gridX + 'px';
+                    that.y = Math.round(element.offsetTop / that.scene.gridX) * that.scene.gridX;
 
                     element.style.left = Math.round(element.offsetLeft / that.scene.gridX) * that.scene.gridX + 'px';
-                    that.y = Math.round(element.offsetLeft / that.scene.gridX) * that.scene.gridX + 'px';
-
-                    window.removeEventListener('mousemove', resize)
-                    currentResizer.removeEventListener('mousedown', prepareResize)
+                    that.x = Math.round(element.offsetLeft / that.scene.gridX) * that.scene.gridX;
 
                     var bleft = document.getElementById(div + ' resizers bottom-left');
                     bleft.setAttribute('class', '');
@@ -1348,7 +1373,9 @@ class TipeeTile {
                     elementShadow.style.display = "none"
                     element.style.opacity = '100%';
 
-                    that.resize();
+                    window.removeEventListener('mousemove', resize)
+                    window.removeEventListener('mousemove', stopResize)
+                    currentResizer.removeEventListener('mousedown', prepareResize)
                 }
             }
         }
@@ -1391,7 +1418,7 @@ class TipeeTile {
             this.title + `</div>
         </div>`
 
-        this.scene.addDiv('scene', htmlContent, {
+        this.scene.addDiv(this.scene.sceneId, htmlContent, {
             'class': 'resizable',
             'id': this.idTile + ' resizable',
         });
@@ -1732,12 +1759,14 @@ class TipeeTileText extends TipeeTile {
         if (this.requestRefresh > 0) {
             request(that.requestUrl, that.reqType, that.responseType, that.responseField, that.operation, performSomeAction);
             that.intervalId = setInterval(function () {
-                request(that.requestUrl, that.reqType, that.responseType, that.responseField, that.operation,
-                    performSomeAction);
+                if (myApp.mode != "dev")
+                    request(that.requestUrl, that.reqType, that.responseType, that.responseField, that.operation,
+                        performSomeAction);
             }, 1000 * this.requestRefresh);
         }
         else {
-            request(that.requestUrl, that.reqType, that.responseType, that.responseField, that.operation, performSomeAction);
+            if (myApp.mode != "dev")
+                request(that.requestUrl, that.reqType, that.responseType, that.responseField, that.operation, performSomeAction);
         }
     }
 
@@ -1959,8 +1988,8 @@ function loadJSON(json) {
                 t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
                 t.borderSize, t.contentBackgroundColor, t.title, t.nbToggles, t.togglesProperties);
         });
-        if(select.options.length > 2)
-        document.getElementById('sceneSelect').options[0].style.display = 'none'
+        if (select.options.length > 2)
+            document.getElementById('sceneSelect').options[0].style.display = 'none'
     });
 
     myApp.activeScene = activeSceneFromFile;
