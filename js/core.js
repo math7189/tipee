@@ -6,7 +6,7 @@ class TipeeApp {
         this.formNewSCeneValidator;
         this.formLoginValidator;
         this.login;
-        this.mode = "dev"
+        this.mode = "prod"
 
         this.init();
     }
