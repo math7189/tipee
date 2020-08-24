@@ -64,6 +64,19 @@ class ValidationForm {
           else
              return this.message;
        }
+       else if(this.rule.startsWith("same")){
+        var sameAs = this.rule.split("=")[1];
+        if(value == document.getElementById(sameAs).value)
+           return null;
+        else
+           return this.message;
+     }
+       if (this.rule == 'email') {
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value))
+           return null;
+        else
+           return this.message;
+     }
        else if(this.rule.startsWith("minlen")){
           var minlength = this.rule.split("=")[1];
           if(value.length >= minlength)
