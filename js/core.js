@@ -1418,7 +1418,7 @@ class TipeeTile {
             this.title + `</div>
         </div>`
 
-        this.scene.addDiv(this.scene.sceneId, htmlContent, {
+        this.scene.addDiv("scene", htmlContent, {
             'class': 'resizable',
             'id': this.idTile + ' resizable',
         });
