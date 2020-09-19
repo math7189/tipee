@@ -43,9 +43,7 @@ class Form {
     }
 
     buildForm() {
-
         var json = this.fields;
-
         var initArray = [];
         var formDiv = document.getElementById(this.formId);
         formDiv.innerHTML = "";
@@ -551,7 +549,7 @@ function createUI() {
 }
 
 //requestPOST("http://172.21.1.10:8000/macros/turnOffLights");
-function requestPOST(urlRequest) {
+/*function requestPOST(urlRequest) {
     const Http = new XMLHttpRequest();
     Http.open("POST", urlRequest);
     Http.send();
@@ -570,7 +568,7 @@ function requestPOST(urlRequest) {
             // throw new Error(url + ' replied 404');
             console.log("404 Error");
     }
-}
+}*/
 
 function request(urlRequest, reqType, responseType, responseField, operation, callback) {
     const Http1 = new XMLHttpRequest();
@@ -628,7 +626,7 @@ function request(urlRequest, reqType, responseType, responseField, operation, ca
     }
 }
 
-function requestLogin(urlRequest, password, callback) {
+/*function requestLogin(urlRequest, password, callback) {
     const Http1 = new XMLHttpRequest();
     Http1.open("POST", urlRequest);
     Http1.setRequestHeader('Content-type', 'application/json; charset=utf-8');
@@ -650,7 +648,7 @@ function requestLogin(urlRequest, password, callback) {
             callback.apply(this, [requestResult]);
         }
     }
-}
+}*/
 
 function requestGET(urlRequest, responseType, responseField, operation, callback) {
     const Http1 = new XMLHttpRequest();
@@ -704,7 +702,7 @@ function requestGET(urlRequest, responseType, responseField, operation, callback
     }
 }
 
-function requestCreateDashboard(urlRequest, data, callback) {
+/*function requestCreateDashboard(urlRequest, data, callback) {
     const Http1 = new XMLHttpRequest();
     Http1.open("POST", urlRequest, true);
     Http1.setRequestHeader('Content-type', 'application/json; charset=utf-8');
@@ -757,6 +755,49 @@ function requestUpdateDashboard(urlRequest, data, callback) {
             requestResult = "Save done";
             callback.apply(this, [requestResult]);
         }
+    }
+}*/
+
+function myNewRequest(urlRequest, requestType, data, callback){
+    const Http1 = new XMLHttpRequest();
+    Http1.open(requestType, urlRequest, true);
+    Http1.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+    Http1.send(JSON.stringify(data));
+
+    var requestResult = '';
+
+    Http1.onreadystatechange = (e) => {
+        if (Http1.readyState === 4 && Http1.status === 200) {
+            requestResult = "Success";
+            callback.apply(this, [requestResult]);
+        }
+        else if (Http1.readyState === 4 && Http1.status === 210) {
+            requestResult = 2;
+            callback.apply(this, [requestResult]);
+        }
+        else if (Http1.readyState === 4 && Http1.status === 211) {
+            requestResult = 3;
+            callback.apply(this, [requestResult]);
+        }
+        else if (Http1.readyState === 4 && Http1.status === 204) {
+            requestResult = 2;
+            callback.apply(this, [requestResult]);
+        }
+        else if (Http1.readyState === 4 && Http1.status === 206) {
+            requestResult = 3;
+            callback.apply(this, [requestResult]);
+        }
+    }
+
+    Http1.onerror = function () {
+        console.log("** An error occurred during the transaction");
+        alert("I am an alert box!");
+    };
+
+    Http1.onloadend = function () {
+        if (Http1.status == 404)
+            // throw new Error(url + ' replied 404');
+            console.log("404 Error");
     }
 }
 

@@ -232,13 +232,12 @@ function updateType(elm){
    myApp.tileForm.validation = tile.form.validation
    tile.idTile = "demo"
    myApp.tileForm.buildForm();
-      tile.updateForm();
+   tile.updateForm();
 }
 
 function updateTileForm() {
    var idTile = document.getElementById("idTile");
    //var deletebtn = document.getElementById("deleteElem");
-   var type = document.getElementById("type");
    
    if (idTile.value != '') {
       //deletebtn.style.display = "block";
@@ -258,6 +257,4 @@ function updateTileForm() {
          for(var i = 0; i < document.getElementsByName("test").length; i++)
             document.getElementsByName("test")[i].disabled = false;
       }
-   
-  // myApp.createTileFormValidator();
 }
