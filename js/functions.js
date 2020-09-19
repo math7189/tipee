@@ -661,8 +661,8 @@ function myNewRequest(urlRequest, requestType, data, responseType, responseField
     Http1.open(requestType, urlRequest, true);
     Http1.setRequestHeader('Content-type', 'application/json; charset=utf-8');
 
-    if(requestType != "GET")
-        Http1.send(JSON.stringify(data));
+    if(requestType != "GET" && data != null)
+        Http1.send(data);
     else
         Http1.send();
 
