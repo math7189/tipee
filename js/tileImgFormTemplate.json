@@ -1,0 +1,184 @@
+tileImgFormTemplate = {
+    "formTabs": [
+        "Settings"
+    ],
+    "formFields": {
+        "Settings": [
+            [
+                {
+                    "name": "imgType",
+                    "label": "Type",
+                    "type": "select",
+                    "id": "imgType",
+                    "colspan": "1",
+                    "options": [
+                        {
+                            "value": "single",
+                            "name": "Single"
+                        },
+                        {
+                            "value": "slideshow",
+                            "name": "Slideshow"
+                        }
+                    ],
+                    "onchange": "updateTileForm()"
+                },
+                {
+                    "name": "imgNb",
+                    "label": "Images Number",
+                    "type": "select",
+                    "id": "imgNb",
+                    "colspan": "1",
+                    "init": "initSelectNumberInput,1,10,1",
+                    "onchange": "updateTileForm()"
+                }
+            ],
+            [
+                {
+                    "name": "imgSlideInterval",
+                    "label": "Interval",
+                    "type": "text",
+                    "description": "Interval en s",
+                    "id": "imgSlideInterval",
+                    "colspan": "1",
+                },
+                {
+                    "name": "imgRefresh",
+                    "label": "Refresh every",
+                    "type": "text",
+                    "description": "seconds",
+                    "id": "imgRefresh",
+                    "colspan": "1",
+                }
+            ],
+            [
+                {
+                    "type": "table",
+                    "id": "itemsTable",
+                    "fields": [
+                        [
+                            {
+                                "trid": "imgPropTr0"
+                            },
+                            {
+                                "name": "imgSrc0",
+                                "type": "text",
+                                "description": "Enter Name",
+                                "id": "imgSrc0",
+                                "colspan": "1"
+                            }
+                        ],
+                        [
+                            {
+                                "trid": "imgPropTr1"
+                            },
+                            {
+                                "name": "imgSrc1",
+                                "type": "text",
+                                "description": "Enter Name",
+                                "id": "imgSrc1",
+                                "colspan": "1"
+                            }
+                        ],
+                        [
+                            {
+                                "trid": "imgPropTr2"
+                            },
+                            {
+                                "name": "imgSrc2",
+                                "type": "text",
+                                "description": "Enter Name",
+                                "id": "imgSrc2",
+                                "colspan": "1"
+                            }
+                        ],
+                        [
+                            {
+                                "trid": "imgPropTr3"
+                            },
+                            {
+                                "name": "imgSrc3",
+                                "type": "text",
+                                "description": "Enter Name",
+                                "id": "imgSrc3",
+                                "colspan": "1"
+                            }
+                        ],
+                        [
+                            {
+                                "trid": "imgPropTr4"
+                            },
+                            {
+                                "name": "imgSrc4",
+                                "type": "text",
+                                "description": "Enter Name",
+                                "id": "imgSrc4",
+                                "colspan": "1"
+                            }
+                        ],
+                        [
+                            {
+                                "trid": "imgPropTr5"
+                            },
+                            {
+                                "name": "imgSrc5",
+                                "type": "text",
+                                "description": "Enter Name",
+                                "id": "imgSrc5",
+                                "colspan": "1"
+                            }
+                        ],
+                        [
+                            {
+                                "trid": "imgPropTr6"
+                            },
+                            {
+                                "name": "imgSrc6",
+                                "type": "text",
+                                "description": "Enter Name",
+                                "id": "imgSrc6",
+                                "colspan": "1"
+                            }
+                        ],
+                        [
+                            {
+                                "trid": "imgPropTr7"
+                            },
+                            {
+                                "name": "imgSrc7",
+                                "type": "text",
+                                "description": "Enter Name",
+                                "id": "imgSrc7",
+                                "colspan": "1"
+                            }
+                        ],
+                        [
+                            {
+                                "trid": "imgPropTr8"
+                            },
+                            {
+                                "name": "imgSrc8",
+                                "type": "text",
+                                "description": "Enter Name",
+                                "id": "imgSrc8",
+                                "colspan": "1"
+                            }
+                        ],
+                        [
+                            {
+                                "trid": "imgPropTr9"
+                            },
+                            {
+                                "name": "imgSrc9",
+                                "type": "text",
+                                "description": "Enter Name",
+                                "id": "imgSrc9",
+                                "colspan": "1"
+                            }
+                        ]
+                    ],
+                }
+            ]
+        ]
+    }
+}

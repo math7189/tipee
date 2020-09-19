@@ -1,0 +1,134 @@
+tileTextFormTemplate = {
+    "formTabs": [
+        "Settings",
+    ],
+    "formFields": {
+        "Settings": [
+            [
+                {
+                    "name": "requestUrl",
+                    "label": "Request URL",
+                    "type": "text",
+                    "description": "Enter URL",
+                    "id": "requestUrl",
+                    "colspan": "1"
+                }
+            ],
+            [
+                {
+                    "name": "responseType",
+                    "label": "Response Type",
+                    "type": "select",
+                    "options": [
+                        {
+                            "value": "XML",
+                            "name": "XML"
+                        },
+                        {
+                            "value": "JSON",
+                            "name": "JSON"
+                        }
+                    ],
+                    "id": "responseType",
+                    "colspan": "1",
+                    "onchange" : "updateTileForm()"
+                },
+                {
+                    "name": "responseField",
+                    "label": "Response field",
+                    "type": "text",
+                    "description": "Enter response field",
+                    "id": "responseField",
+                    "colspan": "1"
+                },
+                {
+                    "name": "responseFieldChild",
+                    "label": "Response field chield",
+                    "type": "text",
+                    "description": "Enter response field child",
+                    "id": "responseFieldChild",
+                    "colspan": "1"
+                },
+            ],
+            [
+                {
+                    "name": "requestRefresh",
+                    "label": "Request refresh",
+                    "type": "text",
+                    "description": "Enter request refresh",
+                    "id": "requestRefresh",
+                    "colspan": "1"
+                },
+                {
+                    "name": "reqType",
+                    "label": "Request type",
+                    "type": "text",
+                    "description": "Enter request type",
+                    "id": "reqType",
+                    "colspan": "1"
+                },
+            ],
+            [
+                {
+                    "name": "textBefore",
+                    "label": "Text before",
+                    "type": "text",
+                    "description": "Enter text",
+                    "id": "textBefore",
+                    "colspan": "1"
+                },
+                {
+                    "name": "textAfter",
+                    "label": "Text after",
+                    "type": "text",
+                    "description": "Enter text",
+                    "id": "textAfter",
+                    "colspan": "1"
+                },
+                {
+                    "name": "operation",
+                    "label": "Opeartion",
+                    "type": "text",
+                    "description": "Enter operation",
+                    "id": "operation",
+                    "colspan": "1"
+                }
+            ],
+        ],
+        "Style": [
+            [
+                {
+                    "ligne": "Text",
+                    "class": "headerTitle"
+                },
+                {
+                    "name": "textFont",
+                    "label": "Font",
+                    "type": "select",
+                    "id": "textFont",
+                    "colspan": "1",
+                    "onchange": "return applyFontInput('headerFont');",
+                    "init": "initSelectFontInput"
+                },
+                {
+                    "name": "textFontSize",
+                    "label": "Font Size",
+                    "type": "select",
+                    "id": "textFontSize",
+                    "colspan": "1",
+                    "init": "initSelectNumberInput,11,72,20"
+                },
+                {
+                    "name": "textColor",
+                    "label": "Font Color",
+                    "type": "color",
+                    "id": "textColor",
+                    "colspan": "1",
+                    "readonly": "readonly",
+                    "val": "FFFFFF",
+                    "init": "var myPicker = new JSColor"
+                }
+            ]
+        ]
+    }
+}
