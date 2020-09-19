@@ -716,6 +716,9 @@ function myNewRequest(urlRequest, requestType, data, responseType, responseField
         if (Http1.status == 404)
             // throw new Error(url + ' replied 404');
             console.log("404 Error");
+        else if (Http1.status == 403)
+            // throw new Error(url + ' replied 404');
+            console.log("403 Error");
     }
 
 }
