@@ -23,9 +23,6 @@ class TipeeApp {
         updateSigninSignupForm('signin');
 
         this.formTileValidator = new ValidationForm('tileForm');
-        //this.createTileFormValidator();
-        //this.formNewSCeneValidator = new ValidationForm('sceneForm');
-        //this.createSceneFormValidator();
 
         if (sessionStorage.length > 0) {
             var sessionLogin = JSON.parse(sessionStorage.user);
@@ -319,9 +316,6 @@ class TipeeApp {
 
         var blobUrl = (URL || webkitURL).createObjectURL(file);
         window.location = blobUrl;
-        sessionStorage.setItem('scenes', JSON.stringify(arrayApp));
-        var e = 'Sun May 10 2020 15:44:38'; 
-        document.cookie = 'scenes='+ JSON.stringify(arrayApp) +';expires=' + e;
 
         var performSomeActionInit = function (returned_data) {
             console.log(returned_data);
@@ -346,11 +340,6 @@ class TipeeApp {
     export() {
         this.save();
         
-    }
-
-    createSceneFormValidator() {
-        this.formNewSCeneValidator.addValidation('sceneName', 'req', 'Name is required');
-        this.formNewSCeneValidator.addValidation('sceneName', 'maxlen=30', 'Max length for name is 30');
     }
 
     createSigninSignupFormValidator(action) {
@@ -1420,6 +1409,7 @@ class TipeeTileNote extends TipeeTile {
         elem.style.cssText = "margin: 0px;  position: absolute; top: " + headerHeight+"px; left: 0px;"
         
         var txt = document.getElementById(that.idTile + 'textArea');
+        txt.value = that.text;
         txt.addEventListener("focusout", function () {
             that.text = txt.value;
         })
@@ -1433,12 +1423,9 @@ class TipeeTileNote extends TipeeTile {
     redraw() {
         this.scene.removeElement(this.idTile + ' resizable');
         this.draw();
-        var area = document.getElementById(this.idTile+ "textArea")
-        area.value = this.text;
     }
 
     resize() {
-        //this.redraw();
         super.resize();
         var width = this.width - (this.borderSize*2);
         var headerHeight = document.getElementById(this.idTile+'header').offsetHeight;
@@ -1515,8 +1502,6 @@ class TipeeTileTodo extends TipeeTile {
                 return (el != null && el != "");
               });
 
-            //elem.innerHTML += ''
-
             var list = document.getElementById("todolist" + that.idTile);
             list.style.listStyle = "none"
             list.style.padding = "5px"
@@ -1554,7 +1539,6 @@ class TipeeTileTodo extends TipeeTile {
                             }
     
                             that.todo = todosNew;
-                            console.log(that.todo)
                         })
                     })(i)
 
@@ -1592,14 +1576,12 @@ class TipeeTileTodo extends TipeeTile {
         }
         else {
             todos = []
-            //elem.innerHTML += '<div><input type="text" id="' + that.idTile + "new" + '">'
         }
 
         var addButton = document.getElementById(this.idTile + "new");
         addButton.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 that.todo += document.getElementById(that.idTile + "new").value +"|N" + ";"
-                console.log(that.todo)
                 that.redraw();
             }
         });
