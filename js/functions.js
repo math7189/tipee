@@ -133,7 +133,6 @@ class Form {
             var errors = document.getElementById(that.formId + '_errorUL');
             errors.innerHTML = "";
             that.validation.checkFields();
-            alert("submit")
 
             if (errors.children.length == 0) {
                 eval(f)
