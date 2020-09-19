@@ -173,8 +173,8 @@ class Form {
                     var params = init.split("initSelectNumberInput")[1].split(",");
                     initArray.push('initSelectNumberInput("' + fieldParam.id + '",' + params[1] + "," + params[2] + "," + params[3] + ")")
                 }
-                else if (init == "var myPicker = new JSColor") {
-                    initArray.push(init + '("#' + fieldParam.id + '")')
+                else if (init == "picker") {
+                    initArray.push("var " +fieldParam.id +" = new Picker( '" + fieldParam.id + "', 150, 120);")
                 }
             }
 
@@ -292,7 +292,7 @@ class Form {
             form += `</td>`
         }
         else if (field.type == "color") {
-            form += `<input type="text" data-jscolor="{}"`
+            form += `<input type="text" class="myColorP" `
 
             if (field.readonly != null) {
                 form += field.readonly
