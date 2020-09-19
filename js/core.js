@@ -95,7 +95,7 @@ class TipeeApp {
                     };
                     if (that.mode != "dev"){
                         var data = {"password" : password}
-                        myNewRequest('/nodejs/user/' + login, data, loginCallback);
+                        myNewRequest('/nodejs/user/' + login,"POST", data, loginCallback);
                     }
                     else
                         loginCallback(1)
