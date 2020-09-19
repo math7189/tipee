@@ -40,7 +40,7 @@ class TipeeApp {
             closeSigninSignupForm();
 
             if (that.mode != "dev")
-                myNewRequest('/nodejs/dashboard/' + that.login, "GET","", 'JSON', 'data', '', getUserDashboardCallback)
+                request('/nodejs/dashboard/' + that.login, false,  "GET","", 'JSON', 'data', '', getUserDashboardCallback)
             document.getElementById('splashScreen').classList.add('splashScreenTranslate');
         }
 
@@ -77,7 +77,7 @@ class TipeeApp {
                             };
                             document.getElementById('signinSignupForm_errorloc').style.display = "none";
                             if (that.mode != "dev")
-                                myNewRequest('/nodejs/dashboard/' + login,"GET", "", 'JSON', 'data', '', getUserDashboardCallback);
+                                request('/nodejs/dashboard/' + login, false, "GET", "", 'JSON', 'data', '', getUserDashboardCallback);
                             document.getElementById('splashScreen').classList.add('splashScreenTranslate');
                         }
                         else if (returned_data == 2) {
@@ -95,7 +95,7 @@ class TipeeApp {
                     };
                     if (that.mode != "dev"){
                         var data = {"password" : password}
-                        myNewRequest('/nodejs/user/' + login,"POST", data,"", "", "", loginCallback);
+                        request('/nodejs/user/' + login, false, "POST", data,"", "", "", loginCallback);
                     }
                     else
                         loginCallback(1)
@@ -128,7 +128,7 @@ class TipeeApp {
                                 };
 
                                 if (that.mode != "dev")
-                                myNewRequest('/nodejs/dashboard/' + login, "GET", "", 'JSON', 'data', '', getUserDashboardCallback);
+                                request('/nodejs/dashboard/' + login, false,  "GET", "", 'JSON', 'data', '', getUserDashboardCallback);
                                 document.getElementById('splashScreen').classList.add('splashScreenTranslate');
                             }
                             else if (return_value == 2) {
@@ -146,7 +146,7 @@ class TipeeApp {
                             }
                         }
                         if (that.mode != "dev")
-                            myNewRequest('/nodejs/users/', "POST", formData,"","", "", createUserCallback);
+                            request('/nodejs/users/', "POST", false, formData,"","", "", createUserCallback);
                     }
                     else {
                         document.getElementById('signinSignupForm_errorloc').style.display = "block";
@@ -262,7 +262,7 @@ class TipeeApp {
                 }
                 if (that.mode != "dev"){
                     var data = {"data": json}
-                    myNewRequest('/nodejs/dashboards?userId=' + that.login, "POST", data,"", "","", createDashboardOKCallback)
+                    request('/nodejs/dashboards?userId=' + that.login, false, "POST", data,"", "","", createDashboardOKCallback)
                 }
             }
             else {
@@ -271,13 +271,13 @@ class TipeeApp {
                 }
                 if (that.mode != "dev"){
                     var data = {"data": json}
-                    myNewRequest('/nodejs/dashboard/' + that.login,"PUT", data, "", "", "", updateDashboardOKCallback)
+                    request('/nodejs/dashboard/' + that.login, false, "PUT", data, "", "", "", updateDashboardOKCallback)
                 }
             }
         };
 
         if (that.mode != "dev")
-        myNewRequest('/nodejs/dashboard/' + this.login, 'GET', "", "JSON", 'data', '', saveDashboardCallback)
+        request('/nodejs/dashboard/' + this.login, false,  'GET', "", "JSON", 'data', '', saveDashboardCallback)
     }
 
     //TO DO
@@ -1497,16 +1497,16 @@ class TipeeTileText extends TipeeTile {
             "' !important; font-size: " + this.textFontSize + "px !important;";
 
         if (this.requestRefresh > 0) {
-            request(that.requestUrl, that.reqType, that.responseType, that.responseField, that.operation, performSomeAction);
+            request(that.requestUrl,true, that.reqType,"", that.responseType, that.responseField, that.operation, performSomeAction);
             that.intervalId = setInterval(function () {
                 if (myApp.mode != "dev")
-                    request(that.requestUrl, that.reqType, that.responseType, that.responseField, that.operation,
+                request(that.requestUrl, true, that.reqType,"", that.responseType, that.responseField, that.operation,
                         performSomeAction);
             }, 1000 * this.requestRefresh);
         }
         else {
             if (myApp.mode != "dev")
-                request(that.requestUrl, that.reqType, that.responseType, that.responseField, that.operation, performSomeAction);
+            request(that.requestUrl, true, that.reqType, "", that.responseType, that.responseField, that.operation, performSomeAction);
         }
     }
 
@@ -1753,7 +1753,7 @@ class TipeeTileToggles extends TipeeTile {
     }
 
     trigger(requestUrl) {
-        myNewRequest(requestUrl, "POST", "","", "", "", "");
+        request(requestUrl,true, "POST", "","", "", "", "");
     }
 
     toJSON() {

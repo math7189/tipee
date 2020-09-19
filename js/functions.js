@@ -171,7 +171,7 @@ class Form {
                     initArray.push('initSelectNumberInput("' + fieldParam.id + '",' + params[1] + "," + params[2] + "," + params[3] + ")")
                 }
                 else if (init == "picker") {
-                    initArray.push("var " +fieldParam.id +" = new Picker( '" + fieldParam.id + "', 150, 120);")
+                    initArray.push("var " + fieldParam.id + " = new Picker( '" + fieldParam.id + "', 150, 120);")
                 }
             }
 
@@ -548,96 +548,35 @@ function createUI() {
 <div id="info"> Math </div>`;
 }
 
-function request(urlRequest, reqType, responseType, responseField, operation, callback) {
+function request(urlRequest,crossOrigine, requestType, data, responseType, responseField, operation, callback) {
     const Http1 = new XMLHttpRequest();
-    const url1 = "https://cors-anywhere.herokuapp.com/" + urlRequest;
-    if (reqType == "GET")
-        Http1.open("GET", url1);
-    else if (reqType == "POST")
-        Http1.open("POST", url1);
+    if(crossOrigine)
+        Http1.open("https://cors-anywhere.herokuapp.com/" + requestType, urlRequest, true);
+    else
+        Http1.open(requestType, urlRequest, true);
+
     Http1.overrideMimeType('text/xml');
+    Http1.setRequestHeader('Content-type', 'application/json; charset=utf-8');
     Http1.setRequestHeader('Access-Control-Allow-Headers', '*');
     Http1.setRequestHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
     Http1.setRequestHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
-    Http1.send();
+
+    if (requestType != "GET" && data != "")
+        Http1.send(data);
+    else
+        Http1.send();
 
     var requestResult = '';
 
     Http1.onreadystatechange = (e) => {
         if (Http1.readyState === 4 && Http1.status === 200) {
-            if (responseType == "XML") {
-                var xml = Http1.responseXML;
-                var xmlResult;
-                if (xml != null) {
-                    var arr = responseField.split(";");
-                    if (arr.length > 1 && arr[1] != "")
-                        xmlResult = xml.getElementsByTagName(arr[0])[parseInt(arr[1])].childNodes[0].textContent;
-                    else
-                        xmlResult = xml.getElementsByTagName(arr[0])[0].textContent;
-                    if (operation == 'kelvinToCelcius')
-                        requestResult = kelvinToCelcius(xmlResult);
-                    else
-                        requestResult = xmlResult;
-                    callback.apply(this, [requestResult]);
-                }
-            }
-            else if (responseType == "JSON") {
-                if (Http1.responseText != "") {
-                    var json = JSON.parse(Http1.responseText);
-                    if (responseField != "") {
-                        var fields = responseField.split('.')
-                        var requestResult = '';
-
-                        for (var i = 0; i < fields.length; i++)
-                            json = json[fields[i]];
-                    }
-
-                    if (operation == 'kelvinToCelcius')
-                        requestResult = kelvinToCelcius(json);
-                    else
-                        requestResult = json;
-                    callback.apply(this, [requestResult]);
-
-                }
-            }
-        }
-    }
-}
-
-/*function requestGET(urlRequest, responseType, responseField, operation, callback) {
-    const Http1 = new XMLHttpRequest();
-    Http1.open("GET", urlRequest);
-    Http1.overrideMimeType('text/xml');
-    Http1.send();
-
-    var requestResult = '';
-
-    Http1.onreadystatechange = (e) => {
-        if (Http1.readyState === 4 && Http1.status === 200) {
-            if (responseType == "XML") {
-                var xml = Http1.responseXML;
-                var xmlResult;
-                if (xml != null) {
-                    var arr = responseField.split(";");
-                    if (arr.length > 1 && arr[1] != "")
-                        xmlResult = xml.getElementsByTagName(arr[0])[parseInt(arr[1])].childNodes[0].textContent;
-                    else
-                        xmlResult = xml.getElementsByTagName(arr[0])[0].textContent;
-                    if (operation == 'kelvinToCelcius')
-                        requestResult = kelvinToCelcius(xmlResult);
-                    else
-                        requestResult = xmlResult;
-                    callback.apply(this, [requestResult]);
-                }
-            }
-            else if (responseType == "JSON") {
+            if (requestType == "GET" && responseType == "JSON") {
                 if (Http1.responseText != "") {
                     var json = JSON.parse(Http1.responseText);
                     var fields = responseField.split('.')
-                    var requestResult = '';
                     if (json.length > 0) {
-                        json = json[0][fields[0]];
-
+                        for (var i = 0; i < fields.length; i++)
+                            json = json[fields[i]];
                         if (operation == 'kelvinToCelcius')
                             requestResult = kelvinToCelcius(json);
                         else
@@ -649,44 +588,27 @@ function request(urlRequest, reqType, responseType, responseField, operation, ca
                     }
                 }
             }
-        }
-        else if (Http1.readyState === 4 && Http1.status === 207) {
-            callback.apply(this, ["207"]);
-        }
-    }
-}*/
-
-function myNewRequest(urlRequest, requestType, data, responseType, responseField, operation, callback){
-    const Http1 = new XMLHttpRequest();
-    Http1.open(requestType, urlRequest, true);
-    Http1.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-
-    if(requestType != "GET" && data != "")
-        Http1.send(data);
-    else
-        Http1.send();
-
-    var requestResult = '';
-
-    Http1.onreadystatechange = (e) => {
-        if (Http1.readyState === 4 && Http1.status === 200) {
-            if (requestType == "GET" && responseType == "JSON") {
-                if (Http1.responseText != "" && responseType == "JSON") {
-                    var json = JSON.parse(Http1.responseText);
-                    var fields = responseField.split('.')
-                    if (json.length > 0) {
-                        json = json[0][fields[0]];
-                        requestResult = json;
-                        callback.apply(this, [requestResult]);
-                    }
-                    else {
+            else if (requestType == "GET" && responseType == "XML") {
+                if (Http1.responseText != "") {
+                    var xml = Http1.responseXML;
+                    var xmlResult;
+                    if (xml != null) {
+                        var arr = responseField.split(";");
+                        if (arr.length > 1 && arr[1] != "")
+                            xmlResult = xml.getElementsByTagName(arr[0])[parseInt(arr[1])].childNodes[0].textContent;
+                        else
+                            xmlResult = xml.getElementsByTagName(arr[0])[0].textContent;
+                        if (operation == 'kelvinToCelcius')
+                            requestResult = kelvinToCelcius(xmlResult);
+                        else
+                            requestResult = xmlResult;
                         callback.apply(this, [requestResult]);
                     }
                 }
             }
-            else{
-            requestResult = 1;
-            callback.apply(this, [requestResult]);
+            else {
+                requestResult = 1;
+                callback.apply(this, [requestResult]);
             }
         }
         else if (Http1.readyState === 4 && Http1.status === 210) {
