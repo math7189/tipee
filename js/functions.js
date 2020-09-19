@@ -679,8 +679,11 @@ function myNewRequest(urlRequest, requestType, data, responseType, responseField
                         callback.apply(this, [requestResult]);
                     }
                 }
+            }
+            else{
             requestResult = 1;
             callback.apply(this, [requestResult]);
+            }
         }
         else if (Http1.readyState === 4 && Http1.status === 210) {
             requestResult = 2;
@@ -710,7 +713,7 @@ function myNewRequest(urlRequest, requestType, data, responseType, responseField
             // throw new Error(url + ' replied 404');
             console.log("404 Error");
     }
-}
+
 }
 
 function kelvinToCelcius(valueKelvin) {
