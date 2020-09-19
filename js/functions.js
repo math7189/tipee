@@ -660,7 +660,11 @@ function myNewRequest(urlRequest, requestType, data, responseType, responseField
     const Http1 = new XMLHttpRequest();
     Http1.open(requestType, urlRequest, true);
     Http1.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-    Http1.send(JSON.stringify(data));
+
+    if(requestType != "GET")
+        Http1.send(JSON.stringify(data));
+    else
+        Http1.send();
 
     var requestResult = '';
 
