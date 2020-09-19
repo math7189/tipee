@@ -1,0 +1,275 @@
+tileFormTemplate = {
+  "formId" : "tileForm",
+  "formTitle": "Hello World",
+  "error" : {
+    "id" : "tileForm_errorloc",
+    "class" : "formError"
+},
+"buttonStyle" : "bottom: 0; position: absolute;",
+  "buttons": [
+    {
+      "name": "OK",
+      "type": "submit",
+      "class": "btn",
+      "submit" : " myApp.createOrUpdateTpTile();"
+    },
+    {
+      "name": "Cancel",
+      "type": "button",
+      "class": "btn cancel",
+      "onclick": "closeTileForm()"
+    }
+  ],
+  "formTabs": [
+    "General",
+    "Style",
+    "Other"
+  ],
+  "formFields": {
+    "General": [
+      [
+        {
+          "name": "Title",
+          "label": "Title",
+          "type": "text",
+          "description": "Enter Title",
+          "id": "title",
+          "colspan": "1",
+          "validation" : [{
+            "rule" : "req",
+            "error" : "Title is required"
+          },
+          {
+            "rule" : "minlen=3",
+            "error" : "Title should be more than 2 characters"
+          },
+          {
+            "rule" : "maxlen=20",
+            "error" : "Title should be less than 20 characters"
+          }]
+        },
+        {
+          "name": "idTile",
+          "label": "IdTile",
+          "type": "text",
+          "description": "Enter Title",
+          "id": "idTile",
+          "colspan": "1",
+          "style": "display:none"
+        }
+      ],
+      [
+        {
+          "name": "Type",
+          "type": "select",
+          "id": "type",
+          "colspan": "2",
+          "style": "display:none",
+          "onchange": "updateTileForm()",
+          "options": [
+            {
+              "value": "text",
+              "name": "Text"
+            },
+            {
+              "value": "image",
+              "name": "Image"
+            },
+            {
+              "value": "note",
+              "name": "Note"
+            },
+            {
+              "value": "todo",
+              "name": "Todo"
+            },
+            {
+              "value": "toggles",
+              "name": "Toggles"
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "type": "label",
+          "label": "Type"
+        },
+      ],
+      [
+        {
+          "type": "radio",
+          "id": "radiotype",
+          "colspan": "2",
+          "options": [
+            {
+              "value": "text",
+              "img": "tempsnip.png",
+              "onclick": "updateType(this)",
+              "name": "test",
+              "style": "width: 150px;"
+            },
+            {
+              "value": "image",
+              "img": "tempsnip.png",
+              "onclick": "updateType(this)",
+              "name": "test",
+              "style": "width: 150px;"
+            },
+            {
+              "value": "toggles",
+              "img": "tempsnip.png",
+              "onclick": "updateType(this)",
+              "name": "test",
+              "style": "width: 150px;"
+            },
+            {
+              "value": "note",
+              "img": "tempsnip.png",
+              "onclick": "updateType(this)",
+              "name": "test",
+              "style": "width: 150px;"
+            },
+            {
+              "value": "todo",
+              "img": "tempsnip.png",
+              "onclick": "updateType(this)",
+              "name": "test",
+              "style": "width: 150px;"
+            }
+          ]
+        }
+      ]
+    ],
+    "Style": [
+      [
+        {
+          "ligne": "Header",
+          "class": "headerTitle"
+        },
+        {
+          "name": "headerFont",
+          "label": "Font",
+          "type": "select",
+          "id": "headerFont",
+          "colspan": "1",
+          "onchange": "return applyFontInput('headerFont');",
+          "init": "initSelectFontInput"
+        },
+        {
+          "name": "headerFontSize",
+          "label": "Font Size",
+          "type": "select",
+          "id": "headerFontSize",
+          "colspan": "1",
+          "init": "initSelectNumberInput,11,72,20"
+        },
+        {
+          "name": "headerFontColor",
+          "label": "Font Color",
+          "type": "color",
+          "id": "headerFontColor",
+          "colspan": "1",
+          "readonly": "readonly",
+          "val": "2196F3",
+          "init": "var myPicker = new JSColor"
+        }
+      ],
+      [
+        {
+          "name": "headerColor",
+          "label": "Background Color",
+          "type": "color",
+          "id": "headerColor",
+          "colspan": "1",
+          "readonly": "readonly",
+          "val": "2196F3",
+          "init": "var myPicker = new JSColor"
+        }
+      ],
+      [
+        {
+          "ligne": "Tile",
+          "class": "headerTitle"
+        },
+        {
+          "name": "contentBackgroundColor",
+          "label": "Background Color",
+          "type": "color",
+          "id": "contentBackgroundColor",
+          "colspan": "1",
+          "readonly": "readonly",
+          "val": "FFFFFF",
+          "init": "var myPicker = new JSColor"
+        }
+      ],
+      [
+        {
+          "name": "borderSize",
+          "label": "Border Size",
+          "type": "select",
+          "id": "borderSize",
+          "colspan": "1",
+          "init": "initSelectNumberInput,0,10,3"
+        },
+        {
+          "name": "borderColor",
+          "label": "Border Color",
+          "type": "color",
+          "id": "borderColor",
+          "colspan": "1",
+          "readonly": "readonly",
+          "val": "2196F3",
+          "init": "var myPicker = new JSColor"
+        }
+      ],
+    ],
+    "Other": [
+      [
+        {
+          "name": "width",
+          "label": "Width (px)",
+          "type": "text",
+          "description": "Enter width",
+          "id": "width",
+          "value" : "250",
+          "colspan": "1",
+          "validation":[{
+            "rule" : "req",
+            "error" : "Width is required"
+          },
+          {
+            "rule" : "num",
+            "error" : "Width should be a number"
+          },
+          {
+            "rule" : "greater=49",
+            "error" : "Width should be greater than 49 px"
+          }
+          ]},
+        {
+          "name": "height",
+          "label": "Height",
+          "type": "text",
+          "description": "Enter height",
+          "id": "height",
+          "value" : "250",
+          "colspan": "1",
+          "validation":[{
+            "rule" : "req",
+            "error" : "Height is required"
+          },
+          {
+            "rule" : "num",
+            "error" : "Height should be a number"
+          },
+          {
+            "rule" : "greater=49",
+            "error" : "Height should be greater than 49 px"
+          }
+          ]
+        }
+      ]
+    ]
+  }
+}
