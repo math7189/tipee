@@ -171,7 +171,7 @@ tileFormTemplate = {
           "id": "headerFontColor",
           "colspan": "1",
           "readonly": "readonly",
-          "val": "#2196f3",
+          "val": "#ffffff",
           "init": "picker"
         }
       ],
