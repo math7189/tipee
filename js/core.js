@@ -40,7 +40,7 @@ class TipeeApp {
             closeSigninSignupForm();
 
             if (that.mode != "dev")
-                requestGET('/nodejs/dashboard/' + that.login, 'JSON', 'data', '', getUserDashboardCallback)
+                myNewRequest('/nodejs/dashboard/' + that.login, "GET","", 'JSON', 'data', '', getUserDashboardCallback)
             document.getElementById('splashScreen').classList.add('splashScreenTranslate');
         }
 
@@ -77,7 +77,7 @@ class TipeeApp {
                             };
                             document.getElementById('signinSignupForm_errorloc').style.display = "none";
                             if (that.mode != "dev")
-                                requestGET('/nodejs/dashboard/' + login, 'JSON', 'data', '', getUserDashboardCallback);
+                                myNewRequest('/nodejs/dashboard/' + login,"GET", "", 'JSON', 'data', '', getUserDashboardCallback);
                             document.getElementById('splashScreen').classList.add('splashScreenTranslate');
                         }
                         else if (returned_data == 2) {
@@ -95,7 +95,7 @@ class TipeeApp {
                     };
                     if (that.mode != "dev"){
                         var data = {"password" : password}
-                        myNewRequest('/nodejs/user/' + login,"POST", data, loginCallback);
+                        myNewRequest('/nodejs/user/' + login,"POST", data,"", "", "", loginCallback);
                     }
                     else
                         loginCallback(1)
@@ -128,7 +128,7 @@ class TipeeApp {
                                 };
 
                                 if (that.mode != "dev")
-                                    requestGET('/nodejs/dashboard/' + login, 'JSON', 'data', '', getUserDashboardCallback);
+                                myNewRequest('/nodejs/dashboard/' + login, "GET", "", 'JSON', 'data', '', getUserDashboardCallback);
                                 document.getElementById('splashScreen').classList.add('splashScreenTranslate');
                             }
                             else if (return_value == 2) {
@@ -146,7 +146,7 @@ class TipeeApp {
                             }
                         }
                         if (that.mode != "dev")
-                            myNewRequest('/nodejs/users/', "POST", formData, createUserCallback);
+                            myNewRequest('/nodejs/users/', "POST", formData,"","", "", createUserCallback);
                     }
                     else {
                         document.getElementById('signinSignupForm_errorloc').style.display = "block";
@@ -262,7 +262,7 @@ class TipeeApp {
                 }
                 if (that.mode != "dev"){
                     var data = {"data": json}
-                    myNewRequest('/nodejs/dashboards?userId=' + that.login, "POST", data, createDashboardOKCallback)
+                    myNewRequest('/nodejs/dashboards?userId=' + that.login, "POST", data,"", "","", createDashboardOKCallback)
                 }
             }
             else {
@@ -271,21 +271,21 @@ class TipeeApp {
                 }
                 if (that.mode != "dev"){
                     var data = {"data": json}
-                    myNewRequest('/nodejs/dashboard/' + that.login,"PUT", data, updateDashboardOKCallback)
+                    myNewRequest('/nodejs/dashboard/' + that.login,"PUT", data, "", "", "", updateDashboardOKCallback)
                 }
             }
         };
 
         if (that.mode != "dev")
-            requestGET('/nodejs/dashboard/' + this.login, 'JSON', 'data', '', saveDashboardCallback)
+        myNewRequest('/nodejs/dashboard/' + this.login, 'GET', "", "JSON", 'data', '', saveDashboardCallback)
     }
 
     //TO DO
     export() {
         this.save();
-        var file = new File([json], 'myFilename.txt', {
+       /* var file = new File([json], 'myFilename.txt', {
             type: 'application/octet-stream'
-        });
+        });*/
 
         /* var blobUrl = (URL || webkitURL).createObjectURL(file);
          window.location = blobUrl;*/
@@ -1753,7 +1753,7 @@ class TipeeTileToggles extends TipeeTile {
     }
 
     trigger(requestUrl) {
-        myNewRequest(requestUrl, "POST", "","");
+        myNewRequest(requestUrl, "POST", "","", "", "", "");
     }
 
     toJSON() {

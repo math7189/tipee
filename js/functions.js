@@ -548,28 +548,6 @@ function createUI() {
 <div id="info"> Math </div>`;
 }
 
-//requestPOST("http://172.21.1.10:8000/macros/turnOffLights");
-/*function requestPOST(urlRequest) {
-    const Http = new XMLHttpRequest();
-    Http.open("POST", urlRequest);
-    Http.send();
-
-    Http.onreadystatechange = (e) => {
-        console.log(Http.responseText);
-    }
-
-    Http.onerror = function () {
-        console.log("** An error occurred during the transaction");
-        alert("I am an alert box!");
-    };
-
-    Http.onloadend = function () {
-        if (Http.status == 404)
-            // throw new Error(url + ' replied 404');
-            console.log("404 Error");
-    }
-}*/
-
 function request(urlRequest, reqType, responseType, responseField, operation, callback) {
     const Http1 = new XMLHttpRequest();
     const url1 = "https://cors-anywhere.herokuapp.com/" + urlRequest;
@@ -626,31 +604,7 @@ function request(urlRequest, reqType, responseType, responseField, operation, ca
     }
 }
 
-/*function requestLogin(urlRequest, password, callback) {
-    const Http1 = new XMLHttpRequest();
-    Http1.open("POST", urlRequest);
-    Http1.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-    Http1.send(JSON.stringify({ "password": password }));
-
-    var requestResult;
-
-    Http1.onreadystatechange = (e) => {
-        if (Http1.readyState === 4 && Http1.status === 200) {
-            requestResult = 1;
-            callback.apply(this, [requestResult]);
-        }
-        else if (Http1.readyState === 4 && Http1.status === 204) {
-            requestResult = 2;
-            callback.apply(this, [requestResult]);
-        }
-        else if (Http1.readyState === 4 && Http1.status === 206) {
-            requestResult = 3;
-            callback.apply(this, [requestResult]);
-        }
-    }
-}*/
-
-function requestGET(urlRequest, responseType, responseField, operation, callback) {
+/*function requestGET(urlRequest, responseType, responseField, operation, callback) {
     const Http1 = new XMLHttpRequest();
     Http1.open("GET", urlRequest);
     Http1.overrideMimeType('text/xml');
@@ -700,65 +654,9 @@ function requestGET(urlRequest, responseType, responseField, operation, callback
             callback.apply(this, ["207"]);
         }
     }
-}
-
-/*function requestCreateDashboard(urlRequest, data, callback) {
-    const Http1 = new XMLHttpRequest();
-    Http1.open("POST", urlRequest, true);
-    Http1.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-    Http1.send(JSON.stringify({ "data": data }));
-
-    var requestResult = '';
-
-    Http1.onreadystatechange = (e) => {
-        if (Http1.readyState === 4 && Http1.status === 200) {
-            requestResult = "Create done";
-            callback.apply(this, [requestResult]);
-        }
-    }
-}
-
-function requestCreateUser(urlRequest, data, callback) {
-    const Http1 = new XMLHttpRequest();
-    Http1.open("POST", urlRequest, true);
-    Http1.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-    Http1.send(JSON.stringify(data));
-
-    var requestResult = '';
-
-    Http1.onreadystatechange = (e) => {
-        if (Http1.readyState === 4 && Http1.status === 200) {
-            requestResult = 1;
-            callback.apply(this, [requestResult]);
-        }
-        else if (Http1.readyState === 4 && Http1.status === 210) {
-            requestResult = 2;
-            callback.apply(this, [requestResult]);
-        }
-        else if (Http1.readyState === 4 && Http1.status === 211) {
-            requestResult = 3;
-            callback.apply(this, [requestResult]);
-        }
-    }
-}
-
-function requestUpdateDashboard(urlRequest, data, callback) {
-    const Http1 = new XMLHttpRequest();
-    Http1.open("PUT", urlRequest, true);
-    Http1.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-    Http1.send(JSON.stringify({ "data": data }));
-
-    var requestResult = '';
-
-    Http1.onreadystatechange = (e) => {
-        if (Http1.readyState === 4 && Http1.status === 200) {
-            requestResult = "Save done";
-            callback.apply(this, [requestResult]);
-        }
-    }
 }*/
 
-function myNewRequest(urlRequest, requestType, data, callback){
+function myNewRequest(urlRequest, requestType, data, responseType, responseField, operation, callback){
     const Http1 = new XMLHttpRequest();
     Http1.open(requestType, urlRequest, true);
     Http1.setRequestHeader('Content-type', 'application/json; charset=utf-8');
@@ -768,6 +666,19 @@ function myNewRequest(urlRequest, requestType, data, callback){
 
     Http1.onreadystatechange = (e) => {
         if (Http1.readyState === 4 && Http1.status === 200) {
+            if (requestType == "GET" && responseType == "JSON") {
+                if (Http1.responseText != "" && responseType == "JSON") {
+                    var json = JSON.parse(Http1.responseText);
+                    var fields = responseField.split('.')
+                    if (json.length > 0) {
+                        json = json[0][fields[0]];
+                        requestResult = json;
+                        callback.apply(this, [requestResult]);
+                    }
+                    else {
+                        callback.apply(this, [requestResult]);
+                    }
+                }
             requestResult = 1;
             callback.apply(this, [requestResult]);
         }
