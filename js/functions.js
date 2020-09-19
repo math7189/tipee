@@ -768,7 +768,7 @@ function myNewRequest(urlRequest, requestType, data, callback){
 
     Http1.onreadystatechange = (e) => {
         if (Http1.readyState === 4 && Http1.status === 200) {
-            requestResult = "Success";
+            requestResult = 1;
             callback.apply(this, [requestResult]);
         }
         else if (Http1.readyState === 4 && Http1.status === 210) {
