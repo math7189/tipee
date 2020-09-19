@@ -551,7 +551,7 @@ function createUI() {
 function request(urlRequest,crossOrigine, requestType, data, responseType, responseField, operation, callback) {
     const Http1 = new XMLHttpRequest();
     if(crossOrigine)
-        Http1.open("https://cors-anywhere.herokuapp.com/" + requestType, urlRequest, true);
+        Http1.open(requestType, "https://cors-anywhere.herokuapp.com/" + urlRequest, true);
     else
         Http1.open(requestType, urlRequest, true);
 
