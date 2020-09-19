@@ -711,6 +711,7 @@ function myNewRequest(urlRequest, requestType, data, responseType, responseField
             console.log("404 Error");
     }
 }
+}
 
 function kelvinToCelcius(valueKelvin) {
     var valueCelcius = parseFloat(valueKelvin) - 273.15;
