@@ -171,8 +171,8 @@ tileFormTemplate = {
           "id": "headerFontColor",
           "colspan": "1",
           "readonly": "readonly",
-          "val": "2196F3",
-          "init": "var myPicker = new JSColor"
+          "val": "#2196f3",
+          "init": "picker"
         }
       ],
       [
@@ -183,8 +183,8 @@ tileFormTemplate = {
           "id": "headerColor",
           "colspan": "1",
           "readonly": "readonly",
-          "val": "2196F3",
-          "init": "var myPicker = new JSColor"
+          "val": "#ffffff",
+          "init": "picker"
         }
       ],
       [
@@ -199,8 +199,8 @@ tileFormTemplate = {
           "id": "contentBackgroundColor",
           "colspan": "1",
           "readonly": "readonly",
-          "val": "FFFFFF",
-          "init": "var myPicker = new JSColor"
+          "val": "#ffffff",
+          "init": "picker"
         }
       ],
       [
@@ -219,8 +219,8 @@ tileFormTemplate = {
           "id": "borderColor",
           "colspan": "1",
           "readonly": "readonly",
-          "val": "2196F3",
-          "init": "var myPicker = new JSColor"
+          "val": "#2196f3",
+          "init": "picker"
         }
       ],
     ],

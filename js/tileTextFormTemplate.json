@@ -125,8 +125,8 @@ tileTextFormTemplate = {
                     "id": "textColor",
                     "colspan": "1",
                     "readonly": "readonly",
-                    "val": "FFFFFF",
-                    "init": "var myPicker = new JSColor"
+                    "val": "#000000",
+                    "init": "picker"
                 }
             ]
         ]
