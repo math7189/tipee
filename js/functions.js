@@ -576,7 +576,7 @@ function request(urlRequest,crossOrigine, requestType, data, responseType, respo
                     var fields = responseField.split('.')
                     if (json.length > 0) {
                         for (var i = 0; i < fields.length; i++)
-                            json = json[fields[i]];
+                            json = json[0][fields[i]];
                         if (operation == 'kelvinToCelcius')
                             requestResult = kelvinToCelcius(json);
                         else
