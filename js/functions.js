@@ -594,7 +594,7 @@ function request(urlRequest,crossOrigine, requestType, data, responseType, respo
     Http1.setRequestHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
 
     if (requestType != "GET" && data != "")
-        Http1.send(data);
+        Http1.send(JSON.stringify(data));
     else
         Http1.send();
 
