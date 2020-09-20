@@ -29,14 +29,22 @@ tileToggleFormTemplate = {
                                 "type": "text",
                                 "description": "Enter Name",
                                 "id": "togglesName0",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "Name is required"
+                                }]
                             },
                             {
                                 "name": "togglesURL0",
                                 "type": "text",
                                 "description": "Enter URL",
                                 "id": "togglesURL0",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "URL is required"
+                                }]
                             }
                         ],
                         [
@@ -48,14 +56,22 @@ tileToggleFormTemplate = {
                                 "type": "text",
                                 "description": "Enter Name",
                                 "id": "togglesName1",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "Name is required"
+                                }]
                             },
                             {
                                 "name": "togglesURL1",
                                 "type": "text",
                                 "description": "Enter URL",
                                 "id": "togglesURL1",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "URL is required"
+                                }]
                             }
                         ],
                         [
@@ -67,14 +83,22 @@ tileToggleFormTemplate = {
                                 "type": "text",
                                 "description": "Enter Name",
                                 "id": "togglesName2",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "Name is required"
+                                }]
                             },
                             {
                                 "name": "togglesURL2",
                                 "type": "text",
                                 "description": "Enter URL",
                                 "id": "togglesURL2",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "URL is required"
+                                }]
                             }
                         ],
                         [
@@ -86,14 +110,22 @@ tileToggleFormTemplate = {
                                 "type": "text",
                                 "description": "Enter Name",
                                 "id": "togglesName3",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "Name is required"
+                                }]
                             },
                             {
                                 "name": "togglesURL3",
                                 "type": "text",
                                 "description": "Enter URL",
                                 "id": "togglesURL3",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "URL is required"
+                                }]
                             }
                         ],
                         [
@@ -105,14 +137,22 @@ tileToggleFormTemplate = {
                                 "type": "text",
                                 "description": "Enter Name",
                                 "id": "togglesName4",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "Name is required"
+                                }]
                             },
                             {
                                 "name": "togglesURL4",
                                 "type": "text",
                                 "description": "Enter URL",
                                 "id": "togglesURL4",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "URL is required"
+                                }]
                             }
                         ],
                         [
@@ -124,14 +164,22 @@ tileToggleFormTemplate = {
                                 "type": "text",
                                 "description": "Enter Name",
                                 "id": "togglesName5",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "Name is required"
+                                }]
                             },
                             {
                                 "name": "togglesURL5",
                                 "type": "text",
                                 "description": "Enter URL",
                                 "id": "togglesURL5",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "URL is required"
+                                }]
                             }
                         ],
                         [
@@ -143,14 +191,22 @@ tileToggleFormTemplate = {
                                 "type": "text",
                                 "description": "Enter Name",
                                 "id": "togglesName6",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "Name is required"
+                                }]
                             },
                             {
                                 "name": "togglesURL6",
                                 "type": "text",
                                 "description": "Enter URL",
                                 "id": "togglesURL6",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "URL is required"
+                                }]
                             }
                         ],
                         [
@@ -162,14 +218,22 @@ tileToggleFormTemplate = {
                                 "type": "text",
                                 "description": "Enter Name",
                                 "id": "togglesName7",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "Name is required"
+                                }]
                             },
                             {
                                 "name": "togglesURL7",
                                 "type": "text",
                                 "description": "Enter URL",
                                 "id": "togglesURL7",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "URL is required"
+                                }]
                             }
                         ],
                         [
@@ -181,14 +245,22 @@ tileToggleFormTemplate = {
                                 "type": "text",
                                 "description": "Enter Name",
                                 "id": "togglesName8",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "Name is required"
+                                }]
                             },
                             {
                                 "name": "togglesURL8",
                                 "type": "text",
                                 "description": "Enter URL",
                                 "id": "togglesURL8",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "URL is required"
+                                }]
                             }
                         ],
                         [
@@ -200,14 +272,22 @@ tileToggleFormTemplate = {
                                 "type": "text",
                                 "description": "Enter Name",
                                 "id": "togglesName9",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "Name is required"
+                                }]
                             },
                             {
                                 "name": "togglesURL9",
                                 "type": "text",
                                 "description": "Enter URL",
                                 "id": "togglesURL9",
-                                "colspan": "1"
+                                "colspan": "1",
+                                "validation" : [{
+                                    "rule" : "req",
+                                    "error" : "URL is required"
+                                }]
                             }
                         ]
                     ]

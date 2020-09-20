@@ -995,13 +995,15 @@ class TipeeTile {
         valueDict['title'] = this.title;
         return valueDict;
     }
-
+    
+    /****************************************************************************/
+    /* Tile form functions                                                      */
+    /****************************************************************************/
     buildForm() {
         this.form.buildForm();
     }
 
     openForm() {
-        //this.buildForm();
         openTileForm(this)
     }
 
@@ -1178,7 +1180,6 @@ class TipeeTileNote extends TipeeTile {
     }
 
     fillForm() {
-        this.openForm();
         super.fillForm();
     }
 
@@ -1265,7 +1266,6 @@ class TipeeTileTodo extends TipeeTile {
     }
 
     fillForm() {
-        this.openForm();
         super.fillForm();
     }
 
@@ -1439,16 +1439,37 @@ class TipeeTileText extends TipeeTile {
         if (responseType.value == "XML") {
             responseFieldChildLabel.style.display = "block";
             responseFieldChild.style.display = "block";
+            this.form.validation.activateField("responseFieldChild")
+            
         }
         else {
             responseFieldChildLabel.style.display = "none";
             responseFieldChild.style.display = "none";
+            this.form.validation.desactivateField("responseFieldChild")
         }
     }
 
     fillForm() {
-        this.openForm();
         super.fillForm();
+
+        var responseType = this.responseType
+        var responseField = this.responseField
+
+        document.getElementById("textBefore").value = this.textBefore
+        document.getElementById("textAfter").value = this.textAfter
+        document.getElementById("requestUrl").value = this.requestUrl    
+        document.getElementById("operation").value = this.operation    
+        document.getElementById("reqType").value = this.reqType    
+        document.getElementById("requestRefresh").value = this.requestRefresh    
+        document.getElementById('responseType').value = this.responseType
+
+        if (responseType == 'XML') {
+            document.getElementById('responseField').value = responseField.split(";")[0]
+            document.getElementById("responseFieldChild").value = responseField.split(";")[1];
+        }
+        else {
+            document.getElementById('responseField').value = responseField
+        }
     }
 
     update() {
@@ -1465,7 +1486,7 @@ class TipeeTileText extends TipeeTile {
         this.operation = document.getElementById('operation').value;
 
         var responseField;
-        if (responseType == 'XML') {
+        if (this.responseType == 'XML') {
             responseField = document.getElementById('responseField').value;
             responseField += ';';
             responseField += document.getElementById('responseFieldChild').value
@@ -1484,17 +1505,26 @@ class TipeeTileText extends TipeeTile {
         var elem = document.getElementById(this.idTile + ' content');
         elem.innerHTML = `<p id='` + this.idTile + `-txt'>Chargement...</p>`;
 
+        var headerHeight = document.getElementById(this.idTile + 'header').offsetHeight;
+        elem.style.top = headerHeight + "px"
+        var height = that.height - headerHeight
+        elem.style.height = height + "px"
+        elem.style.position = "absolute"
+
         var val;
         var performSomeAction = function (returned_data) {
             var txt = document.getElementById(that.idTile + ' content');
             val = returned_data;
             elem.innerHTML = `<p style:'color: #` + that.textColor + `;'  id='` + that.idTile + `-txt'>` + that.textBefore + " " + val + " " + that.textAfter + `</p>`;
-            elem.style.cssText = "color: #" + that.textColor + " !important; font-family: '" + that.textFont + "' !important; font-size: " + that.textFontSize + "px !important;";
+            elem.style.color = that.textColor
+            elem.style.fontFamily = that.textFont 
+            elem.style.fontSize = that.textFontSize
         }
 
         var txt = document.getElementById(this.idTile + '-txt');
-        txt.style.cssText = "color: " + this.textColor + "!important; font-family: '" + this.textFont +
-            "' !important; font-size: " + this.textFontSize + "px !important;";
+        txt.style.color = that.textColor
+        txt.style.fontFamily = that.textFont 
+        txt.style.fontSize = that.textFontSize
 
         if (this.requestRefresh > 0) {
             request(that.requestUrl,true, that.reqType,"", that.responseType, that.responseField, that.operation, performSomeAction);
@@ -1508,6 +1538,15 @@ class TipeeTileText extends TipeeTile {
             if (myApp.mode != "dev")
             request(that.requestUrl, true, that.reqType, "", that.responseType, that.responseField, that.operation, performSomeAction);
         }
+    }
+
+    resize(){
+        var txt = document.getElementById(this.idTile + '-txt');
+        var headerHeight = document.getElementById(this.idTile + 'header').offsetHeight;
+        var height = this.height - (this.borderSize) - headerHeight;
+        txt.style.height = height + "px";
+        txt.style.overflow = "hidden"
+        txt.style.top =  headerHeight + (height - headerHeight)/2 + "px"
     }
 
     toJSON() {
@@ -1564,9 +1603,13 @@ class TipeeTileImage extends TipeeTile {
         imgSlideIntervalLabel.style.display = "none";
         imgSlideInterval.style.display = "none";
 
+        this.form.validation.desactivateField("imgSlideInterval")
+
+
         for (var i = 0; i < 10; i++) {
             var elem = document.getElementById("imgSrc" + i);
             elem.style.display = "none";
+            this.form.validation.desactivateField("imgSrc" + i)
         }
         var nbImg;
         if (imgType.value == "single") {
@@ -1578,16 +1621,33 @@ class TipeeTileImage extends TipeeTile {
             imgSlideIntervalLabel.style.display = "block";
             imgSlideInterval.style.display = "block";
             nbImg = imgNb.value;
+            this.form.validation.activateField("imgSlideInterval")
+
         }
         for (var i = 0; i < nbImg; i++) {
             var elem = document.getElementById("imgSrc" + i);
             elem.style.display = "block";
+            this.form.validation.activateField("imgSrc" + i)
+
         }
     }
 
     fillForm() {
-        this.openForm();
         super.fillForm();
+
+        if(this.imgNb == 1){
+            document.getElementById('imgType').value = 'single'
+        }
+        else{
+            document.getElementById('imgType').value = 'slideshow'
+            document.getElementById('imgSlideInterval').value = this.imgSlideInterval
+        }
+
+        document.getElementById('imgRefresh').value = this.imgRefresh;
+
+        for(var i=0; i<this.imgNb; i++)
+        document.getElementById('imgSrc' + i).value = this.imgSrc[i]
+
     }
 
     update() {
@@ -1683,8 +1743,14 @@ class TipeeTileToggles extends TipeeTile {
     }
 
     fillForm() {
-        this.openForm();
+        //this.openForm();
         super.fillForm();
+
+        var togglesNb = document.getElementById("togglesNb").value;
+        for (var i = 0; i < togglesNb; i++) {
+            document.getElementById('togglesName' + i).value = this.togglesProperties[i].name
+            document.getElementById('togglesURL' + i).value = this.togglesProperties[i].url;
+        }
     }
 
     updateForm() {
@@ -1694,13 +1760,20 @@ class TipeeTileToggles extends TipeeTile {
         for (var i = 0; i < 10; i++) {
             var elem = document.getElementById("togglesPropTr" + i);
             elem.style.display = "none";
+            this.form.validation.desactivateField("togglesName" + i)
+            this.form.validation.desactivateField("togglesURL" + i)
+
         }
 
         var nb = togglesNb.value;
         for (var i = 0; i < nb; i++) {
             var elem = document.getElementById("togglesPropTr" + i);
             elem.style.display = "block";
+            this.form.validation.activateField("togglesName" + i)
+            this.form.validation.activateField("togglesURL" + i)
         }
+
+        
     }
 
     update() {
@@ -1865,7 +1938,7 @@ function updateTileMenuAction(id) {
             tpTile = myApp.activeScene.tiles[i];
         }
     };
-    tpTile.fillForm()
+    tpTile.openForm()
 }
 
 function lockTile(id) {

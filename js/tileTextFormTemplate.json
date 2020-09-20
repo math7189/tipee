@@ -11,7 +11,15 @@ tileTextFormTemplate = {
                     "type": "text",
                     "description": "Enter URL",
                     "id": "requestUrl",
-                    "colspan": "1"
+                    "colspan": "1",
+                    "validation" : [{
+                        "rule" : "req",
+                        "error" : "Request URL is required"
+                    },
+                    {
+                        "rule" : "url",
+                        "error" : "Request URL should be an URL"
+                    }]
                 }
             ],
             [
@@ -39,7 +47,11 @@ tileTextFormTemplate = {
                     "type": "text",
                     "description": "Enter response field",
                     "id": "responseField",
-                    "colspan": "1"
+                    "colspan": "1",
+                    "validation" : [{
+                        "rule" : "req",
+                        "error" : "Response field is required"
+                    }]
                 },
                 {
                     "name": "responseFieldChild",
@@ -47,7 +59,12 @@ tileTextFormTemplate = {
                     "type": "text",
                     "description": "Enter response field child",
                     "id": "responseFieldChild",
-                    "colspan": "1"
+                    "colspan": "1",
+                    "validation" : [{
+                        "rule" : "req",
+                        "error" : "Response field child is required"
+                    }]
+
                 },
             ],
             [
@@ -57,7 +74,18 @@ tileTextFormTemplate = {
                     "type": "text",
                     "description": "Enter request refresh",
                     "id": "requestRefresh",
-                    "colspan": "1"
+                    "colspan": "1",
+                    "validation" : [{
+                        "rule" : "req",
+                        "error" : "Request refresh is required"
+                    },
+                    {"rule": "num",
+                    "error": "Request refresh should be a number"},
+                    {
+                        "rule": "greater=59",
+                        "error": "Request refresh should be a least 60s" 
+                    }
+                ]
                 },
                 {
                     "name": "reqType",
@@ -65,7 +93,11 @@ tileTextFormTemplate = {
                     "type": "text",
                     "description": "Enter request type",
                     "id": "reqType",
-                    "colspan": "1"
+                    "colspan": "1",
+                    "validation" : [{
+                        "rule" : "req",
+                        "error" : "Request type is required"
+                    }]
                 },
             ],
             [
@@ -107,7 +139,7 @@ tileTextFormTemplate = {
                     "type": "select",
                     "id": "textFont",
                     "colspan": "1",
-                    "onchange": "return applyFontInput('headerFont');",
+                    "onchange": "return applyFontInput('textFont');",
                     "init": "initSelectFontInput"
                 },
                 {

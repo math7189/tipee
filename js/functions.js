@@ -393,9 +393,31 @@ class ValidationForm {
         }
     }
 
+    removeValidation(field){
+        for(var i=0; i<this.field.length; i++){
+            if(this.fields[i].name == field)
+                this.fields.splice(i,1)
+        }
+    }
+
+    desactivateField(field){
+        for(var i=0; i<this.fields.length; i++){
+            if(this.fields[i].name == field)
+                this.fields[i].isActive = false
+        }
+    }
+
+    activateField(field){
+        for(var i=0; i<this.fields.length; i++){
+            if(this.fields[i].name == field)
+                this.fields[i].isActive = true
+        }
+    }
+
     checkFields() {
         var errors = document.getElementById(this.form + "_errorUL");
         for (var i = 0; i < this.fields.length; i++) {
+            if(this.fields[i].isActive){
             for (var j = 0; j < this.fields[i].rules.length; j++) {
                 var result = this.fields[i].rules[j].validate(this.fields[i].name)
                 if (result != null) {
@@ -406,6 +428,7 @@ class ValidationForm {
                 }
             }
         }
+        }
     }
 }
 
@@ -413,6 +436,7 @@ class Field {
     constructor(field) {
         this.name = field;
         this.rules = [];
+        this.isActive = true;
     }
 }
 
@@ -441,6 +465,14 @@ class Rule {
             if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value))
                 return null;
             else
+                return this.message;
+        }
+        else if(this.rule == "url"){
+            var expression = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[^\s][a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/\S*)?$/
+            var regex = new RegExp(expression);
+            if(value.match(expression))
+                return null;
+            else    
                 return this.message;
         }
         else if (this.rule.startsWith("minlen")) {
@@ -584,6 +616,12 @@ function request(urlRequest,crossOrigine, requestType, data, responseType, respo
                         callback.apply(this, [requestResult]);
                     }
                     else {
+                        for (var i = 0; i < fields.length; i++)
+                            json = json[fields[i]];
+                        if (operation == 'kelvinToCelcius')
+                            requestResult = kelvinToCelcius(json);
+                        else
+                            requestResult = json;
                         callback.apply(this, [requestResult]);
                     }
                 }
