@@ -584,7 +584,7 @@ function createUI() {
 <div id="info"> Math </div>`;
 }
 
-function request(urlRequest,crossOrigine, requestType, data, responseType, responseField, operation, call²back) {
+function request(urlRequest,crossOrigine, requestType, data, responseType, responseField, operation, callback) {
     const Http1 = new XMLHttpRequest();
     if(crossOrigine)
         Http1.open(requestType, "https://cors-anywhere.herokuapp.com/" + urlRequest, true);
