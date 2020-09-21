@@ -215,7 +215,7 @@ class TipeeApp {
                         }
                     }
                     if (that.mode != "dev")
-                        request('/nodejs/users/', "POST", false, formData, "", "", "", createUserCallback);
+                        request('/nodejs/users/', false, "POST", formData, "", "", "", createUserCallback);
                 }
                 else {
                     document.getElementById('signinSignupForm_errorloc').style.display = "block";
