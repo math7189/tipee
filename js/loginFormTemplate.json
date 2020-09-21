@@ -1,0 +1,154 @@
+loginFormTemplate = {
+    "formId" : "signinSignupForm",
+    "formTitle": "Login",
+    "error" : {
+      "id" : "signinSignupForm_errorloc",
+      "class" : "formError2"
+  },
+    "buttonStyle" : "margin: auto; width: 100%",
+    "buttons": [
+      {
+        "name": "OK",
+        "type": "submit",
+        "tdId" : "btvalLogTd",
+        "class": "btn",
+        "colspan" : "2",
+        "submit" : " myApp.signinSignupSubmit()"
+      }
+    ],
+    "formTabs": ["default"],
+    "formFields": {
+      "default": [
+        [
+          {
+            "name": "login",
+            "type": "text",
+            "description": "Enter login",
+            "id": "login",
+            "colspan" : "2",
+            "autocomplete" : "username",
+            "validation" : [
+                {
+                    "rule" : "req",
+                    "error" : "Login is required"
+                },
+                {
+                    "rule" : "maxlen=50",
+                    "error" : "Max length for login is 50"
+                }
+            ]
+          }
+        ],
+        [
+            {
+                "trid": "emailTr"
+            },
+            {
+              "name": "email",
+              "type": "text",
+              "description": "Enter email",
+              "id": "email",
+            "colspan" : "2",
+            "validation" :[
+                {
+                    "rule" : "req",
+                    "error" : "Email is required"
+                },
+                {
+                    "rule" : "maxlen=50",
+                    "error" : "Max length for email is 50"
+                },
+                {
+                    "rule" : "email",
+                    "error" : "Email should be a valid email format"
+                }
+            ]
+             
+            }
+          ],
+          [
+              {
+                "name": "password",
+                "type": "password",
+                "tdId":"passwordTd",
+                "description": "Enter password",
+                "id": "password",
+                "autocomplete":"current-password",
+                "validation" :[
+                    {
+                        "rule" : "req",
+                        "error" : "Password is required"
+                    },
+                    {
+                        "rule" : "maxlen=50",
+                        "error" : "Max length for password is 50"
+                    },
+                    {
+                        "rule" : "minlen=50",
+                        "error" : "Min length for password is 8"
+                    }
+                ]
+              },
+              {
+                "name": "repassword",
+                "type": "password",
+                "description": "Retype password",
+                "id": "repassword",
+                "autocomplete":"new-password",
+                "validation" :[
+                    {
+                        "rule" : "req",
+                        "error" : "Retype password is required"
+                    },
+                    {
+                        "rule" : "same=password",
+                        "error" : "Passwords should be identicals"
+                    }
+                ]
+              },
+            ],
+          [
+              {
+                "name": "firstname",
+                "type": "text",
+                "description": "Enter firstname",
+                "id": "firstname",
+                "validation" :[
+                    {
+                        "rule" : "req",
+                        "error" : "Firstname is required"
+                    }
+                ]
+              },
+              {
+                "name": "lastname",
+                "type": "text",
+                "description": "Enter lastname",
+                "id": "lastname",
+                "validation" :[
+                    {
+                        "rule" : "req",
+                        "error" : "Lastname is required"
+                    }
+                ]
+              },
+            ],
+            [
+                {
+                  "name": "sign",
+                  "type": "link",
+                  "onclick" : "updateSigninSignupForm(this.value);return false;",
+                  "description" : "Sign up",
+                  "id": "sign"
+                },
+                {
+                  "name": "forgot",
+                  "type": "link",
+                  "description": "Forgot password",
+                  "id": "forgot",
+                  
+                },
+              ]
+      ]
+    }
+  }

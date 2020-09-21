@@ -1,3 +1,5 @@
+var pickers = []
+
 class Picker {
     constructor(field, width, height) {
 
@@ -28,6 +30,7 @@ class Picker {
 
         this.listenForEvents();
         this.init()
+        pickers.push(this)
     }
 
     init() {
@@ -99,12 +102,10 @@ class Picker {
         var that = this;
         let isMouseDown = false;
         const onMouseDown = (e) => {
-            console.log(e.target.id)
-            console.log(e.target.className)
             var id = "color-picker " + that.fieldId
+            if(document.getElementById(that.fieldId) != null){
             if (e.target.className == "myColorP" && e.target.id == document.getElementById(that.fieldId).id) {
                 show()
-                console.log(e.target.id)
             }
             else if (e.target.id == id) {
                 let currentX = e.clientX - this.target.offsetLeft + window.pageXOffset;
@@ -119,6 +120,11 @@ class Picker {
             }
             else
                 hide();
+        }
+        }
+
+        const update = () => {
+            that.onChange(that.field.value)
         }
 
         const onMouseMove = (e) => {
@@ -140,14 +146,11 @@ class Picker {
 
         const show = () => {
             this.target.style.display = "block"
-            console.log(this.field.offsetTop)
 
             var viewportOffset = document.getElementById(this.fieldId).getBoundingClientRect();
             // these are relative to the viewport, i.e. the window
             var top = viewportOffset.top + document.getElementById(this.fieldId).clientHeight;
             var left = viewportOffset.left;
-
-
 
             this.target.style.top = top + "px";
             this.target.style.left = left + "px";
@@ -159,6 +162,7 @@ class Picker {
         document.addEventListener("mousedown", onMouseDown);
         document.addEventListener("mousemove", onMouseMove);
         document.addEventListener("mouseup", onMouseUp);
+        this.field.addEventListener("change", update)
     }
 
     getPickedColor() {
@@ -181,3 +185,11 @@ class Picker {
         picker.onChange(picker.hexToRgb(picker.field.value))
     }
 })();
+
+function updatePicker(field){
+    for(var i = 0; i<pickers.length; i++){
+        if(pickers[i].fieldId == field){
+            pickers[i].onChange(pickers[i].hexToRgb(pickers[i].field.value))
+        }
+    }
+}

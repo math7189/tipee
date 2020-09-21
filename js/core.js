@@ -2,14 +2,12 @@ class TipeeApp {
     constructor() {
         this.scenes = [];
         this.activeScene;
-        this.formTileValidator;
-        this.formNewSCeneValidator;
-        this.formLoginValidator;
         this.login;
         this.mode = "prod";
         this.demoScene = new TipeeScene("demo");
         this.tileForm = new Form();
         this.sceneForm = new Form(sceneFormTemplate);
+        this.loginForm = new Form(loginFormTemplate)
         this.init();
     }
 
@@ -18,9 +16,10 @@ class TipeeApp {
 
         createUI();
         this.sceneForm.buildForm();
-        createSigninSignupForm();
+        this.loginForm.buildForm();
         openSigninSignupForm();
-        updateSigninSignupForm('signin');
+        
+        updateSigninSignupForm('signin', this.loginForm);
 
         if (sessionStorage.length > 0) {
             var sessionLogin = JSON.parse(sessionStorage.user);
@@ -40,126 +39,9 @@ class TipeeApp {
             closeSigninSignupForm();
 
             if (that.mode != "dev")
-                request('/nodejs/dashboard/' + that.login, false,  "GET","", 'JSON', 'data', '', getUserDashboardCallback)
+                request('/nodejs/dashboard/' + that.login, false, "GET", "", 'JSON', 'data', '', getUserDashboardCallback)
             document.getElementById('splashScreen').classList.add('splashScreenTranslate');
         }
-
-        var loginForm = document.getElementById('signinSignupForm');
-        loginForm.addEventListener('submit', function (event) {
-            var errors = document.getElementById('signinSignupForm_errorUL');
-            errors.innerHTML = "";
-
-            var action;
-            if (document.getElementById('signin').style.display == 'none')
-                action = "signin"
-            else
-                action = "signup"
-            that.createSigninSignupFormValidator(action)
-
-            that.formLoginValidator.checkFields();
-            if (errors.children.length == 0) {
-                document.getElementById('signinSignupForm_errorloc').style.display = "none";
-                if (document.getElementById('signin').style.display == 'none') {
-                    var login = document.getElementById('login').value;
-                    var password = document.getElementById('password').value;
-                    that.login = login;
-
-                    var loginCallback = function (returned_data) {
-                        if (returned_data == 1) {
-                            sessionStorage.setItem('user', JSON.stringify(login));
-                            var getUserDashboardCallback = function (returned_data) {
-                                if (returned_data != '207')
-                                    loadJSON(JSON.parse(returned_data));
-                                if (myApp.activeScene == null) {
-                                    openSceneForm()
-                                    myApp.changeScene()
-                                }
-                            };
-                            document.getElementById('signinSignupForm_errorloc').style.display = "none";
-                            if (that.mode != "dev")
-                                request('/nodejs/dashboard/' + login, false, "GET", "", 'JSON', 'data', '', getUserDashboardCallback);
-                            document.getElementById('splashScreen').classList.add('splashScreenTranslate');
-                        }
-                        else if (returned_data == 2) {
-                            document.getElementById('signinSignupForm_errorloc').style.display = "block";
-                            var li = document.createElement("li");
-                            li.appendChild(document.createTextNode("Login and password not match"));
-                            errors.appendChild(li);
-                        }
-                        else if (returned_data == 3) {
-                            document.getElementById('signinSignupForm_errorloc').style.display = "block";
-                            var li = document.createElement("li");
-                            li.appendChild(document.createTextNode('Login does not exists'));
-                            errors.appendChild(li);
-                        }
-                    };
-                    if (that.mode != "dev"){
-                        var data = {"password" : password}
-                        request('/nodejs/user/' + login, false, "POST", data,"", "", "", loginCallback);
-                    }
-                    else
-                        loginCallback(1)
-                }
-                else {
-                    var login = document.getElementById('login').value;
-                    var password = document.getElementById('password').value;
-                    var repassword = document.getElementById('repassword').value;
-                    var email = document.getElementById('email').value;
-                    var firstname = document.getElementById('firstname').value;
-                    var lastname = document.getElementById('lastname').value;
-
-                    if (password == repassword) {
-                        var formData = {};
-                        formData['login'] = login;
-                        formData['password'] = password;
-                        formData['email'] = email;
-                        formData['firstname'] = firstname;
-                        formData['lastname'] = lastname;
-
-                        var createUserCallback = function (return_value) {
-                            if (return_value == 1) {
-                                var getUserDashboardCallback = function (returned_data) {
-                                    if (returned_data != '207')
-                                        loadJSON(JSON.parse(returned_data));
-                                    if (myApp.activeScene == null) {
-                                        openSceneForm();
-                                        myApp.changeScene();
-                                    }
-                                };
-
-                                if (that.mode != "dev")
-                                request('/nodejs/dashboard/' + login, false,  "GET", "", 'JSON', 'data', '', getUserDashboardCallback);
-                                document.getElementById('splashScreen').classList.add('splashScreenTranslate');
-                            }
-                            else if (return_value == 2) {
-                                document.getElementById('signinSignupForm_errorloc').style.display = "block";
-                                var li = document.createElement("li");
-                                li.appendChild(document.createTextNode('Login already exists'));
-                                errors.appendChild(li);
-
-                            }
-                            else if (return_value == 3) {
-                                document.getElementById('signinSignupForm_errorloc').style.display = "block";
-                                var li = document.createElement("li");
-                                li.appendChild(document.createTextNode('Email already exists'));
-                                errors.appendChild(li);
-                            }
-                        }
-                        if (that.mode != "dev")
-                            request('/nodejs/users/', "POST", false, formData,"","", "", createUserCallback);
-                    }
-                    else {
-                        document.getElementById('signinSignupForm_errorloc').style.display = "block";
-                        var li = document.createElement("li");
-                        li.appendChild(document.createTextNode("Password does not match"));
-                        errors.appendChild(li);
-                    }
-                }
-            }
-            else {
-                document.getElementById('signinSignupForm_errorloc').style.display = "block";
-            }
-        }, false);
     }
 
     logout() {
@@ -176,6 +58,175 @@ class TipeeApp {
                     loadJSON(sessionScenes);
                 }
             }
+        }
+    }
+
+    save() {
+        var that = this;
+        var arrayApp = { 'app': [] };
+        var arrayScene = { 'scenes': [] };
+
+        this.scenes.forEach(elementScene => {
+            var scene = elementScene.toJSON();
+            var arrayTiles = [];
+            elementScene.tiles.forEach(tile => {
+                var tileToSave = tile.toJSON();
+                arrayTiles.push(tileToSave);
+            });
+            scene['tiles'] = arrayTiles;
+            arrayScene['scenes'].push(scene);
+        });
+
+        arrayApp['app'].push(arrayScene);
+
+        var json = JSON.stringify(arrayApp);
+
+        var saveDashboardCallback = function (returned_data) {
+            if (returned_data == '207') {
+                var createDashboardOKCallback = function (returned) {
+                    console.log("Dashboard sucessfully created");
+                }
+                if (that.mode != "dev") {
+                    var data = { "data": json }
+                    request('/nodejs/dashboards?userId=' + that.login, false, "POST", data, "", "", "", createDashboardOKCallback)
+                }
+            }
+            else {
+                var updateDashboardOKCallback = function (returned) {
+                    console.log("Dashboard successfully updated");
+                }
+                if (that.mode != "dev") {
+                    var data = { "data": json }
+                    request('/nodejs/dashboard/' + that.login, false, "PUT", data, "", "", "", updateDashboardOKCallback)
+                }
+            }
+        };
+
+        if (that.mode != "dev")
+            request('/nodejs/dashboard/' + this.login, false, 'GET', "", "JSON", 'data', '', saveDashboardCallback)
+    }
+
+    //TO DO
+    export() {
+        this.save();
+        /* var file = new File([json], 'myFilename.txt', {
+             type: 'application/octet-stream'
+         });*/
+
+        /* var blobUrl = (URL || webkitURL).createObjectURL(file);
+         window.location = blobUrl;*/
+    }
+
+    /****************************************************************************/
+    /* Forms submit functions                                                   */
+    /****************************************************************************/
+
+    signinSignupSubmit() {
+        var that = this;
+        that.loginForm.validation.checkFields();
+        var errors = document.getElementById('signinSignupForm_errorUL');
+
+        if (errors.children.length == 0) {
+            document.getElementById('signinSignupForm_errorloc').style.display = "none";
+            if (document.getElementById('sign').value == 'signup') {
+                var login = document.getElementById('login').value;
+                var password = document.getElementById('password').value;
+                that.login = login;
+
+                var loginCallback = function (returned_data) {
+                    if (returned_data == 1) {
+                        sessionStorage.setItem('user', JSON.stringify(login));
+                        var getUserDashboardCallback = function (returned_data) {
+                            if (returned_data != '207')
+                                loadJSON(JSON.parse(returned_data));
+                            if (myApp.activeScene == null) {
+                                openSceneForm()
+                                myApp.changeScene()
+                            }
+                        };
+                        document.getElementById('signinSignupForm_errorloc').style.display = "none";
+                        if (that.mode != "dev")
+                            request('/nodejs/dashboard/' + login, false, "GET", "", 'JSON', 'data', '', getUserDashboardCallback);
+                        document.getElementById('splashScreen').classList.add('splashScreenTranslate');
+                    }
+                    else if (returned_data == 2) {
+                        document.getElementById('signinSignupForm_errorloc').style.display = "block";
+                        var li = document.createElement("li");
+                        li.appendChild(document.createTextNode("Login and password not match"));
+                        errors.appendChild(li);
+                    }
+                    else if (returned_data == 3) {
+                        document.getElementById('signinSignupForm_errorloc').style.display = "block";
+                        var li = document.createElement("li");
+                        li.appendChild(document.createTextNode('Login does not exists'));
+                        errors.appendChild(li);
+                    }
+                };
+                if (that.mode != "dev") {
+                    var data = { "password": password }
+                    request('/nodejs/user/' + login, false, "POST", data, "", "", "", loginCallback);
+                }
+                else
+                    loginCallback(1)
+            }
+            else {
+                var login = document.getElementById('login').value;
+                var password = document.getElementById('password').value;
+                var repassword = document.getElementById('repassword').value;
+                var email = document.getElementById('email').value;
+                var firstname = document.getElementById('firstname').value;
+                var lastname = document.getElementById('lastname').value;
+
+                if (password == repassword) {
+                    var formData = {};
+                    formData['login'] = login;
+                    formData['password'] = password;
+                    formData['email'] = email;
+                    formData['firstname'] = firstname;
+                    formData['lastname'] = lastname;
+
+                    var createUserCallback = function (return_value) {
+                        if (return_value == 1) {
+                            var getUserDashboardCallback = function (returned_data) {
+                                if (returned_data != '207')
+                                    loadJSON(JSON.parse(returned_data));
+                                if (myApp.activeScene == null) {
+                                    openSceneForm();
+                                    myApp.changeScene();
+                                }
+                            };
+
+                            if (that.mode != "dev")
+                                request('/nodejs/dashboard/' + login, false, "GET", "", 'JSON', 'data', '', getUserDashboardCallback);
+                            document.getElementById('splashScreen').classList.add('splashScreenTranslate');
+                        }
+                        else if (return_value == 2) {
+                            document.getElementById('signinSignupForm_errorloc').style.display = "block";
+                            var li = document.createElement("li");
+                            li.appendChild(document.createTextNode('Login already exists'));
+                            errors.appendChild(li);
+
+                        }
+                        else if (return_value == 3) {
+                            document.getElementById('signinSignupForm_errorloc').style.display = "block";
+                            var li = document.createElement("li");
+                            li.appendChild(document.createTextNode('Email already exists'));
+                            errors.appendChild(li);
+                        }
+                    }
+                    if (that.mode != "dev")
+                        request('/nodejs/users/', "POST", false, formData, "", "", "", createUserCallback);
+                }
+                else {
+                    document.getElementById('signinSignupForm_errorloc').style.display = "block";
+                    var li = document.createElement("li");
+                    li.appendChild(document.createTextNode("Password does not match"));
+                    errors.appendChild(li);
+                }
+            }
+        }
+        else {
+            document.getElementById('signinSignupForm_errorloc').style.display = "block";
         }
     }
 
@@ -228,96 +279,16 @@ class TipeeApp {
             newTile.update()
             newTile.draw();
 
-            if(type == "image")
+            if (type == "image")
                 newTile.refreshEvery()
         }
 
         closeTileForm();
     }
 
-    save() {
-        var that = this;
-        var arrayApp = { 'app': [] };
-        var arrayScene = { 'scenes': [] };
-
-        this.scenes.forEach(elementScene => {
-            var scene = elementScene.toJSON();
-            var arrayTiles = [];
-            elementScene.tiles.forEach(tile => {
-                var tileToSave = tile.toJSON();
-                arrayTiles.push(tileToSave);
-            });
-            scene['tiles'] = arrayTiles;
-            arrayScene['scenes'].push(scene);
-        });
-
-        arrayApp['app'].push(arrayScene);
-
-        var json = JSON.stringify(arrayApp);
-
-        var saveDashboardCallback = function (returned_data) {
-            if (returned_data == '207') {
-                var createDashboardOKCallback = function (returned) {
-                    console.log("Dashboard sucessfully created");
-                }
-                if (that.mode != "dev"){
-                    var data = {"data": json}
-                    request('/nodejs/dashboards?userId=' + that.login, false, "POST", data,"", "","", createDashboardOKCallback)
-                }
-            }
-            else {
-                var updateDashboardOKCallback = function (returned) {
-                    console.log("Dashboard successfully updated");
-                }
-                if (that.mode != "dev"){
-                    var data = {"data": json}
-                    request('/nodejs/dashboard/' + that.login, false, "PUT", data, "", "", "", updateDashboardOKCallback)
-                }
-            }
-        };
-
-        if (that.mode != "dev")
-        request('/nodejs/dashboard/' + this.login, false,  'GET', "", "JSON", 'data', '', saveDashboardCallback)
-    }
-
-    //TO DO
-    export() {
-        this.save();
-       /* var file = new File([json], 'myFilename.txt', {
-            type: 'application/octet-stream'
-        });*/
-
-        /* var blobUrl = (URL || webkitURL).createObjectURL(file);
-         window.location = blobUrl;*/
-    }
-
-    createSigninSignupFormValidator(action) {
-        this.formLoginValidator = new ValidationForm('signinSignupForm');
-        if (action == "signin") {
-            this.formLoginValidator.addValidation('login', 'req', 'Login is required');
-            this.formLoginValidator.addValidation('login', 'maxlen=50', 'Max length for login is 50');
-
-            this.formLoginValidator.addValidation('password', 'req', 'Password is required');
-            this.formLoginValidator.addValidation('password', 'maxlen=50', 'Max length for password is 50');
-        }
-        else {
-            this.formLoginValidator.addValidation('login', 'req', 'Login is required');
-            this.formLoginValidator.addValidation('login', 'maxlen=50', 'Max length for login is 50');
-
-            this.formLoginValidator.addValidation('password', 'req', 'Password is required');
-            this.formLoginValidator.addValidation('password', 'maxlen=50', 'Max length for password is 50');
-            this.formLoginValidator.addValidation('password', 'minlen=8', 'Min length for password is 8');
-
-            this.formLoginValidator.addValidation('email', 'req', 'Email is required');
-            this.formLoginValidator.addValidation('email', 'email', 'Email should be a valid email format');
-
-            this.formLoginValidator.addValidation('repassword', 'req', 'Retype Password is required');
-            this.formLoginValidator.addValidation('repassword', 'same=password', 'Passwords should be identicals');
-
-            this.formLoginValidator.addValidation('firstname', 'req', 'Firstname is required');
-            this.formLoginValidator.addValidation('lastname', 'req', 'Lastname is required');
-        }
-    }
+    /****************************************************************************/
+    /* UI display functions                                                     */
+    /****************************************************************************/
 
     showNewTileButton() {
         var addTileButton = document.getElementById('addTile');
@@ -605,7 +576,7 @@ class TipeeTile {
         while (!testPosition) {
             if (lopp == this.scene.tiles.length - 1)
                 lopp = 0
-                this.scene.tiles[lopp].autoResize()
+            this.scene.tiles[lopp].autoResize()
             var list = [];
             for (i = 0; i < this.scene.tiles.length; i++) {
                 if (this.scene.tiles[i] != this) {
@@ -703,10 +674,10 @@ class TipeeTile {
         var elem = document.getElementById('info');
         var BB = elem.getBoundingClientRect();
 
-        if (document.getElementById(divbase + 'header')) {
+        if (document.getElementById(divbase + ' header')) {
             // if present, the header is where you move the DIV from:
-            document.getElementById(divbase + 'header').onmousedown = dragMouseDown;
-            document.getElementById(divbase + 'header').ontouchstart = dragMouseDown;
+            document.getElementById(divbase + ' header').onmousedown = dragMouseDown;
+            document.getElementById(divbase + ' header').ontouchstart = dragMouseDown;
         } else {
             // otherwise, move the DIV from anywhere inside the DIV:
             elmnt.onmousedown = dragMouseDown;
@@ -741,7 +712,7 @@ class TipeeTile {
                 pos4 = e.clientY;
 
                 var allEmements = that.scene.tiles;
-                
+
 
                 if (!that.isLocked) {
                     that.isClicked = false;
@@ -774,7 +745,7 @@ class TipeeTile {
                     elementShadow.style.display = "block"
 
                     if (elementShadow.offsetTop + that.height > BB.top)
-                    elementShadow.style.top  = BB.top - that.height +"px"
+                        elementShadow.style.top = BB.top - that.height + "px"
 
                     if (allEmements.length > 1) {
                         var colliding = [];
@@ -788,7 +759,7 @@ class TipeeTile {
                             }
                         }
 
-                        for(var i=0; i<colliding.length; i++)
+                        for (var i = 0; i < colliding.length; i++)
                             colliding[i].positionTile()
                     }
                 }
@@ -802,7 +773,7 @@ class TipeeTile {
             that.y = Math.round(that.y / that.scene.gridY) * that.scene.gridY
             that.x = Math.round(that.x / that.scene.gridX) * that.scene.gridX
 
-            if (elmnt.offsetTop + that.height > BB.top){
+            if (elmnt.offsetTop + that.height > BB.top) {
                 that.y = BB.top - that.height;
                 elmnt.style.top = BB.top - that.height + "px"
             }
@@ -995,7 +966,7 @@ class TipeeTile {
         valueDict['title'] = this.title;
         return valueDict;
     }
-    
+
     /****************************************************************************/
     /* Tile form functions                                                      */
     /****************************************************************************/
@@ -1025,13 +996,17 @@ class TipeeTile {
         document.getElementById("type").value = this.type;
         document.getElementById("idTile").value = this.idTile;
         document.getElementById("headerFont").value = this.headerFont;
+        document.getElementById("headerFont").onchange();
         document.getElementById("headerFontSize").value = this.headerFontSize;
         document.getElementById("headerFontColor").value = this.headerFontColor;
-        document.getElementById("headerFontColor").value = this.headerFontColor;
+        updatePicker("headerFontColor")
         document.getElementById("headerColor").value = this.headerColor;
+        updatePicker("headerColor")
         document.getElementById("contentBackgroundColor").value = this.contentBackgroundColor;
+        updatePicker("contentBackgroundColor")
         document.getElementById("borderSize").value = this.borderSize;
         document.getElementById("borderColor").value = this.borderColor;
+        updatePicker("borderColor")
         document.getElementById("width").value = this.width;
         document.getElementById("height").value = this.height;
     }
@@ -1056,20 +1031,19 @@ class TipeeTile {
 
     draw() {
         var that = this;
-        var htmlContent = `
-        
-        <div class='mydiv resizers' id='` + this.idTile + ` resizers'>
-            <div class='contentTxt' id='` + this.idTile + ` content'>
+        var htmlContent =
+            `<div class='tile resizers' id='` + this.idTile + ` resizers'>
+            <div class='tileContent' id='` + this.idTile + ` content'>
             </div>
-            <div data-attr='attr' id='` + this.idTile + ` resizers top-left'>
+            <div id='` + this.idTile + ` resizers top-left'>
             </div>
-            <div data-attr='attr' id='` + this.idTile + ` resizers top-right'>
+            <div id='` + this.idTile + ` resizers top-right'>
             </div>
-            <div data-attr='attr' id='` + this.idTile + ` resizers bottom-left'>
+            <div id='` + this.idTile + ` resizers bottom-left'>
             </div>
-            <div data-attr='attr' id='` + this.idTile + ` resizers bottom-right'>
+            <div id='` + this.idTile + ` resizers bottom-right'>
             </div>
-            <div class='mydivheader' id='` + this.idTile + `header'>` +
+            <div class='tileHeader' id='` + this.idTile + ` header'>` +
             this.title + `</div>
         </div>`
 
@@ -1079,22 +1053,38 @@ class TipeeTile {
         });
 
         var newdiv = document.getElementById(this.idTile + ' resizable');
-        newdiv.style.cssText = 'width:' + this.width + 'px !important; height:' + this.height +
-            'px !important; top:' + this.y + 'px !important; left:' + this.x + 'px!important;';
+        newdiv.style.width = this.width + 'px';
+        newdiv.style.height = this.height + 'px';
+        newdiv.style.top = this.y + 'px'
+        newdiv.style.left = this.x + 'px';
 
         document.addEventListener('click', function (e) {
-            var target = e.target;
-            while (target.nodeType !== Node.DOCUMENT_NODE) {
-                if (target.classList.contains('shown')) return;
-                else target = target.parentNode;
-            }
             var elems2hide = document.querySelectorAll('.shown');
             for (var i = 0, length = elems2hide.length; i < length; i++) {
                 elems2hide[i].classList.remove('shown');
             }
+
+            if(!e.target.id.includes(that.idTile)){
+            that.isClicked = false;
+            var bleft = document.getElementById(that.idTile + ' resizers bottom-left');
+                    bleft.setAttribute('class', '');
+                    bleft.style.cssText = '';
+
+                    var tleft = document.getElementById(that.idTile + ' resizers top-left');
+                    tleft.setAttribute('class', '');
+                    tleft.style.cssText = '';
+
+                    var bright = document.getElementById(that.idTile + ' resizers bottom-right');
+                    bright.setAttribute('class', '');
+                    bright.style.cssText = '';
+
+                    var tright = document.getElementById(that.idTile + ' resizers top-right');
+                    tright.setAttribute('class', '');
+                    tright.style.cssText = '';
+            }
         });
 
-        var divheader = document.getElementById(this.idTile + 'header');
+        var divheader = document.getElementById(this.idTile + ' header');
         divheader.style.cssText = 'background-color: ' + this.headerColor +
             ' !important; font-family:"' + this.headerFont + '"; color: ' +
             this.headerFontColor + '; font-size: ' + this.headerFontSize + 'px;';
@@ -1102,7 +1092,7 @@ class TipeeTile {
         var resizer = document.getElementById(this.idTile + " resizers");
         resizer.style.cssText = 'background-color: ' + this.contentBackgroundColor +
             '; border: ' + this.borderSize + 'px solid ' + this.borderColor + ';';
-        resizer.addEventListener('click', function () {
+            divheader.addEventListener('dblclick', function () {
             if (!that.isLocked) {
                 var bleft = document.getElementById(that.idTile + " resizers bottom-left");
                 bleft.setAttribute("class", "resizer bottom-left");
@@ -1127,7 +1117,7 @@ class TipeeTile {
             }
         });
 
-        resizer.addEventListener('contextmenu', function (e) {
+        divheader.addEventListener('contextmenu', function (e) {
             e.preventDefault();
             var target = e.currentTarget.getAttribute('id').split(' ')[0];
             that.isClicked = true;
@@ -1143,19 +1133,6 @@ class TipeeTile {
         });
 
         document.querySelector('.context-menu').addEventListener('click', function (e) {
-            var target = e.target;
-            if (target.nodeName !== 'A') return;
-            var action = target.getAttribute('data');
-            var id = this.getAttribute('id');
-            if (!action) return;
-            /*if (action == 'edit')
-                updateTileMenuAction(id);
-           // else if (action == 'lock')
-             //   lockTile(id);
-            else if (action == 'delete')
-                that.scene.deleteTileById(id);
-            else if (action == 'duplicate')
-                that.scene.duplicateTileById(id)*/
             this.classList.remove('shown');
         });
         this.dragElement(newdiv);
@@ -1181,6 +1158,11 @@ class TipeeTileNote extends TipeeTile {
 
     fillForm() {
         super.fillForm();
+        document.getElementById('textFont').value = this.textFont;
+        document.getElementById('textFont').onchange();
+        document.getElementById('textFontSize').value = this.textFontSize;
+        document.getElementById('textColor').value = this.textColor;
+        updatePicker("textColor")
     }
 
     update() {
@@ -1195,15 +1177,14 @@ class TipeeTileNote extends TipeeTile {
         super.draw()
 
         var width = that.width - (that.borderSize * 2);
-        var headerHeight = document.getElementById(that.idTile + 'header').offsetHeight;
+        var headerHeight = document.getElementById(that.idTile + ' header').offsetHeight;
         var height = that.height - (that.borderSize * 2) - headerHeight;
 
         var elem = document.getElementById(that.idTile + ' content');
-        elem.innerHTML = `<textarea id='` + that.idTile + `textArea' class='contentTxt` + that.idTile + `'  style=' width: ` + width + `px; height: ` + height + `px; ' id='` + that.idTile + `-txt'>`;
-        elem.style.cssText = "font-family: '" + that.textFont + "' !important; font-size: " + that.textFontSize + "px !important;";
-        elem.style.cssText = "margin: 0px;  position: absolute; top: " + headerHeight + "px; left: 0px;"
+        elem.innerHTML = `<textarea id='` + that.idTile + ` textArea' style=' resize: none; width: ` + width + `px; height: ` + height + `px;'>`;
+        elem.style.cssText = "position: absolute; top: " + headerHeight + "px; left: 0px;"
 
-        var txt = document.getElementById(that.idTile + 'textArea');
+        var txt = document.getElementById(that.idTile + ' textArea');
         txt.value = that.text;
         txt.addEventListener("focusout", function () {
             that.text = txt.value;
@@ -1212,7 +1193,6 @@ class TipeeTileNote extends TipeeTile {
         txt.style.color = that.textColor;
         txt.style.fontSize = that.textFontSize + "px";
         txt.style.fontFamily = that.textFont;
-
     }
 
     redraw() {
@@ -1223,10 +1203,10 @@ class TipeeTileNote extends TipeeTile {
     resize() {
         super.resize();
         var width = this.width - (this.borderSize * 2);
-        var headerHeight = document.getElementById(this.idTile + 'header').offsetHeight;
-        var height = this.height - (this.borderSize) - headerHeight;
+        var headerHeight = document.getElementById(this.idTile + ' header').offsetHeight;
+        var height = this.height - (this.borderSize) -1 - headerHeight;
 
-        var area = document.getElementById(this.idTile + "textArea")
+        var area = document.getElementById(this.idTile + " textArea")
         area.style.width = width + "px"
         area.style.height = height + "px"
         area.style.top = headerHeight + "px"
@@ -1267,6 +1247,11 @@ class TipeeTileTodo extends TipeeTile {
 
     fillForm() {
         super.fillForm();
+        document.getElementById('textFont').value = this.textFont;
+        document.getElementById('textFont').onchange();
+        document.getElementById('textFontSize').value = this.textFontSize;
+        document.getElementById('textColor').value = this.textColor;
+        updatePicker("textColor")
     }
 
     update() {
@@ -1281,13 +1266,14 @@ class TipeeTileTodo extends TipeeTile {
         super.draw()
 
         var todos = that.todo;
+        var headerHeight = document.getElementById(that.idTile + ' header').offsetHeight;
         var elem = document.getElementById(that.idTile + ' content');
         elem.style.position = "absolute"
-        elem.style.top = document.getElementById(that.idTile + 'header').offsetHeight + 'px'
+        elem.style.top = headerHeight + 'px'
         elem.style.overflow = 'auto';
         elem.style.width = 'inherit'
-        elem.style.height = that.height - document.getElementById(that.idTile + 'header').offsetHeight + 'px'
-        elem.innerHTML += '<div><input type="text" id="' + that.idTile + "new" + '"><ul id="todolist' + that.idTile + '"></ul>'
+        elem.style.height = that.height - headerHeight - (that.borderSize*2) + 'px' 
+        elem.innerHTML += '<div><input type="text" id="' + that.idTile + ' new" style="margin-top:5px" placeholder="New task"><ul id="' + that.idTile + ' todolist"></ul>'
 
         if (todos != "") {
             todos = that.todo.split(";")
@@ -1296,59 +1282,56 @@ class TipeeTileTodo extends TipeeTile {
                 return (el != null && el != "");
             });
 
-            var list = document.getElementById("todolist" + that.idTile);
+            var list = document.getElementById(that.idTile + ' todolist');
             list.style.listStyle = "none"
             list.style.padding = "5px"
 
             for (var i = 0; i < filtered.length; i++) {
-                var nelem = document.createElement("li");
-                nelem.style.textAlign = "left"
-                nelem.id = that.idTile + i;
-                var nelem2 = document.createElement("div")
+                var li = document.createElement("li");
+                li.style.textAlign = "left"
+                li.id = that.idTile + i;
+                li.style.marginBottom = "3px";
 
+                var div = document.createElement("div")
                 var item = filtered[i].split("|")
 
-                var ch = document.createElement("INPUT");
-                ch.setAttribute("type", "checkbox");
-                ch.id = that.idTile + " ch" + i
+                var chb = document.createElement("INPUT");
+                chb.setAttribute("type", "checkbox");
+                chb.id = that.idTile + " chb" + i
                 if (item[1] == "Y")
-                    ch.checked = true;
+                    chb.checked = true;
                 else
-                    ch.checked = false;
+                    chb.checked = false;
 
-                (function (index2) {
-                    ch.addEventListener('change', function () {
-                        var toEdit = index2;
+                (function (index) {
+                    chb.addEventListener('change', function () {
                         var checked;
-                        var chb = document.getElementById(that.idTile + " ch" + index2)
+                        var chb = document.getElementById(that.idTile + " chb" + index)
+
                         if (chb.checked == true)
                             checked = "Y"
                         else
                             checked = 'N'
-                        filtered[toEdit] = filtered[toEdit].split("|")[0] + "|" + checked
+
+                        filtered[index] = filtered[index].split("|")[0] + "|" + checked
+
                         var todosNew = ""
                         for (var k = 0; k < filtered.length; k++) {
                             if (filtered[k] != "")
                                 todosNew += filtered[k] + ";"
                         }
-
                         that.todo = todosNew;
                     })
                 })(i)
 
-                nelem2.appendChild(ch)
-                nelem2.appendChild(document.createTextNode(item[0]))
-
-                nelem.appendChild(nelem2);
-                var belem = document.createElement('button');
-                belem.id = that.idTile + "todo" + i;
-                belem.innerText = "Del";
-                belem.style.float = "right";
+                var bt = document.createElement('button');
+                bt.innerText = "Del";
+                bt.style.float = "right";
+                bt.innerHTML = '<i class="fas fa-minus"></i>';
 
                 (function (index) {
-                    belem.addEventListener('click', function () {
-                        var toRemove = index;
-                        filtered.splice(toRemove, 1);
+                    bt.addEventListener('click', function () {
+                        filtered.splice(index, 1);
 
                         var todosNew = ""
                         for (var j = 0; j < filtered.length; j++) {
@@ -1358,24 +1341,30 @@ class TipeeTileTodo extends TipeeTile {
 
                         that.todo = todosNew;
 
-                        var id = that.idTile.concat("", toRemove);
+                        var id = that.idTile.concat("", index);
                         var elem = document.getElementById(id);
                         elem.parentNode.removeChild(elem);
                         that.redraw()
                     })
                 })(i)
-                nelem2.appendChild(belem);
-                list.appendChild(nelem);
+
+                div.appendChild(chb)
+                div.appendChild(document.createTextNode(item[0]))
+                div.appendChild(bt);
+                li.appendChild(div);
+                list.appendChild(li);
             }
         }
         else {
             todos = []
         }
 
-        var addButton = document.getElementById(this.idTile + "new");
+        var addButton = document.getElementById(this.idTile + " new");
         addButton.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
-                that.todo += document.getElementById(that.idTile + "new").value + "|N" + ";"
+                var val = document.getElementById(that.idTile + " new").value
+                if(val != "")
+                that.todo += val  + "|N" + ";"
                 that.redraw();
             }
         });
@@ -1387,7 +1376,9 @@ class TipeeTileTodo extends TipeeTile {
     }
 
     resize() {
-
+        var headerHeight = document.getElementById(this.idTile + ' header').offsetHeight;
+        var elem = document.getElementById(this.idTile + ' content');
+        elem.style.height = this.height - headerHeight - (this.borderSize*2) + 'px' 
     }
 
     toJSON() {
@@ -1440,7 +1431,6 @@ class TipeeTileText extends TipeeTile {
             responseFieldChildLabel.style.display = "block";
             responseFieldChild.style.display = "block";
             this.form.validation.activateField("responseFieldChild")
-            
         }
         else {
             responseFieldChildLabel.style.display = "none";
@@ -1452,23 +1442,25 @@ class TipeeTileText extends TipeeTile {
     fillForm() {
         super.fillForm();
 
-        var responseType = this.responseType
-        var responseField = this.responseField
-
+        document.getElementById('textFont').value = this.textFont;
+        document.getElementById('textFont').onchange();
+        document.getElementById('textFontSize').value = this.textFontSize;
+        document.getElementById('textColor').value = this.textColor;
+        updatePicker("textColor")
         document.getElementById("textBefore").value = this.textBefore
         document.getElementById("textAfter").value = this.textAfter
-        document.getElementById("requestUrl").value = this.requestUrl    
-        document.getElementById("operation").value = this.operation    
-        document.getElementById("reqType").value = this.reqType    
-        document.getElementById("requestRefresh").value = this.requestRefresh    
+        document.getElementById("requestUrl").value = this.requestUrl
+        document.getElementById("operation").value = this.operation
+        document.getElementById("reqType").value = this.reqType
+        document.getElementById("requestRefresh").value = this.requestRefresh
         document.getElementById('responseType').value = this.responseType
 
-        if (responseType == 'XML') {
-            document.getElementById('responseField').value = responseField.split(";")[0]
-            document.getElementById("responseFieldChild").value = responseField.split(";")[1];
+        if (this.responseType == 'XML') {
+            document.getElementById('responseField').value = this.responseField.split(";")[0]
+            document.getElementById("responseFieldChild").value = this.responseField.split(";")[1];
         }
         else {
-            document.getElementById('responseField').value = responseField
+            document.getElementById('responseField').value = this.responseField
         }
     }
 
@@ -1503,50 +1495,49 @@ class TipeeTileText extends TipeeTile {
         super.draw()
 
         var elem = document.getElementById(this.idTile + ' content');
-        elem.innerHTML = `<p id='` + this.idTile + `-txt'>Chargement...</p>`;
+        elem.innerHTML = `<p id='` + this.idTile + ` contentTxt'>Chargement...</p>`;
 
-        var headerHeight = document.getElementById(this.idTile + 'header').offsetHeight;
+        var headerHeight = document.getElementById(this.idTile + ' header').offsetHeight;
         elem.style.top = headerHeight + "px"
         var height = that.height - headerHeight
+
         elem.style.height = height + "px"
         elem.style.position = "absolute"
+        elem.style.color = that.textColor
+        elem.style.fontFamily = that.textFont
+        elem.style.fontSize = that.textFontSize
+        elem.style.display = "flex"
+        elem.style.overflow = "hidden"
 
-        var val;
-        var performSomeAction = function (returned_data) {
-            var txt = document.getElementById(that.idTile + ' content');
-            val = returned_data;
-            elem.innerHTML = `<p style:'color: #` + that.textColor + `;'  id='` + that.idTile + `-txt'>` + that.textBefore + " " + val + " " + that.textAfter + `</p>`;
-            elem.style.color = that.textColor
-            elem.style.fontFamily = that.textFont 
-            elem.style.fontSize = that.textFontSize
+        var txt = document.getElementById(this.idTile + ' contentTxt')
+        txt.style.display = "flex"
+        txt.style.alignItems = "center";
+
+        var requestCallback = function (returned_data) {
+            elem.innerHTML = `<p style:'color: #` + that.textColor + `;'  id='` + that.idTile + ` contentTxt'>` + that.textBefore + " " + returned_data + " " + that.textAfter + `</p>`;
+            var txt = document.getElementById(that.idTile + ' contentTxt')
+        txt.style.display = "flex"
+        txt.style.alignItems = "center";
         }
 
-        var txt = document.getElementById(this.idTile + '-txt');
-        txt.style.color = that.textColor
-        txt.style.fontFamily = that.textFont 
-        txt.style.fontSize = that.textFontSize
-
         if (this.requestRefresh > 0) {
-            request(that.requestUrl,true, that.reqType,"", that.responseType, that.responseField, that.operation, performSomeAction);
+            request(that.requestUrl, true, that.reqType, "", that.responseType, that.responseField, that.operation, requestCallback);
             that.intervalId = setInterval(function () {
                 if (myApp.mode != "dev")
-                request(that.requestUrl, true, that.reqType,"", that.responseType, that.responseField, that.operation,
-                        performSomeAction);
+                    request(that.requestUrl, true, that.reqType, "", that.responseType, that.responseField, that.operation,
+                        requestCallback);
             }, 1000 * this.requestRefresh);
         }
         else {
             if (myApp.mode != "dev")
-            request(that.requestUrl, true, that.reqType, "", that.responseType, that.responseField, that.operation, performSomeAction);
+                request(that.requestUrl, true, that.reqType, "", that.responseType, that.responseField, that.operation, requestCallback);
         }
     }
 
-    resize(){
-        var txt = document.getElementById(this.idTile + '-txt');
-        var headerHeight = document.getElementById(this.idTile + 'header').offsetHeight;
-        var height = this.height - (this.borderSize) - headerHeight;
-        txt.style.height = height + "px";
-        txt.style.overflow = "hidden"
-        txt.style.top =  headerHeight + (height - headerHeight)/2 + "px"
+    resize() {
+        var headerHeight = document.getElementById(this.idTile + ' header').offsetHeight;
+        var elem = document.getElementById(this.idTile + ' content');
+        elem.style.height = this.height - headerHeight - (this.borderSize*2) + 'px' 
     }
 
     toJSON() {
@@ -1594,7 +1585,6 @@ class TipeeTileImage extends TipeeTile {
         var imgType = document.getElementById("imgType");
         var imgNb = document.getElementById("imgNb");
         var imgNbLabel = document.getElementById("imgNbLabel");
-
         var imgSlideIntervalLabel = document.getElementById("imgSlideIntervalLabel");
         var imgSlideInterval = document.getElementById("imgSlideInterval");
 
@@ -1604,7 +1594,6 @@ class TipeeTileImage extends TipeeTile {
         imgSlideInterval.style.display = "none";
 
         this.form.validation.desactivateField("imgSlideInterval")
-
 
         for (var i = 0; i < 10; i++) {
             var elem = document.getElementById("imgSrc" + i);
@@ -1622,32 +1611,30 @@ class TipeeTileImage extends TipeeTile {
             imgSlideInterval.style.display = "block";
             nbImg = imgNb.value;
             this.form.validation.activateField("imgSlideInterval")
-
         }
+
         for (var i = 0; i < nbImg; i++) {
             var elem = document.getElementById("imgSrc" + i);
             elem.style.display = "block";
             this.form.validation.activateField("imgSrc" + i)
-
         }
     }
 
     fillForm() {
         super.fillForm();
 
-        if(this.imgNb == 1){
+        if (this.imgNb == 1) {
             document.getElementById('imgType').value = 'single'
         }
-        else{
+        else {
             document.getElementById('imgType').value = 'slideshow'
             document.getElementById('imgSlideInterval').value = this.imgSlideInterval
         }
 
         document.getElementById('imgRefresh').value = this.imgRefresh;
 
-        for(var i=0; i<this.imgNb; i++)
-        document.getElementById('imgSrc' + i).value = this.imgSrc[i]
-
+        for (var i = 0; i < this.imgNb; i++)
+            document.getElementById('imgSrc' + i).value = this.imgSrc[i]
     }
 
     update() {
@@ -1743,7 +1730,6 @@ class TipeeTileToggles extends TipeeTile {
     }
 
     fillForm() {
-        //this.openForm();
         super.fillForm();
 
         var togglesNb = document.getElementById("togglesNb").value;
@@ -1762,7 +1748,6 @@ class TipeeTileToggles extends TipeeTile {
             elem.style.display = "none";
             this.form.validation.desactivateField("togglesName" + i)
             this.form.validation.desactivateField("togglesURL" + i)
-
         }
 
         var nb = togglesNb.value;
@@ -1772,8 +1757,6 @@ class TipeeTileToggles extends TipeeTile {
             this.form.validation.activateField("togglesName" + i)
             this.form.validation.activateField("togglesURL" + i)
         }
-
-        
     }
 
     update() {
@@ -1801,10 +1784,10 @@ class TipeeTileToggles extends TipeeTile {
         for (let i = 0; i < that.nbToggles; i++) {
             if ((i + 1) % 2 == 1) {
                 htmlContent += "<tr><td><button id='" + that.idTile + "-button-" + i +
-                    "' type='button'>" + that.togglesProperties[i].name + "</button></td>"
+                    "'>" + that.togglesProperties[i].name + "</button></td>"
             }
             else {
-                htmlContent += "<td><button  id='" + that.idTile + "-button-" + i + "' type='button'>" +
+                htmlContent += "<td><button  id='" + that.idTile + "-button-" + i + "'>" +
                     that.togglesProperties[i].name + "</button></td></tr>"
             }
         }
@@ -1826,7 +1809,7 @@ class TipeeTileToggles extends TipeeTile {
     }
 
     trigger(requestUrl) {
-        request(requestUrl,true, "POST", "","", "", "", "");
+        request(requestUrl, true, "POST", "", "", "", "", "");
     }
 
     toJSON() {

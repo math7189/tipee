@@ -94,7 +94,7 @@ class Form {
 
         for (var i = 0; i < json.buttons.length; i++) {
 
-            content1 += `<td style="` + json.buttons[i].tdstyle + `"><button type="` + json.buttons[i].type + `" class="` + json.buttons[i].class + `" onclick="` + json.buttons[i].onclick + `">` + json.buttons[i].name + `</button>`
+            content1 += `<td id= "` + json.buttons[i].tdId + `" style="`  + json.buttons[i].tdstyle + `"><button id= "` + json.buttons[i].id + `" type="` + json.buttons[i].type + `" class="` + json.buttons[i].class + `" onclick="` + json.buttons[i].onclick + `">` + json.buttons[i].name + `</button>`
         }
         content1 += `</form>
         </div>`
@@ -171,7 +171,7 @@ class Form {
                     initArray.push('initSelectNumberInput("' + fieldParam.id + '",' + params[1] + "," + params[2] + "," + params[3] + ")")
                 }
                 else if (init == "picker") {
-                    initArray.push("var " + fieldParam.id + " = new Picker( '" + fieldParam.id + "', 150, 120);")
+                    initArray.push("var" + fieldParam.id + " = new Picker( '" + fieldParam.id + "', 150, 120);")
                 }
             }
 
@@ -200,10 +200,10 @@ class Form {
         }
 
         if (field.colspan != null) {
-            form += `<td colspan="` + field.colspan + `">`
+            form += `<td colspan="` + field.colspan + `" id ="`+ field.tdId + `">`
         }
         else {
-            form += `<td>`
+            form += `<td id ="`+ field.tdId + `">`
         }
 
         if (field.label != null && field.id != null && field.style != "display:none" && field.type != "label")
@@ -211,6 +211,10 @@ class Form {
 
         if (field.type == "label") {
             form += `<label for="` + field.id + `"><b>` + field.label + `</b></label>`
+        }
+
+        else if(field.type == "link"){
+            form +=   `<a id='`+ field.id + `' href="#"  onclick="` + field.onclick + `">` + field.description + `</a>`           
         }
 
         else if (field.type == "select") {
@@ -563,16 +567,16 @@ function createUI() {
    <a href="javascript:;" data="delete" onClick='myApp.activeScene.deleteTileById(this.parentElement.id)'>Delete</a>
 </menu>
 <div class"scene" id='scene'>
-<div class="mydivShadow" id='shadow'></div>
+<div class="tileShadow" id='shadow'></div>
 </div>
-<div id="error_wrapper"></div>
+<div id="backgroundScreen"></div>
 <div id="splashScreen">
    <p class='splashScreenTitle'>Tipee</p>
    <div class='splashScreenText'>
       <p>Creates dashboards easily with Tipee</p>
       <p>Signin to your dashboards! Don't have an account yet? Just signup!</p>
    </div>
-   <div class="form-popup-2" id="signinSignupFormDiv"></div>
+   <div class="form-popup-3" id="signinSignupForm"></div>
 </div>
 <div class="form-popup-2" id="sceneForm"></div>
 <div class="form-popup" id="tileForm"></div>

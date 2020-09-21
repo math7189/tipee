@@ -12,7 +12,7 @@ tileTodoFormTemplate = {
             "type": "select",
             "id": "textFont",
             "colspan": "1",
-            "onchange": "return applyFontInput('headerFont');",
+            "onchange": "return applyFontInput('textFont');",
             "init": "initSelectFontInput"
           },
           {

@@ -8,31 +8,9 @@ body {
 	box-sizing: border-box;
 }
 
-.top{
-	width: 100%;
-	height: 50px;
-}
-
-.title{
-	display: inline;
-}
-
-.title p{
-	text-align: center;
-	vertical-align: middle;
-	line-height: 50px;
-}
-
-.menu-buttons{
-	float: right;
-}
-
-#color-picker {
-    border: 3px solid rgba(15, 15, 15, 0.2);
-    display:none;
-	position: absolute;
-	z-index: 5000;
-}
+/****************************************************************************/
+/* Top section                                                              */
+/****************************************************************************/
 
 #container {
     width:100%;
@@ -63,7 +41,91 @@ body {
 	margin-right: 10px;
 }
 
-.error_wrapper {
+.top{
+	width: 100%;
+	height: 50px;
+}
+
+.title{
+	display: inline;
+}
+
+.title p{
+	text-align: center;
+	vertical-align: middle;
+	line-height: 50px;
+}
+
+.selectdiv {
+	position: relative;
+	float: left;
+	min-width: 200px;
+}
+  
+.selectdiv:after {
+	content: '\f078';
+	font: normal normal normal 17px/1 FontAwesome;
+	color: #0ebeff;
+	right: 11px;
+	top: 2px;
+	height: 24px;
+	padding: 15px 0px 0px 8px;
+	border-left: 1px solid #0ebeff;
+	position: absolute;
+	pointer-events: none;
+}
+  
+  /* IE11 hide native button (thanks Matt!) */
+select::-ms-expand {
+  display: none;
+}
+  
+.selectdiv select {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;	
+	display: block;
+	width: 100%;
+	max-width: 320px;
+	height: 40px;
+	float: right;
+	margin: 5px 0px;
+	padding: 0px 24px;
+	font-size: 16px;
+	line-height: 1.75;
+	color: #333;
+	background-color: #ffffff;
+	background-image: none;
+	border: 1px solid #0ebeff;
+	-ms-word-break: normal;
+	word-break: normal;
+}
+
+/****************************************************************************/
+/* Bottom section                                                           */
+/****************************************************************************/
+
+#info { 
+    height: 20px; 
+    position: fixed; 
+    bottom:0%;
+    width:100%; 
+    background-color: #393838; 
+    opacity: 1;
+}
+
+#color-picker {
+    border: 3px solid rgba(15, 15, 15, 0.2);
+    display:none;
+	position: absolute;
+	z-index: 5000;
+}
+
+/****************************************************************************/
+/* SplashScreen & backgroundScreen                                          */
+/****************************************************************************/
+
+.backgroundScreen {
     position: fixed;
     width: 100%;
     height: 100%;
@@ -127,13 +189,13 @@ header{
 /****************************************************************************/
 /* Tile                                                                     */
 /****************************************************************************/
-.mydiv {
+.tile {
 	position: absolute;
 	z-index: 9;
 	text-align: center;
 }
 
-.mydivShadow {
+.tileShadow {
 	position: absolute;
 	z-index: 8;
 	background-color: #d4cece;
@@ -141,23 +203,16 @@ header{
 	text-align: center;
 	display: none;
 }
-.mydivheader {
+
+.tileHeader {
 	padding: 10px;
 	cursor: move;
 	z-index: 10;
 }
+
 .resizable {
 	background: white;
 	position: absolute;
-}
-.contentTxt p{
-	width: 100%;
-	margin: 0;
-	position: absolute;
-	text-align: center;
-	vertical-align: middle;
-	z-index: 10;
-	top: 50%;
 }
 .resizable .resizers{
 	width: 100%;
@@ -191,6 +246,18 @@ header{
 	right: -5px;
 	bottom: -5px;
 	cursor: nwse-resize;
+}
+
+/****************************************************************************/
+/* Tile Toggle                                                              */
+/****************************************************************************/
+
+.buttons{
+	position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
 }
 
 /****************************************************************************/
@@ -245,48 +312,31 @@ header{
 	background: #EEE;
 }
 
+/****************************************************************************/
+/* UI                                                                       */
+/****************************************************************************/
 
-
-
-/* Button used to open the contact form - fixed at the bottom of the page */
 .open-button {
 	background-color: #555;
 	color: white;
 	padding: 16px 20px;
 	border: none;
 	cursor: pointer;
-	opacity: 0.8;
 	position: fixed;
 	bottom: 23px;
 	right: 28px;
 	width: 280px;
+	z-index: 11;
 }
 
-.form-popup{
-    position: absolute;
-    width: 800px;
-    height: 650px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 13;
-    display: none;
-	flex-flow: column;
-	border-radius: 10px;
-    overflow: hidden;
-}
+/****************************************************************************/
+/* Forms                                                                    */
+/****************************************************************************/
 
-.form-popup-2{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 13;
-    display: none;
-	flex-flow: column;
-	border-radius: 10px;
-	overflow: hidden;
-	width : 360px;
+.formTitle{
+	background: white;
+    padding: 10px;
+    margin: 0;
 }
 
 .form-container {
@@ -294,7 +344,7 @@ header{
 	background-color: white;
 	width: initial;
 }
-/* Full-width input fields */
+
 .form-container input[type=text], .form-container input[type=password], .form-container select{
 	width: 100%;
 	padding: 5px;
@@ -330,19 +380,50 @@ header{
 	opacity: 1;
 }
 
+.form-popup{
+    position: absolute;
+    width: 800px;
+    height: 650px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 13;
+    display: none;
+	flex-flow: column;
+	border-radius: 10px;
+    overflow: hidden;
+}
+
+.form-popup-2{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 13;
+    display: none;
+	flex-flow: column;
+	border-radius: 10px;
+	overflow: hidden;
+	width : 360px;
+}
+
+.form-popup-3 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 13;
+    display: none;
+    flex-flow: column;
+    border-radius: 10px;
+	overflow: hidden;
+}
+
 .formError{
-	/* top: 10px; */
 	display: none;
 	position: absolute;
     bottom: 15px;
     right: 10px;
-}
-
-.formError2{
-    /* top: 10px; */
-    bottom: 15px;
-	right: 10px;
-	display: none;
 }
 
 .formError ul{
@@ -355,6 +436,12 @@ header{
 	padding-right: 15px;
 }
 
+.formError2{
+    bottom: 15px;
+	right: 10px;
+	display: none;
+}
+
 .formError2 ul{
 	color: crimson;
     border: 3px solid;
@@ -363,6 +450,18 @@ header{
     padding-top: 5px;
 	padding-bottom: 5px;
 	padding-right: 15px;
+}
+
+.tabcontents{
+	padding: 10px;
+    background-color: #FFF;
+    height: 100%;
+}
+
+.tabcontent{
+	display: block;
+	height: 100%;
+    overflow: overlay;
 }
 
 ul.tabs{
@@ -392,23 +491,7 @@ ul.tabs li.selected a{
 	font-weight:bold;
 	background: #4286f4;
 }
-.tabcontents{
-	padding: 10px;
-    background-color: #FFF;
-    height: 100%;
-}
 
-.tabcontent{
-	display: block;
-	height: 100%;
-    overflow: overlay;
-}
-
-#itemsTable{
-	height: 250px;
-    overflow: auto;
-    display: block;
-}
 .headerTitle{
 	font-weight: 800;
 }
@@ -426,91 +509,13 @@ ul.tabs li.selected a{
     -moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, .05);
 }
 
-.formTitle{
-	background: white;
-    padding: 10px;
-    margin: 0;
+#itemsTable{
+	height: 250px;
+    overflow: auto;
+    display: block;
 }
 
-.favorite {
-	width: inherit;
-    margin: 0;
-    position: absolute;
-    text-align: center;
-    vertical-align: middle;
-    z-index: 10;
-    top: 50%;
-}
-
-.buttons{
-	position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-}
-
-
-
-#info { 
-    height: 20px; 
-    position: fixed; 
-    bottom:0%;
-    width:100%; 
-    background-color: #393838; 
-    opacity: 1;
-}
-
-
-.selectdiv {
-	position: relative;
-	/*Don't really need this just for demo styling*/
-	float: left;
-	min-width: 200px;
-  }
-  
-  .selectdiv:after {
-	  content: '\f078';
-	  font: normal normal normal 17px/1 FontAwesome;
-	  color: #0ebeff;
-	  right: 11px;
-	  top: 2px;
-	  height: 24px;
-	  padding: 15px 0px 0px 8px;
-	  border-left: 1px solid #0ebeff;
-	  position: absolute;
-	  pointer-events: none;
-  }
-  
-  /* IE11 hide native button (thanks Matt!) */
-  select::-ms-expand {
-  display: none;
-  }
-  
-  .selectdiv select {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-	/* Add some styling */
-	
-	display: block;
-	width: 100%;
-	max-width: 320px;
-	height: 40px;
-	float: right;
-	margin: 5px 0px;
-	padding: 0px 24px;
-	font-size: 16px;
-	line-height: 1.75;
-	color: #333;
-	background-color: #ffffff;
-	background-image: none;
-	border: 1px solid #0ebeff;
-	-ms-word-break: normal;
-	word-break: normal;
-  }
-
-  /* HIDE RADIO */
+/* HIDE RADIO */
 [type=radio] { 
 	position: absolute;
 	opacity: 0;
@@ -518,12 +523,12 @@ ul.tabs li.selected a{
 	height: 0;
   }
   
-  /* IMAGE STYLES */
-  [type=radio] + img {
+ /* IMAGE STYLES */
+ [type=radio] + img {
 	cursor: pointer;
-  }
+ }
   
-  /* CHECKED STYLES */
-  [type=radio]:checked + img {
+ /* CHECKED STYLES */
+ [type=radio]:checked + img {
 	outline: 2px solid #f00;
-  }
+ }

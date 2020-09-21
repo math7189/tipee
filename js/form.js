@@ -1,108 +1,63 @@
 function openSceneForm() {
    document.getElementById("sceneForm").style.display = "flex";
-   document.getElementById("error_wrapper").classList.add("error_wrapper");
+   document.getElementById("backgroundScreen").classList.add("backgroundScreen");
 }
 
 function closeSceneForm() {
    myApp.reloadActiveScene()
    document.getElementById("sceneForm").style.display = "none";
    document.getElementById("sceneName").value = "";
-   document.getElementById("error_wrapper").classList.remove("error_wrapper");
+   document.getElementById("backgroundScreen").classList.remove("backgroundScreen");
    document.getElementById("sceneForm_errorloc").style.display = "none";
 }
 
 function openSigninSignupForm() {
-   document.getElementById("signinSignupFormDiv").style.display = "block";
+   document.getElementById("signinSignupForm").style.display = "block";
    document.getElementById("splashScreen").classList.add("splashScreen");
 }
 
 function closeSigninSignupForm() {
-   document.getElementById("signinSignupFormDiv").style.display = "none";
+   document.getElementById("signinSignupForm").style.display = "none";
    document.getElementById("splashScreen").classList.remove("splashScreen");
-   document.getElementById("signinSignupForm_errorloc").innerHTML = "";
+   document.getElementById("signinSignupForm_errorloc").style.display = "none";
 }
 
-function createSigninSignupForm() {
-   var signinSignupFormDiv = document.getElementById("signinSignupFormDiv");
-   signinSignupFormDiv.innerHTML = `
-   <form id='signinSignupForm' action="javascript:void(0);" class="form-container">
-   <label id="sceneNameLabel" for="sceneName"><b>Login</b></label>
-   <table>
-      <tr>
-         <td colspan="2">
-            <input type="text" placeholder="Enter login" id="login" name="login"  autocomplete="username">
-         </td>
-         <td>&nbsp;</td>
-      </tr>
-      <tr id='emailTr'>
-         <td colspan="2">
-            <input type="text" placeholder="Email" id="email" name="email">
-         </td>
-         <td>&nbsp;</td>
-      </tr>
-      <tr id='passwordTr'>
-         <td id='passwordTd'>
-            <input type="password" placeholder="Enter password" id="password" name="pasword" autocomplete="current-password">
-         </td>
-         <td><input type="password" placeholder="Retype password" id="repassword" name="repasword" autocomplete="new-password"></td>
-      </tr>
-      <tr id='firstLastNameTr'>
-         <td>
-            <input type="text" placeholder="Firstname" id="firstname" name="firstname">
-         </td>
-         <td><input type="text" placeholder="Lastname" id="lastname" name="lastname"></td>
-      </tr>
-      <tr>
-         <td id="signTd">
-            <a id='signup' href="#" onclick="updateSigninSignupForm('signup');return false;">Sign Up</a>
-            <a id='signin' href="#" onclick="updateSigninSignupForm('signin');return false;">Sign In</a>
-         </td>
-         <td id="forgot"><a>Forgot password</a></td>
-      </tr>
-      <tr>
-         <td colspan="2">
-            <div id='signinSignupForm_errorloc' class="formError2"><ul id=signinSignupForm_errorUL></ul></div>
-         </td>
-      </tr>
-      <tr>
-         <td id="btvalLogTd" colspan="2">
-            <button id='btvalLog' type="submit" class="btn">Go</button>
-         </td>
-         <td>
-            <button id='btCancelLog' type="button" class="btn cancel" onclick="closeSceneForm()">Cancel</button>
-         </td>
-      </tr>
-   </table>
-</form>`;
-}
+function updateSigninSignupForm(action, form) {
 
-function updateSigninSignupForm(action) {
-   
+   if(form==null)
+      form = myApp.loginForm
+      
    if (action == "signin") {
       document.getElementById("passwordTd").colSpan = "2";
       document.getElementById("btvalLogTd").colSpan = "2";
-      document.getElementById("signTd").colSpan = "1";
+      document.getElementById("sign").value = "signup"
+      document.getElementById("sign").innerText = "Sign Up"
+
+      form.validation.desactivateField("repassword");
+      form.validation.desactivateField("lastname");
+      form.validation.desactivateField("firstname");
+      form.validation.desactivateField("email");
+
       document.getElementById("repassword").style.display = "none";
       document.getElementById("lastname").style.display = "none";
       document.getElementById("firstname").style.display = "none";
       document.getElementById("emailTr").style.display = "none";
-      document.getElementById("signin").style.display = "none";
-      document.getElementById("signup").style.display = "block";
-      document.getElementById("btCancelLog").style.display = "none";
       document.getElementById("forgot").style.display = "block";
    }
    else {
+      form.validation.activateField("repassword");
+      form.validation.activateField("lastname");
+      form.validation.activateField("firstname");
+      form.validation.activateField("email");
       document.getElementById("passwordTd").colSpan = "1";
       document.getElementById("btvalLogTd").colSpan = "2";
-      document.getElementById("signTd").colSpan = "2";
+      document.getElementById("sign").value = "signin"
+      document.getElementById("sign").innerText = "Sign In"
       document.getElementById("repassword").style.display = "block";
       document.getElementById("lastname").style.display = "block";
       document.getElementById("firstname").style.display = "block";
       document.getElementById("emailTr").style.display = "table-row";
-      document.getElementById("signin").style.display = "block";
-      document.getElementById("signup").style.display = "none";
       document.getElementById("forgot").style.display = "none";
-      document.getElementById("btCancelLog").style.display = "none";
    }
 }
 
@@ -113,6 +68,7 @@ function openTileForm(tpTile) {
       myApp.tileForm.formId = tpTile.form.formId
       myApp.tileForm.validation = tpTile.form.validation
       myApp.tileForm.buildForm();
+      tpTile.fillForm()
       tpTile.updateForm()
    }
    else{
@@ -125,7 +81,7 @@ function openTileForm(tpTile) {
    }
 
    document.getElementById("tileForm").style.display = "flex";
-   document.getElementById("error_wrapper").classList.add("error_wrapper");
+   document.getElementById("backgroundScreen").classList.add("backgroundScreen");
    document.getElementById('tileForm_errorloc').style.display = "none";
 }
 
@@ -133,7 +89,7 @@ function closeTileForm() {
    myApp.demoScene.tiles = [];
    document.getElementById("tileForm").style.display = "none";
    document.getElementById("idTile").value = "";
-   document.getElementById("error_wrapper").classList.remove("error_wrapper");
+   document.getElementById("backgroundScreen").classList.remove("backgroundScreen");
    document.getElementById("tileForm_errorUL").innerHTML = "";
 }
 
