@@ -84,7 +84,7 @@ loginFormTemplate = {
                         "error" : "Max length for password is 50"
                     },
                     {
-                        "rule" : "minlen=50",
+                        "rule" : "minlen=8",
                         "error" : "Min length for password is 8"
                     }
                 ]
