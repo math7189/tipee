@@ -584,7 +584,7 @@ function createUI() {
 <div id="info"> Math </div>`;
 }
 
-function request(urlRequest,crossOrigine, requestType, data, responseType, responseField, operation, callback) {
+function request(urlRequest,crossOrigine, requestType, data, responseType, responseField, operation, call²back) {
     const Http1 = new XMLHttpRequest();
     if(crossOrigine)
         Http1.open(requestType, "https://cors-anywhere.herokuapp.com/" + urlRequest, true);
@@ -667,6 +667,10 @@ function request(urlRequest,crossOrigine, requestType, data, responseType, respo
         }
         else if (Http1.readyState === 4 && Http1.status === 206) {
             requestResult = 3;
+            callback.apply(this, [requestResult]);
+        }
+        else if (Http1.readyState === 4 && Http1.status === 207) {
+            requestResult = "207";
             callback.apply(this, [requestResult]);
         }
     }
