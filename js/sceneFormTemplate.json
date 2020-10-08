@@ -1,41 +1,46 @@
 sceneFormTemplate = {
-    "formId" : "sceneForm",
-    "formTitle": "New Dashboard",
-    "error" : {
-      "id" : "sceneForm_errorloc",
-      "class" : "formError2"
+  "formId": "sceneForm",
+  "formTitle": "New Dashboard",
+  "formTitleClass": "formTitle",
+  "error": {
+    "id": "sceneForm_errorloc",
+    "class": "formError2"
   },
-    "buttonStyle" : "margin: auto; width: 100%",
-    "buttons": [
-      {
-        "name": "OK",
-        "type": "submit",
-        "class": "btn",
-        "tdstyle" : "width: 50%",
-        "submit" : " myApp.createSceneSubmit()"
-      },
-      {
-        "name": "Cancel",
-        "type": "button",
-        "class": "btn cancel",
-        "onclick": "closeSceneForm()"
-      }
-    ],
-    "formTabs": ["default"],
-    "formFields": {
-      "default": [
-        [
-          {
-            "name": "sceneName",
-            "type": "text",
-            "description": "Enter dashboard name",
-            "id": "sceneName",
-            "validation" : [{
-              "rule" : "req",
-              "error" : "Name is required"
-            }]
-          }
-        ]
-      ]
+  "buttonStyle": "margin: auto; width: 100%",
+  "buttons": [
+    {
+      "name": "OK",
+      "type": "submit",
+      "class": "btn",
+      "tdstyle": "width: 50%",
+      "submit": "createScene"
+    },
+    {
+      "name": "Cancel",
+      "type": "button",
+      "class": "btn cancel",
+      "onclick": "closeSceneForm()"
     }
+  ],
+  "formTabs": [
+    "default"
+  ],
+  "formFields": {
+    "default": [
+      [
+        {
+          "name": "sceneName",
+          "type": "text",
+          "description": "Enter dashboard name",
+          "id": "sceneName",
+          "validation": [
+            {
+              "rule": "req",
+              "error": "Name is required"
+            }
+          ]
+        }
+      ]
+    ]
   }
+}

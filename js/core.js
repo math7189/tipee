@@ -1,18 +1,20 @@
 class TipeeApp {
     constructor() {
         this.scenes = [];
-        this.activeScene;
-        this.login;
+        this.activeSceneId = "";
+        this.login = "";
         this.mode = "prod";
         this.demoScene = new TipeeScene("demo");
-        this.tileForm = new Form();
+        this.tileForm = new Form(tileFormTemplate);
         this.sceneForm = new Form(sceneFormTemplate);
-        this.loginForm = new Form(loginFormTemplate)
-        this.init();
+        this.loginForm = new Form(loginFormTemplate);
+        this.autosavetime =  300;
+        this.autoSaveintervalId = null;
     }
 
     init() {
         var that = this;
+        var activeScene = that.getSceneById(that.activeSceneId);
 
         createUI();
         this.sceneForm.buildForm();
@@ -23,29 +25,74 @@ class TipeeApp {
 
         if (sessionStorage.length > 0) {
             var sessionLogin = JSON.parse(sessionStorage.user);
-            if (sessionLogin != null) {
+            if (sessionLogin !== null) {
                 that.login = sessionLogin;
             }
 
             var getUserDashboardCallback = function (returned_data) {
-                if (returned_data != '207')
+                if (returned_data !== '207')
                     loadJSON(JSON.parse(returned_data));
-                if (myApp.activeScene == null) {
-                    openSceneForm()
-                    myApp.changeScene()
+                if (activeScene === null) {
+                    openSceneForm();
+                    that.changeScene();
                 }
             };
 
             closeSigninSignupForm();
 
-            if (that.mode != "dev")
-                request('/nodejs/dashboard/' + that.login, false, "GET", "", 'JSON', 'data', '', getUserDashboardCallback)
+            if (that.mode !== "dev")
+                request('/nodejs/dashboard/' + that.login, false, "GET", "", 'JSON', 'data', '', getUserDashboardCallback);
             document.getElementById('splashScreen').classList.add('splashScreenTranslate');
         }
+
+        document.addEventListener('click', function (e) {
+            var i = 0;
+            var elems2hide = document.querySelectorAll('.shown');
+            var activeScene = that.getSceneById(that.activeSceneId);
+
+            for (i = 0, length = elems2hide.length; i < length; i+= 1) {
+                elems2hide[i].classList.remove('shown');
+            }
+
+            if(activeScene != null){
+                var i = 0;
+            for(i=0; i<activeScene.tiles.length; i+=1){
+
+            if(!e.target.id.includes(activeScene.tiles[i].idTile)){
+            var bleft = document.getElementById(activeScene.tiles[i].idTile + ' resizers bottom-left');
+                    bleft.setAttribute('class', '');
+                    bleft.style.cssText = '';
+
+                    var tleft = document.getElementById(activeScene.tiles[i].idTile + ' resizers top-left');
+                    tleft.setAttribute('class', '');
+                    tleft.style.cssText = '';
+
+                    var bright = document.getElementById(activeScene.tiles[i].idTile + ' resizers bottom-right');
+                    bright.setAttribute('class', '');
+                    bright.style.cssText = '';
+
+                    var tright = document.getElementById(activeScene.tiles[i].idTile + ' resizers top-right');
+                    tright.setAttribute('class', '');
+                    tright.style.cssText = '';
+            }
+        }
+    }
+        });
+        this.autoSave();
+        this.initDemoScene();
+        this.loadSession();
+    }
+
+    initDemoScene(){
+            var tileNote = new TipeeTileNote(this.demoScene.idScene);
+            var tileTodo = new TipeeTileTodo(this.demoScene.idScene);
+            var tileToggles = new TipeeTileToggles(this.demoScene.idScene);
+            var tileText = new TipeeTileText(this.demoScene.idScene);
+            var tileImage= new TipeeTileImage(this.demoScene.idScene);
     }
 
     logout() {
-        this.login = ""
+        this.login = "";
         sessionStorage.clear();
         document.location.reload(true);
     }
@@ -54,15 +101,52 @@ class TipeeApp {
         if (sessionStorage.length > 0) {
             if (sessionStorage.scenes != null) {
                 var sessionScenes = JSON.parse(sessionStorage.scenes);
-                if (sessionScenes != null) {
+                if (sessionScenes !== null) {
                     loadJSON(sessionScenes);
                 }
             }
         }
     }
 
+    autoSave(){
+        var that = this;
+        this.autoSaveintervalId = setInterval(function () {
+            that.save();
+        }
+            , that.autosavetime * 1000);
+    }
+
     save() {
         var that = this;
+        var json = this.getAppJSON();        
+
+        var saveDashboardCallback = function (returned_data) {
+            var data = { "data": json };
+            if (returned_data === '207') {
+                var createDashboardOKCallback = function (returned) {
+                    console.log("Dashboard sucessfully created");
+                };
+                if (that.mode !== "dev") {
+                    request('/nodejs/dashboards?userId=' + that.login, false, "POST", data, "", "", "", createDashboardOKCallback);
+                }
+            }
+            else {
+                var updateDashboardOKCallback = function (returned) {
+                    console.log("Dashboard successfully updated");
+                };
+                if (that.mode !== "dev") {
+                    request('/nodejs/dashboard/' + that.login, false, "PUT", data, "", "", "", updateDashboardOKCallback);
+                }
+            }
+        };
+
+        if (that.mode !== "dev")
+            request('/nodejs/dashboard/' + this.login, false, 'GET', "", "JSON", 'data', '', saveDashboardCallback);
+        else
+        notif({ title: "MyTest", subTitle: "My test notif" });
+    }
+
+    getAppJSON(){
         var arrayApp = { 'app': [] };
         var arrayScene = { 'scenes': [] };
 
@@ -78,43 +162,17 @@ class TipeeApp {
         });
 
         arrayApp['app'].push(arrayScene);
-
         var json = JSON.stringify(arrayApp);
-
-        var saveDashboardCallback = function (returned_data) {
-            if (returned_data == '207') {
-                var createDashboardOKCallback = function (returned) {
-                    console.log("Dashboard sucessfully created");
-                }
-                if (that.mode != "dev") {
-                    var data = { "data": json }
-                    request('/nodejs/dashboards?userId=' + that.login, false, "POST", data, "", "", "", createDashboardOKCallback)
-                }
-            }
-            else {
-                var updateDashboardOKCallback = function (returned) {
-                    console.log("Dashboard successfully updated");
-                }
-                if (that.mode != "dev") {
-                    var data = { "data": json }
-                    request('/nodejs/dashboard/' + that.login, false, "PUT", data, "", "", "", updateDashboardOKCallback)
-                }
-            }
-        };
-
-        if (that.mode != "dev")
-            request('/nodejs/dashboard/' + this.login, false, 'GET', "", "JSON", 'data', '', saveDashboardCallback)
+        return json;
     }
 
-    //TO DO
     export() {
-        this.save();
-        /* var file = new File([json], 'myFilename.txt', {
+        var file = new File([this.getAppJSON()], 'myFilename.txt', {
              type: 'application/octet-stream'
-         });*/
+         });
 
-        /* var blobUrl = (URL || webkitURL).createObjectURL(file);
-         window.location = blobUrl;*/
+         var blobUrl = (URL || webkitURL).createObjectURL(file);
+         window.location = blobUrl;
     }
 
     /****************************************************************************/
@@ -123,61 +181,61 @@ class TipeeApp {
 
     signinSignupSubmit() {
         var that = this;
+        var activeScene = that.getSceneById(that.activeSceneId);
         that.loginForm.validation.checkFields();
         var errors = document.getElementById('signinSignupForm_errorUL');
 
-        if (errors.children.length == 0) {
+        if (errors.children.length === 0) {
             document.getElementById('signinSignupForm_errorloc').style.display = "none";
-            if (document.getElementById('sign').value == 'signup') {
-                var login = document.getElementById('login').value;
+            var login = document.getElementById('login').value;
                 var password = document.getElementById('password').value;
+            if (document.getElementById('sign').value === 'signup') {
+                
                 that.login = login;
 
                 var loginCallback = function (returned_data) {
-                    if (returned_data == 1) {
+                    if (returned_data === 1) {
                         sessionStorage.setItem('user', JSON.stringify(login));
                         var getUserDashboardCallback = function (returned_data) {
-                            if (returned_data != '207')
+                            if (returned_data !== '207')
                                 loadJSON(JSON.parse(returned_data));
-                            if (myApp.activeScene == null) {
-                                openSceneForm()
-                                myApp.changeScene()
+                            if (activeScene === null) {
+                                openSceneForm();
+                                that.changeScene();
                             }
                         };
                         document.getElementById('signinSignupForm_errorloc').style.display = "none";
-                        if (that.mode != "dev")
+                        if (that.mode !== "dev")
                             request('/nodejs/dashboard/' + login, false, "GET", "", 'JSON', 'data', '', getUserDashboardCallback);
                         document.getElementById('splashScreen').classList.add('splashScreenTranslate');
                     }
-                    else if (returned_data == 2) {
-                        document.getElementById('signinSignupForm_errorloc').style.display = "block";
+                    else{
                         var li = document.createElement("li");
+                     if (returned_data === 2) {
+                        document.getElementById('signinSignupForm_errorloc').style.display = "block";
                         li.appendChild(document.createTextNode("Login and password not match"));
-                        errors.appendChild(li);
                     }
-                    else if (returned_data == 3) {
+                    else if (returned_data === 3) {
                         document.getElementById('signinSignupForm_errorloc').style.display = "block";
-                        var li = document.createElement("li");
                         li.appendChild(document.createTextNode('Login does not exists'));
-                        errors.appendChild(li);
                     }
+                    errors.appendChild(li);
+                }
                 };
-                if (that.mode != "dev") {
-                    var data = { "password": password }
+                if (that.mode !== "dev") {
+                    var data = { "password": password };
                     request('/nodejs/user/' + login, false, "POST", data, "", "", "", loginCallback);
                 }
                 else
-                    loginCallback(1)
+                    loginCallback(1);
             }
             else {
-                var login = document.getElementById('login').value;
-                var password = document.getElementById('password').value;
                 var repassword = document.getElementById('repassword').value;
                 var email = document.getElementById('email').value;
                 var firstname = document.getElementById('firstname').value;
                 var lastname = document.getElementById('lastname').value;
 
-                if (password == repassword) {
+                if (password === repassword) {
                     var formData = {};
                     formData['login'] = login;
                     formData['password'] = password;
@@ -186,35 +244,36 @@ class TipeeApp {
                     formData['lastname'] = lastname;
 
                     var createUserCallback = function (return_value) {
-                        if (return_value == 1) {
+                        if (return_value === 1) {
                             var getUserDashboardCallback = function (returned_data) {
-                                if (returned_data != '207')
+                                if (returned_data !== '207')
                                     loadJSON(JSON.parse(returned_data));
-                                if (myApp.activeScene == null) {
+                                if (activeScene === null) {
                                     openSceneForm();
-                                    myApp.changeScene();
+                                    that.changeScene();
                                 }
                             };
 
-                            if (that.mode != "dev")
+                            if (that.mode !== "dev")
                                 request('/nodejs/dashboard/' + login, false, "GET", "", 'JSON', 'data', '', getUserDashboardCallback);
                             document.getElementById('splashScreen').classList.add('splashScreenTranslate');
                         }
-                        else if (return_value == 2) {
-                            document.getElementById('signinSignupForm_errorloc').style.display = "block";
+                        else{
                             var li = document.createElement("li");
+
+                         if (return_value === 2) {
+                            document.getElementById('signinSignupForm_errorloc').style.display = "block";
                             li.appendChild(document.createTextNode('Login already exists'));
-                            errors.appendChild(li);
 
                         }
-                        else if (return_value == 3) {
+                        else if (return_value === 3) {
                             document.getElementById('signinSignupForm_errorloc').style.display = "block";
-                            var li = document.createElement("li");
                             li.appendChild(document.createTextNode('Email already exists'));
-                            errors.appendChild(li);
                         }
+                        errors.appendChild(li);
                     }
-                    if (that.mode != "dev")
+                    };
+                    if (that.mode !== "dev")
                         request('/nodejs/users/', false, "POST", formData, "", "", "", createUserCallback);
                 }
                 else {
@@ -246,41 +305,44 @@ class TipeeApp {
     createOrUpdateTpTile() {
         var type = document.getElementById('type').value;
         var idTile = document.getElementById('idTile').value;
+        var activeScene = this.getActiveScene();
 
         var tileToBeUpdtated;
-        if (idTile != '') {
-            for (var i = 0; i < myApp.activeScene.tiles.length; i++) {
-                if (myApp.activeScene.tiles[i].idTile == idTile) {
-                    tileToBeUpdtated = myApp.activeScene.tiles[i];
+        if (idTile !== '') {
+            for (var i = 0; i < activeScene.tiles.length; i+= 1) {
+                if (activeScene.tiles[i].idTile === idTile) {
+                    tileToBeUpdtated = activeScene.tiles[i];
                     tileToBeUpdtated.update();
                     tileToBeUpdtated.redraw();
                 }
-            };
+            }
         }
         else {
-            var newTile;
-            if (type == 'note') {
-                newTile = new TipeeTileNote(myApp.activeScene);
+            var newTile = null;
+            if (type === 'note') {
+                newTile = new TipeeTileNote(activeScene.idScene);
             }
-            else if (type == 'todo') {
-                newTile = new TipeeTileTodo(myApp.activeScene);
+            else if (type === 'todo') {
+                newTile = new TipeeTileTodo(activeScene.idScene);
             }
-            else if (type == 'text') {
-                newTile = new TipeeTileText(myApp.activeScene);
+            else if (type === 'text') {
+                newTile = new TipeeTileText(activeScene.idScene);
             }
-            else if (type == 'image') {
-                newTile = new TipeeTileImage(myApp.activeScene);
+            else if (type === 'image') {
+                newTile = new TipeeTileImage(activeScene.idScene);
             }
-            else if (type == 'toggles') {
-                newTile = new TipeeTileToggles(myApp.activeScene);
+            else if (type === 'toggles') {
+                newTile = new TipeeTileToggles(activeScene.idScene);
             }
 
-            newTile.findAvailablePos(this.activeScene.tiles)
-            newTile.update()
-            newTile.draw();
+            if(newTile !== null){
+                newTile.findAvailablePos();
+                newTile.update();
+                newTile.draw();
 
-            if (type == "image")
-                newTile.refreshEvery()
+                if (type === "image")
+                    newTile.refreshEvery();
+            }
         }
 
         closeTileForm();
@@ -310,8 +372,8 @@ class TipeeApp {
         var optionsSelectSceneInput = selectSceneInput.options;
         var alreadyExists = false;
 
-        for (var i, j = 0; i = selectSceneInput.options[j]; j++) {
-            if (i.value == newSceneName) {
+        for (var i, j = 0; i = selectSceneInput.options[j]; j+= 1) {
+            if (i.value === newSceneName) {
                 alreadyExists = true;
                 break;
             }
@@ -329,8 +391,8 @@ class TipeeApp {
             option.value = newScene.sceneName;
             selectSceneInput.options.add(option);
 
-            for (var i, j = 0; i = selectSceneInput.options[j]; j++) {
-                if (i.value == newScene.sceneName) {
+            for (i, j = 0; i = selectSceneInput.options[j]; j+= 1) {
+                if (i.value === newScene.sceneName) {
                     selectSceneInput.selectedIndex = j;
                     break;
                 }
@@ -339,9 +401,9 @@ class TipeeApp {
             var opts = optionsSelectSceneInput.length;
 
             if (opts > 2)
-                optionsSelectSceneInput[0].style.display = 'none'
+                optionsSelectSceneInput[0].style.display = 'none';
 
-            if (this.activeScene != null)
+            if (this.activeSceneId != "")
                 this.clearActiveScene();
 
             this.setActiveScene(newScene);
@@ -351,71 +413,141 @@ class TipeeApp {
         }
     }
 
+    getSceneById(sceneId){
+        for(var i=0; i< this.scenes.length; i+=1){
+            if(this.scenes[i].idScene === sceneId)
+                return this.scenes[i];    
+        }
+
+        if(sceneId === "demo")
+            return this.demoScene;
+    }
+
+    getActiveScene(){
+        return this.getSceneById(this.activeSceneId);
+    }
+
     reloadActiveScene() {
-        var scene = this.activeScene;
+        var scene = this.getActiveScene();
         if (scene != null)
-            setValueSectectInput("sceneSelect", scene.sceneName)
+            setValueSectectInput("sceneSelect", scene.sceneName);
         else
-            setValueSectectInput("sceneSelect", "default")
+            setValueSectectInput("sceneSelect", "default");
     }
 
     changeScene() {
         var selectSceneInput = document.getElementById('sceneSelect');
         var opts = selectSceneInput.options.length;
 
-        if (opts > 2)
-            document.getElementById('sceneSelect').options[0].style.display = 'none'
-
-        if (selectSceneInput.value == 'new') {
+        if (opts > 2){
+            document.getElementById('sceneSelect').options[0].style.display = 'none';
+        }
+        if (selectSceneInput.value === 'new') {
             openSceneForm();
         }
-        else if (selectSceneInput.value == 'default')
+        else if (selectSceneInput.value === 'default'){
             this.hideNewTileButton();
+        }
         else {
-            var selectedScene;
-            for (var i = 0; i < this.scenes.length; i++) {
-                if (this.scenes[i].sceneName == selectSceneInput.value)
+            var selectedScene = null;
+            for (var i = 0; i < this.scenes.length; i+= 1) {
+                if (this.scenes[i].sceneName === selectSceneInput.value){
                     selectedScene = this.scenes[i];
+                }
             }
-            this.showNewTileButton();
-            this.changeActiveScene(selectedScene);
+
+            if(selectedScene !== null){
+                this.showNewTileButton();
+                this.changeActiveScene(selectedScene);
+            }
         }
     }
 
     setActiveScene(scene) {
-        this.activeScene = scene;
+        this.activeSceneId = scene.idScene;
         scene.isActive = true;
     }
 
     changeActiveScene(newSceneActive) {
-        this.activeScene.clearScene();
-        this.activeScene.isActive = false;
+        var scene = this.getActiveScene();
+        if(scene != null){
+            scene.clearScene();
+            scene.isActive = false;
+        }
+        
         this.setActiveScene(newSceneActive);
         this.drawActiveScene();
     }
 
     clearActiveScene() {
-        this.activeScene.clearScene();
+        this.getActiveScene().clearScene();
     }
 
     drawActiveScene() {
-        this.activeScene.drawScene();
+        this.getActiveScene().drawScene();
     }
+
+    deleteActiveScene(){
+        var scene = this.getActiveScene();
+        if(scene != null){
+        scene.clearScene();
+
+        for(var i=0; i < this.scenes.length; i+= 1){
+            if(this.scenes[i].idScene === scene.idScene)
+                this.scenes.splice(i,1);
+        }
+
+        var selectSceneInput = document.getElementById('sceneSelect');
+        var optionsSelectSceneInput = selectSceneInput.options;
+
+        for (var i, j = 0; i = selectSceneInput.options[j]; j+= 1) {
+            if (i.value === scene.sceneName) {
+                selectSceneInput.options.remove(j);
+                break;
+            }
+        }
+
+        var opts = optionsSelectSceneInput.length;
+
+        if (opts > 2){
+            var nextSceneName = optionsSelectSceneInput[2].value;
+            var nextScene;
+            for(var i=0; i<this.scenes.length; i+= 1){
+                if(this.scenes[i].sceneName === nextSceneName){
+                    nextScene = this.scenes[i];
+                    break;
+                }
+            }
+
+            if(nextScene !== null){
+                selectSceneInput.value = nextScene.sceneName;
+                this.changeActiveScene(nextScene);
+            }
+            optionsSelectSceneInput[0].style.display = 'none';
+        }
+        else
+            optionsSelectSceneInput[0].style.display = 'block';
+    }
+}
 }
 
 class TipeeScene {
     constructor(sceneName) {
         this.scene = document.getElementById('scene');
-        this.sceneId = "scene"
+        this.sceneId = "scene";
         this.tiles = [];
-        this.sceneName = sceneName
-        this.isActive;
+        this.sceneName = sceneName;
+        this.isActive = false;
         this.gridX = 50;
         this.gridY = 50;
-        this.idScene = Math.random().toString(36).substring(2, 15) +
+        
+        if (this.sceneName !== "demo"){
+            this.idScene = Math.random().toString(36).substring(2, 15) +
             Math.random().toString(36).substring(2, 15);
-        if (this.sceneName != "demo")
             myApp.scenes.push(this);
+        }
+        else
+            this.idScene = "demo";
     }
 
     addDiv(parentDiv, content, attrs) {
@@ -436,67 +568,94 @@ class TipeeScene {
     removeElement(elemId) {
         var elem = document.getElementById(elemId);
         elem.parentNode.removeChild(elem);
+        elem = null;
     }
 
     deleteTileById(tileId) {
-        var tileToBeDeleted;
-        var index;
-        for (var j = 0; j < this.tiles.length; j++) {
+        var tileToBeDeleted = null;
+        var index = 0;
+        for (var j = 0; j < this.tiles.length; j+= 1) {
             var tile = this.tiles[j];
-            if (tile.idTile == tileId) {
+            if (tile.idTile === tileId) {
                 tileToBeDeleted = tile;
                 index = j;
             }
         }
 
-        if (tileToBeDeleted != null) {
+        if (tileToBeDeleted !== null) {
             this.removeElement(tileId + ' resizable');
 
-            if (tileToBeDeleted.intervalId != null)
-                clearInterval(tileToBeDeleted.intervalId)
+            if (tileToBeDeleted.intervalId !== null)
+                clearInterval(tileToBeDeleted.intervalId);
+            this.tiles[index] = null;
             this.tiles.splice(index, 1);
+            tileToBeDeleted = null;
         }
     }
 
+    getTileById(id){
+        for(var i=0; i<this.tiles.length; i+=1){
+            if(this.tiles[i].idTile == id){
+                return this.tiles[i];
+            }
+        }
+        return null;
+    }
+
+    getTilesByType(type){
+        var tiles = [];
+        for(var i=0; i<this.tiles.length; i+=1){
+            if(this.tiles[i].type == type){
+                tiles.push(this.tiles[i]);
+            }
+        }
+        return tiles;
+    }
+
     duplicateTileById(tileId) {
-        var tileToBeDuplicated;
-        for (var j = 0; j < this.tiles.length; j++) {
+        var tileToBeDuplicated = null;
+        for (var j = 0; j < this.tiles.length; j+= 1) {
             var tile = this.tiles[j];
-            if (tile.idTile == tileId) {
+            if (tile.idTile === tileId) {
                 tileToBeDuplicated = tile;
             }
         }
 
-        if (tileToBeDuplicated.type == 'text') {
-            var newTile = new TipeeTileText(tileToBeDuplicated.scene, tileToBeDuplicated.x, tileToBeDuplicated.y, tileToBeDuplicated.width, tileToBeDuplicated.height, false, tileToBeDuplicated.headerColor,
+        if(tileToBeDuplicated!== null){
+        var newTile = null;
+        if (tileToBeDuplicated.type === 'text') {
+             newTile = new TipeeTileText(tileToBeDuplicated.sceneId, tileToBeDuplicated.x, tileToBeDuplicated.y, tileToBeDuplicated.width, tileToBeDuplicated.height, false, tileToBeDuplicated.headerColor,
                 tileToBeDuplicated.headerFontColor, tileToBeDuplicated.headerFont, tileToBeDuplicated.headerFontSize, tileToBeDuplicated.borderColor, tileToBeDuplicated.borderSize,
                 tileToBeDuplicated.contentBackgroundColor, tileToBeDuplicated.title, tileToBeDuplicated.requestUrl, tileToBeDuplicated.reqType, tileToBeDuplicated.responseType, tileToBeDuplicated.responseField, tileToBeDuplicated.textBefore,
                 tileToBeDuplicated.textAfter, tileToBeDuplicated.requestRefresh, tileToBeDuplicated.textColor, tileToBeDuplicated.textFont, tileToBeDuplicated.textFontSize, tileToBeDuplicated.operation);
             newTile.draw();
         }
-        else if (tileToBeDuplicated.type == 'image') {
-            var newTile = new TipeeTileImage(tileToBeDuplicated.scene, tileToBeDuplicated.x, tileToBeDuplicated.y, tileToBeDuplicated.width, tileToBeDuplicated.height, false, tileToBeDuplicated.headerColor,
+        else if (tileToBeDuplicated.type === 'image') {
+             newTile = new TipeeTileImage(tileToBeDuplicated.sceneId, tileToBeDuplicated.x, tileToBeDuplicated.y, tileToBeDuplicated.width, tileToBeDuplicated.height, false, tileToBeDuplicated.headerColor,
                 tileToBeDuplicated.headerFontColor, tileToBeDuplicated.headerFont, tileToBeDuplicated.headerFontSize, tileToBeDuplicated.borderColor, tileToBeDuplicated.borderSize,
                 tileToBeDuplicated.contentBackgroundColor, tileToBeDuplicated.title, tileToBeDuplicated.imgNb, tileToBeDuplicated.imgSrc, tileToBeDuplicated.imgSlideInterval, tileToBeDuplicated.imgRefresh);
             newTile.draw();
             newTile.refreshEvery();
         }
+        newTile.findAvailablePos();
+    }
     }
 
     clearScene() {
-        for (var j = 0; j < this.tiles.length; j++) {
+        for (var j = 0; j < this.tiles.length; j+= 1) {
             var tile = this.tiles[j];
             var elem = document.getElementById(tile.idTile + ' resizable');
-            if (elem != null) {
+            if (elem !== null) {
                 elem.parentNode.removeChild(elem);
-                if (tile.intervalId != null)
-                    clearInterval(tile.intervalId)
+                if (tile.intervalId !== null)
+                    clearInterval(tile.intervalId);
             }
+            elem = null;
         }
     }
 
     drawScene() {
-        for (var i = 0; i < this.tiles.length; i++) {
+        for (var i = 0; i < this.tiles.length; i+= 1) {
             var tile = this.tiles[i];
             tile.draw();
         }
@@ -512,17 +671,17 @@ class TipeeScene {
 }
 
 class TipeeTile {
-    constructor(scene, x, y, width, height, isLocked, headerColor, headerFontColor,
+    constructor(sceneId, x, y, width, height, isLocked, headerColor, headerFontColor,
         headerFont, headerFontSize, borderColor, borderSize, contentBackgroundColor, title, form) {
-        this.scene = scene;
+        this.sceneId = sceneId;
         this.x = x;
         this.y = y;
-        if (width == '')
+        if (width === '')
             this.width = 250;
         else
             this.width = parseInt(width);
 
-        if (height == '')
+        if (height === '')
             this.height = 250;
         else
             this.height = parseInt(height);
@@ -543,10 +702,11 @@ class TipeeTile {
         this.idTile = Math.random().toString(36).substring(2, 15) +
             Math.random().toString(36).substring(2, 15);
 
-        this.baseForm = new Form(tileFormTemplate)
-        var merged = {}
-        this.baseForm.merge(merged, this.baseForm.fields, form)
-        this.form = new Form(merged);
+        if(this.sceneId === "demo"){
+            var merged = {};
+            merge(merged, tileFormTemplate, form);
+            this.form = new Form(merged);
+        }
     }
 
     // get the center coordinates of the rectangle
@@ -571,56 +731,83 @@ class TipeeTile {
     }
 
     positionTile() {
-        var testPosition = this.findAvailablePos(this.scene.tiles);
-        var lopp = 0
+        var scene = myApp.getSceneById(this.sceneId);
+        var testPosition = this.findAvailablePos();
+
+        function orderTilesBySurface(scene){
+
+            var orderedTile = [];
+            for(var i=0; i<scene.tiles.length; i+=1){
+                var t = {};
+                t.id = scene.tiles[i].idTile;
+                t.surface = scene.tiles[i].width * scene.tiles[i].height;
+                orderedTile.push(t);
+            }
+
+            function compare(a, b) {
+                if (a.surface > b.surface) return -1;
+                if (b.surface > a.surface) return 1;
+          
+                return 0;
+            }
+
+            orderedTile.sort(compare);
+            return orderedTile;
+        }
+        
+
         while (!testPosition) {
-            if (lopp == this.scene.tiles.length - 1)
-                lopp = 0
-            this.scene.tiles[lopp].autoResize()
+            var orderedTiles = orderTilesBySurface(scene);
+            if(orderedTiles.length > 1){
+                if(!scene.getTileById(orderedTiles[0].id).isDragging)
+                    scene.getTileById(orderedTiles[0].id).autoResize();
+                else
+                    scene.getTileById(orderedTiles[1].id).autoResize();
+            }
+
             var list = [];
-            for (i = 0; i < this.scene.tiles.length; i++) {
-                if (this.scene.tiles[i] != this) {
-                    list.push(this.scene.tiles[i])
-                    this.scene.tiles[i].findAvailablePos(list)
+            for (var i = 0; i < scene.tiles.length; i+= 1) {
+                if (scene.tiles[i] !== this) {
+                    list.push(scene.tiles[i]);
+                    scene.tiles[i].findAvailablePos();
                 }
             }
-            lopp += 1
-            testPosition = this.findAvailablePos(this.scene.tiles)
+            testPosition = this.findAvailablePos();
         }
     }
 
-    findAvailablePos(list) {
+    findAvailablePos() {
+        var scene = myApp.getSceneById(this.sceneId);
         var elem = document.getElementById('info');
         var BB = elem.getBoundingClientRect();
 
-        var i = Math.round(BB.width / this.scene.gridX)
-        var j = Math.round(BB.top / this.scene.gridY)
+        var i = Math.round(BB.width / scene.gridX);
+        var j = Math.round(BB.top / scene.gridY);
 
         loop1:
-        for (var k = 0; k < j - 5; k++) {
-            this.y = k * this.scene.gridY + 50
+        for (var k = 0; k < j - 5; k+= 1) {
+            this.y = k * scene.gridY + 50;
             loop2:
-            for (var l = 0; l < i - 5; l++) {
+            for (var l = 0; l < i - 5; l+= 1) {
 
-                this.x = l * this.scene.gridX
-                var col = 0
-                var elements = list;
-                if (elements.length > 1) {
+                this.x = l * scene.gridX;
+                var col = 0;
+                if (scene.tiles.length > 1) {
                     loop3:
-                    for (var m = 0; m < elements.length; m++) {
-                        if (this != elements[m]) {
-                            if (this.testCollision(elements[m])) {
-                                col += 1
-                                if (k == j - 5 && l == i - 5) {
+                    for (var m = 0; m < scene.tiles.length; m+= 1) {
+                        if (this !== scene.tiles[m]) {
+                            if (this.testCollision(scene.tiles[m]) || this.testOutsideUI()) {
+                                col += 1;
+                                if (k === j - 5 && l === i - 5) {
                                     return false;
                                 }
                                 break loop3;
                             }
                         }
                     }
-                    if (col == 0) {
+                    if (col === 0) {
                         const element = document.getElementById(this.idTile + ' resizable');
-                        if (element != null) {
+                        if (element !== null) {
                             element.style.top = this.y + 'px';
                             element.style.left = this.x + 'px';
                         }
@@ -629,7 +816,7 @@ class TipeeTile {
                 }
                 else {
                     const element = document.getElementById(this.idTile + ' resizable');
-                    if (element != null) {
+                    if (element !== null) {
                         element.style.top = this.y + 'px';
                         element.style.left = this.x + 'px';
                     }
@@ -637,16 +824,18 @@ class TipeeTile {
                 }
             }
         }
+        return false;
     }
 
     autoResize() {
+        var scene = myApp.getSceneById(this.sceneId);
         var oldWidth = this.width;
         var oldHeight = this.height;
 
-        if (oldWidth / this.scene.gridX > 1)
-            this.width = this.scene.gridX * ((oldWidth / this.scene.gridX) - 1);
-        if (oldHeight / this.scene.gridX > 1)
-            this.height = this.scene.gridX * ((oldHeight / this.scene.gridX) - 1);
+        if (oldWidth / scene.gridX > 1)
+            this.width = scene.gridX * ((oldWidth / scene.gridX) - 1);
+        if (oldHeight / scene.gridX > 1)
+            this.height = scene.gridX * ((oldHeight / scene.gridX) - 1);
 
         const element = document.getElementById(this.idTile + ' resizable');
         element.style.width = this.width + 'px';
@@ -663,13 +852,23 @@ class TipeeTile {
         return true;
     }
 
+    testOutsideUI(){
+        var elem = document.getElementById('info');
+        var BB = elem.getBoundingClientRect();
+
+        if (this.y + this.height > BB.top)
+            return true;
+        else
+            return false;
+    }
+
     dragElement(elmnt) {
         var that = this;
         var pos1 = 0,
             pos2 = 0,
             pos3 = 0,
             pos4 = 0;
-        var divbase = elmnt.id.split(' ')[0]
+        var divbase = elmnt.id.split(' ')[0];
 
         var elem = document.getElementById('info');
         var BB = elem.getBoundingClientRect();
@@ -685,7 +884,7 @@ class TipeeTile {
         }
 
         function dragMouseDown(e) {
-            if (e.button == 0) {
+            if (e.button === 0) {
                 e = e || window.event;
                 e.preventDefault();
                 // get the mouse cursor position at startup:
@@ -701,7 +900,7 @@ class TipeeTile {
         }
 
         function elementDrag(e) {
-            if (e.button == 0 && !that.isLocked) {
+            if (e.button === 0 && !that.isLocked) {
                 e = e || window.event;
                 e.preventDefault();
                 that.isDragging = true;
@@ -711,8 +910,8 @@ class TipeeTile {
                 pos3 = e.clientX;
                 pos4 = e.clientY;
 
-                var allEmements = that.scene.tiles;
-
+                var scene = myApp.getSceneById(that.sceneId);
+                var allEmements = scene.tiles;
 
                 if (!that.isLocked) {
                     that.isClicked = false;
@@ -738,67 +937,73 @@ class TipeeTile {
                     elmnt.style.zIndex = 9;
 
                     const elementShadow = document.getElementById('shadow');
-                    elementShadow.style.top = Math.round((that.y) / that.scene.gridY) * that.scene.gridY + 'px';
-                    elementShadow.style.left = Math.round(that.x / that.scene.gridX) * that.scene.gridX + 'px';
+                    elementShadow.style.top = Math.round((that.y) / scene.gridY) * scene.gridY + 'px';
+                    elementShadow.style.left = Math.round(that.x / scene.gridX) * scene.gridX + 'px';
                     elementShadow.style.width = that.width + 'px';
                     elementShadow.style.height = that.height + 'px';
-                    elementShadow.style.display = "block"
+                    elementShadow.style.display = "block";
 
                     if (elementShadow.offsetTop + that.height > BB.top)
-                        elementShadow.style.top = BB.top - that.height + "px"
+                        elementShadow.style.top = BB.top - that.height + "px";
 
                     if (allEmements.length > 1) {
                         var colliding = [];
-                        for (var j = 0; j < allEmements.length; j++) {
+                        for (var j = 0; j < allEmements.length; j+= 1) {
                             var r2 = allEmements[j];
 
-                            if (!r2.isDragging && r2 != that) {
+                            if (!r2.isDragging && r2 !== that) {
                                 if (that.testCollision(r2)) {
-                                    colliding.push(r2)
+                                    colliding.push(r2);
                                 }
                             }
                         }
 
-                        for (var i = 0; i < colliding.length; i++)
-                            colliding[i].positionTile()
+                        for (var i = 0; i < colliding.length; i+= 1)
+                            colliding[i].positionTile();
                     }
                 }
             }
         }
 
         function closeDragElement() {
-            elmnt.style.top = Math.round(that.y / that.scene.gridY) * that.scene.gridY + 'px';
-            elmnt.style.left = Math.round(that.x / that.scene.gridX) * that.scene.gridX + 'px';
+            var scene = myApp.getSceneById(that.sceneId);
 
-            that.y = Math.round(that.y / that.scene.gridY) * that.scene.gridY
-            that.x = Math.round(that.x / that.scene.gridX) * that.scene.gridX
+            elmnt.style.top = Math.round(that.y / scene.gridY) * scene.gridY + 'px';
+            elmnt.style.left = Math.round(that.x / scene.gridX) * scene.gridX + 'px';
+
+            that.y = Math.round(that.y / scene.gridY) * scene.gridY;
+            that.x = Math.round(that.x / scene.gridX) * scene.gridX;
 
             if (elmnt.offsetTop + that.height > BB.top) {
                 that.y = BB.top - that.height;
-                elmnt.style.top = BB.top - that.height + "px"
+                elmnt.style.top = BB.top - that.height + "px";
             }
 
             const elementShadow = document.getElementById('shadow');
-            elementShadow.style.display = "none"
+            elementShadow.style.display = "none";
             elmnt.style.opacity = '100%';
             document.onmouseup = null;
             document.onmousemove = null;
-            that.isDragging = false
+            that.isDragging = false;
         }
     }
 
     makeResizableDiv(div) {
         var that = this;
+        var scene = myApp.getSceneById(that.sceneId);
         const element = document.getElementById(div + ' resizable');
         const elementShadow = document.getElementById('shadow');
 
-        var resizers = [];
-        resizers.push(document.getElementById(div + ' resizers top-left'))
-        resizers.push(document.getElementById(div + ' resizers top-right'))
-        resizers.push(document.getElementById(div + ' resizers bottom-left'))
-        resizers.push(document.getElementById(div + ' resizers bottom-right'))
+        var elem = document.getElementById('info');
+        var BB = elem.getBoundingClientRect();
 
-        const minimum_size = this.scene.gridX;
+        var resizers = [];
+        resizers.push(document.getElementById(div + ' resizers top-left'));
+        resizers.push(document.getElementById(div + ' resizers top-right'));
+        resizers.push(document.getElementById(div + ' resizers bottom-left'));
+        resizers.push(document.getElementById(div + ' resizers bottom-right'));
+
+        const minimum_size = scene.gridX;
         let original_width = 0;
         let original_height = 0;
         let original_x = 0;
@@ -806,14 +1011,14 @@ class TipeeTile {
         let original_mouse_x = 0;
         let original_mouse_y = 0;
 
-        for (let i = 0; i < resizers.length; i++) {
+        for (let i = 0; i < resizers.length; i+= 1) {
             const currentResizer = resizers[i];
             if (currentResizer.id.includes(div)) {
-                currentResizer.addEventListener('mousedown', prepareResize)
+                currentResizer.addEventListener('mousedown', prepareResize);
             }
 
             function prepareResize(e) {
-                e.preventDefault()
+                e.preventDefault();
                 original_width = parseFloat(getComputedStyle(element, null).
                     getPropertyValue('width').replace('px', ''));
                 original_height = parseFloat(getComputedStyle(element, null).
@@ -828,79 +1033,104 @@ class TipeeTile {
 
             function resize(e) {
                 if (!that.isDragging && !that.isLocked) {
-                    that.resize()
                     that.isResizing = true;
                     if (currentResizer.classList.contains('bottom-right')) {
                         const width = original_width + (e.pageX - original_mouse_x);
-                        const height = original_height + (e.pageY - original_mouse_y)
+                        const height = original_height + (e.pageY - original_mouse_y);
 
                         if (width > minimum_size) {
                             element.style.width = width + 'px';
-                            that.height = height;
-                        }
-
-                        if (height > minimum_size) {
-                            element.style.height = height + 'px'
                             that.width = width;
                         }
 
-                        elementShadow.style.width = Math.round(element.clientWidth / that.scene.gridX) * that.scene.gridX + 'px';
-                        elementShadow.style.height = Math.round(element.clientHeight / that.scene.gridX) * that.scene.gridX + 'px'
-                        elementShadow.style.display = "block"
+                        if (height > minimum_size) {
+                            if(that.y + height < BB.top){
+                                element.style.height = height + 'px';
+                                that.height = height;
+                            }
+                        }
 
                     } else if (currentResizer.classList.contains('bottom-left')) {
-                        const height = original_height + (e.pageY - original_mouse_y)
-                        const width = original_width - (e.pageX - original_mouse_x)
-                        if (height > minimum_size) {
-                            element.style.height = height + 'px'
-                            that.width = width
+                        const height = original_height + (e.pageY - original_mouse_y);
+                        const width = original_width - (e.pageX - original_mouse_x);
+                       
+                        if(that.y + height < BB.top){
+                            element.style.height = height + 'px';
+                            that.height = height;                   
                         }
+                            
                         if (width > minimum_size) {
-                            element.style.width = width + 'px'
-                            element.style.left = original_x + (e.pageX - original_mouse_x) + 'px'
-                            elementShadow.style.left = Math.round((original_x + (e.pageX - original_mouse_x)) / that.scene.gridX) * that.scene.gridX + 'px';
-                            that.x = original_x + (e.pageX - original_mouse_x)
-                            that.height = height
+                            element.style.width = width + 'px';
+                            element.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
+                            elementShadow.style.left = Math.round((original_x + (e.pageX - original_mouse_x)) / scene.gridX) * scene.gridX + 'px';
+                            that.x = original_x + (e.pageX - original_mouse_x);
+                            that.width = width;
                         }
 
                     } else if (currentResizer.classList.contains('top-right')) {
-                        const width = original_width + (e.pageX - original_mouse_x)
-                        const height = original_height - (e.pageY - original_mouse_y)
+                        const width = original_width + (e.pageX - original_mouse_x);
+                        const height = original_height - (e.pageY - original_mouse_y);
+                        
                         if (width > minimum_size) {
-                            element.style.width = width + 'px'
-                            that.height = height
+                            element.style.width = width + 'px';
+                            that.width = width;
+
                         }
-                        if (height > minimum_size) {
-                            element.style.height = height + 'px'
-                            element.style.top = original_y + (e.pageY - original_mouse_y) + 'px'
-                            elementShadow.style.top = Math.round((original_y + (e.pageY - original_mouse_y)) / that.scene.gridX) * that.scene.gridX + 'px';
-                            that.y = original_y + (e.pageY - original_mouse_y)
-                            that.width = width
+
+                        if (height > minimum_size ) {
+                            if(original_y + (e.pageY - original_mouse_y) < 50){
+                                element.style.top = 50 + 'px';
+                                elementShadow.style.top = 50 + 'px';
+                                that.y = 50;
+                            }
+                            else{
+                                element.style.height = height + 'px';
+                                element.style.top = original_y + (e.pageY - original_mouse_y) + 'px';
+                                elementShadow.style.top = Math.round((original_y + (e.pageY - original_mouse_y)) / scene.gridX) * scene.gridX + 'px';
+                                that.y = original_y + (e.pageY - original_mouse_y);
+                                that.height = height;
+                            }
                         }
+                        
                     } else if (currentResizer.classList.contains('top-left')) {
-                        const width = original_width - (e.pageX - original_mouse_x)
-                        const height = original_height - (e.pageY - original_mouse_y)
+                        const width = original_width - (e.pageX - original_mouse_x);
+                        const height = original_height - (e.pageY - original_mouse_y);
                         if (width > minimum_size) {
-                            element.style.width = width + 'px'
-                            element.style.left = original_x + (e.pageX - original_mouse_x) + 'px'
-                            elementShadow.style.left = Math.round((original_x + (e.pageX - original_mouse_x)) / that.scene.gridX) * that.scene.gridX + 'px';
-                            that.x = original_x + (e.pageX - original_mouse_x)
-                            that.height = height
+                            element.style.width = width + 'px';
+                            element.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
+                            elementShadow.style.left = Math.round((original_x + (e.pageX - original_mouse_x)) / scene.gridX) * scene.gridX + 'px';
+                            that.x = original_x + (e.pageX - original_mouse_x);
+                            that.width = width;
+
                         }
                         if (height > minimum_size) {
-                            element.style.height = height + 'px'
-                            element.style.top = original_y + (e.pageY - original_mouse_y) + 'px'
-                            elementShadow.style.top = Math.round((original_y + (e.pageY - original_mouse_y)) / that.scene.gridX) * that.scene.gridX + 'px';
-                            that.y = original_y + (e.pageY - original_mouse_y)
-                            that.width = width
+                            if(original_y + (e.pageY - original_mouse_y) < 50){
+                                element.style.top = 50 + 'px';
+                                elementShadow.style.top = 50 + 'px';
+                                that.y = 50;
+                            }
+                            else{
+                                element.style.height = height + 'px';
+                                element.style.top = original_y + (e.pageY - original_mouse_y) + 'px';
+                                elementShadow.style.top = Math.round((original_y + (e.pageY - original_mouse_y)) / scene.gridX) * scene.gridX + 'px';
+                                that.y = original_y + (e.pageY - original_mouse_y);
+                                that.height = height;
+                            }
                         }
                     }
-                    elementShadow.style.width = Math.round(element.clientWidth / that.scene.gridX) * that.scene.gridX + 'px';
-                    elementShadow.style.height = Math.round(element.clientHeight / that.scene.gridX) * that.scene.gridX + 'px'
-                    elementShadow.style.display = "block"
+
+                    elementShadow.style.width = Math.round(element.clientWidth / scene.gridX) * scene.gridX + 'px';
+                    elementShadow.style.height = Math.round(element.clientHeight / scene.gridX) * scene.gridX + 'px';
+                    elementShadow.style.display = "block";
+
+                    if (elementShadow.offsetTop + elementShadow.clientHeight > BB.top)
+                        elementShadow.style.height = element.clientHeight + "px";
+                    
+                    elementShadow.style.display = "block";
 
                     element.style.opacity = '80%';
                     element.style.zIndex = 9;
+                    that.resize();
                 }
             }
 
@@ -908,17 +1138,22 @@ class TipeeTile {
                 const element = document.getElementById(that.idTile + ' resizable');
                 if (!that.isDragging) {
                     that.isResizing = false;
-                    element.style.width = Math.round(element.clientWidth / that.scene.gridX) * that.scene.gridX + 'px';
-                    that.height = Math.round(element.clientHeight / that.scene.gridX) * that.scene.gridX;
+                    element.style.width = Math.round(element.clientWidth / scene.gridX) * scene.gridX + 'px';
+                    that.height = Math.round(element.clientHeight / scene.gridX) * scene.gridX;
 
-                    element.style.height = Math.round(element.clientHeight / that.scene.gridX) * that.scene.gridX + 'px'
-                    that.width = Math.round(element.clientWidth / that.scene.gridX) * that.scene.gridX;
+                    element.style.height = Math.round(element.clientHeight / scene.gridX) * scene.gridX + 'px';
+                    that.width = Math.round(element.clientWidth / scene.gridX) * scene.gridX;
 
-                    element.style.top = Math.round(element.offsetTop / that.scene.gridX) * that.scene.gridX + 'px';
-                    that.y = Math.round(element.offsetTop / that.scene.gridX) * that.scene.gridX;
+                    element.style.top = Math.round(element.offsetTop / scene.gridX) * scene.gridX + 'px';
+                    that.y = Math.round(element.offsetTop / scene.gridX) * scene.gridX;
 
-                    element.style.left = Math.round(element.offsetLeft / that.scene.gridX) * that.scene.gridX + 'px';
-                    that.x = Math.round(element.offsetLeft / that.scene.gridX) * that.scene.gridX;
+                    element.style.left = Math.round(element.offsetLeft / scene.gridX) * scene.gridX + 'px';
+                    that.x = Math.round(element.offsetLeft / scene.gridX) * scene.gridX;
+
+                    if (element.offsetTop + that.height > BB.top) {
+                        that.y = BB.top - that.height;
+                        element.style.top = BB.top - that.height + "px";
+                    }
 
                     var bleft = document.getElementById(div + ' resizers bottom-left');
                     bleft.setAttribute('class', '');
@@ -936,22 +1171,22 @@ class TipeeTile {
                     tright.setAttribute('class', '');
                     tright.style.cssText = '';
 
-                    elementShadow.style.display = "none"
+                    elementShadow.style.display = "none";
                     element.style.opacity = '100%';
 
-                    window.removeEventListener('mousemove', resize)
-                    window.removeEventListener('mousemove', stopResize)
-                    currentResizer.removeEventListener('mousedown', prepareResize)
-
-                    that.resize()
+                    that.resize();
                 }
+
+                window.removeEventListener('mousemove', resize);
+                window.removeEventListener('mouseup', stopResize);
+                currentResizer.removeEventListener('mousedown', prepareResize);
             }
         }
     }
 
     toJSON() {
         var valueDict = {};
-        valueDict['sceneId'] = this.scene.idScene;
+        valueDict['sceneId'] = this.sceneId;
         valueDict['x'] = this.x;
         valueDict['y'] = this.y;
         valueDict['width'] = this.width;
@@ -975,18 +1210,18 @@ class TipeeTile {
     }
 
     openForm() {
-        openTileForm(this)
+        openTileForm(this);
     }
 
     updateForm() {
         var type = this.type;
-        for (var i = 0; i < document.getElementsByName("test").length; i++) {
+        for (var i = 0; i < document.getElementsByName("test").length; i+= 1) {
             document.getElementById("type").value = type;
-            if (this.idTile != "demo")
+            if (this.idTile !== "demo")
                 document.getElementsByName("test")[i].disabled = true;
             else
                 document.getElementsByName("test")[i].disabled = false;
-            if (document.getElementsByName("test")[i].value == type)
+            if (document.getElementsByName("test")[i].value === type)
                 document.getElementsByName("test")[i].checked = true;
         }
     }
@@ -999,14 +1234,14 @@ class TipeeTile {
         document.getElementById("headerFont").onchange();
         document.getElementById("headerFontSize").value = this.headerFontSize;
         document.getElementById("headerFontColor").value = this.headerFontColor;
-        updatePicker("headerFontColor")
+        updatePicker("headerFontColor");
         document.getElementById("headerColor").value = this.headerColor;
-        updatePicker("headerColor")
+        updatePicker("headerColor");
         document.getElementById("contentBackgroundColor").value = this.contentBackgroundColor;
-        updatePicker("contentBackgroundColor")
+        updatePicker("contentBackgroundColor");
         document.getElementById("borderSize").value = this.borderSize;
         document.getElementById("borderColor").value = this.borderColor;
-        updatePicker("borderColor")
+        updatePicker("borderColor");
         document.getElementById("width").value = this.width;
         document.getElementById("height").value = this.height;
     }
@@ -1031,6 +1266,8 @@ class TipeeTile {
 
     draw() {
         var that = this;
+        var scene = myApp.getSceneById(that.sceneId);
+
         var htmlContent =
             `<div class='tile resizers' id='` + this.idTile + ` resizers'>
             <div class='tileContent' id='` + this.idTile + ` content'>
@@ -1045,9 +1282,9 @@ class TipeeTile {
             </div>
             <div class='tileHeader' id='` + this.idTile + ` header'>` +
             this.title + `</div>
-        </div>`
+        </div>`;
 
-        this.scene.addDiv("scene", htmlContent, {
+        scene.addDiv("scene", htmlContent, {
             'class': 'resizable',
             'id': this.idTile + ' resizable',
         });
@@ -1055,34 +1292,8 @@ class TipeeTile {
         var newdiv = document.getElementById(this.idTile + ' resizable');
         newdiv.style.width = this.width + 'px';
         newdiv.style.height = this.height + 'px';
-        newdiv.style.top = this.y + 'px'
+        newdiv.style.top = this.y + 'px';
         newdiv.style.left = this.x + 'px';
-
-        document.addEventListener('click', function (e) {
-            var elems2hide = document.querySelectorAll('.shown');
-            for (var i = 0, length = elems2hide.length; i < length; i++) {
-                elems2hide[i].classList.remove('shown');
-            }
-
-            if(!e.target.id.includes(that.idTile)){
-            that.isClicked = false;
-            var bleft = document.getElementById(that.idTile + ' resizers bottom-left');
-                    bleft.setAttribute('class', '');
-                    bleft.style.cssText = '';
-
-                    var tleft = document.getElementById(that.idTile + ' resizers top-left');
-                    tleft.setAttribute('class', '');
-                    tleft.style.cssText = '';
-
-                    var bright = document.getElementById(that.idTile + ' resizers bottom-right');
-                    bright.setAttribute('class', '');
-                    bright.style.cssText = '';
-
-                    var tright = document.getElementById(that.idTile + ' resizers top-right');
-                    tright.setAttribute('class', '');
-                    tright.style.cssText = '';
-            }
-        });
 
         var divheader = document.getElementById(this.idTile + ' header');
         divheader.style.cssText = 'background-color: ' + this.headerColor +
@@ -1113,7 +1324,7 @@ class TipeeTile {
                 tright.setAttribute("class", "resizer top-right");
                 tright.style.cssText += 'border: ' + that.borderSize + 'px solid ' +
                     that.borderColor + ';';
-                that.makeResizableDiv(that.idTile)
+                that.makeResizableDiv(that.idTile);
             }
         });
 
@@ -1132,28 +1343,28 @@ class TipeeTile {
             contextMenu.classList.add('shown');
         });
 
-        document.querySelector('.context-menu').addEventListener('click', function (e) {
-            this.classList.remove('shown');
-        });
         this.dragElement(newdiv);
     }
 }
+
 class TipeeTileNote extends TipeeTile {
     constructor(scene, x, y, width, height, isLocked, headerColor, headerFontColor, headerFont,
         headerFontSize, borderColor, borderSize, contentBackgroundColor, title, textColor, textFont, textFontSize, text) {
         super(scene, x, y, width, height, isLocked, headerColor, headerFontColor, headerFont,
             headerFontSize, borderColor, borderSize, contentBackgroundColor, title, tileNoteFormTemplate);
-        this.scene.tiles.push(this);
+            
+        var scene = myApp.getSceneById(this.sceneId);
+        scene.tiles.push(this);
 
         this.textColor = textColor;
         this.textFont = textFont;
         this.textFontSize = textFontSize;
-        this.text = text;
+        this.text = text || "";
         this.type = 'note';
     }
 
     updateForm() {
-        super.updateForm()
+        super.updateForm();
     }
 
     fillForm() {
@@ -1162,7 +1373,7 @@ class TipeeTileNote extends TipeeTile {
         document.getElementById('textFont').onchange();
         document.getElementById('textFontSize').value = this.textFontSize;
         document.getElementById('textColor').value = this.textColor;
-        updatePicker("textColor")
+        updatePicker("textColor");
     }
 
     update() {
@@ -1174,7 +1385,7 @@ class TipeeTileNote extends TipeeTile {
 
     draw() {
         var that = this;
-        super.draw()
+        super.draw();
 
         var width = that.width - (that.borderSize * 2);
         var headerHeight = document.getElementById(that.idTile + ' header').offsetHeight;
@@ -1182,7 +1393,7 @@ class TipeeTileNote extends TipeeTile {
 
         var elem = document.getElementById(that.idTile + ' content');
         elem.innerHTML = `<textarea id='` + that.idTile + ` textArea' style=' resize: none; width: ` + width + `px; height: ` + height + `px;'>`;
-        elem.style.cssText = "position: absolute; top: " + headerHeight + "px; left: 0px;"
+        elem.style.cssText = "position: absolute; top: " + headerHeight + "px; left: 0px;";
 
         var txt = document.getElementById(that.idTile + ' textArea');
         txt.value = that.text;
@@ -1196,7 +1407,8 @@ class TipeeTileNote extends TipeeTile {
     }
 
     redraw() {
-        this.scene.removeElement(this.idTile + ' resizable');
+        var scene = myApp.getSceneById(this.sceneId);
+        scene.removeElement(this.idTile + ' resizable');
         this.draw();
     }
 
@@ -1206,10 +1418,10 @@ class TipeeTileNote extends TipeeTile {
         var headerHeight = document.getElementById(this.idTile + ' header').offsetHeight;
         var height = this.height - (this.borderSize) -1 - headerHeight;
 
-        var area = document.getElementById(this.idTile + " textArea")
-        area.style.width = width + "px"
-        area.style.height = height + "px"
-        area.style.top = headerHeight + "px"
+        var textArea = document.getElementById(this.idTile + " textArea");
+        textArea.style.width = width + "px";
+        textArea.style.height = height + "px";
+        textArea.style.top = headerHeight + "px";
     }
 
     toJSON() {
@@ -1228,12 +1440,14 @@ class TipeeTileTodo extends TipeeTile {
         headerFontSize, borderColor, borderSize, contentBackgroundColor, title, textColor, textFont, textFontSize, todo, done) {
         super(scene, x, y, width, height, isLocked, headerColor, headerFontColor, headerFont,
             headerFontSize, borderColor, borderSize, contentBackgroundColor, title, tileTodoFormTemplate);
-        this.scene.tiles.push(this);
+
+        var scene = myApp.getSceneById(this.sceneId);
+        scene.tiles.push(this);
 
         this.textColor = textColor;
         this.textFont = textFont;
         this.textFontSize = textFontSize;
-        if (todo != null)
+        if (todo !== null)
             this.todo = todo;
         else
             this.todo = "";
@@ -1251,7 +1465,7 @@ class TipeeTileTodo extends TipeeTile {
         document.getElementById('textFont').onchange();
         document.getElementById('textFontSize').value = this.textFontSize;
         document.getElementById('textColor').value = this.textColor;
-        updatePicker("textColor")
+        updatePicker("textColor");
     }
 
     update() {
@@ -1263,42 +1477,42 @@ class TipeeTileTodo extends TipeeTile {
 
     draw() {
         var that = this;
-        super.draw()
+        super.draw();
 
-        var todos = that.todo;
+        var todos = that.todo || "";
         var headerHeight = document.getElementById(that.idTile + ' header').offsetHeight;
         var elem = document.getElementById(that.idTile + ' content');
-        elem.style.position = "absolute"
-        elem.style.top = headerHeight + 'px'
+        elem.style.position = "absolute";
+        elem.style.top = headerHeight + 'px';
         elem.style.overflow = 'auto';
-        elem.style.width = 'inherit'
-        elem.style.height = that.height - headerHeight - (that.borderSize*2) + 'px' 
-        elem.innerHTML += '<div><input type="text" id="' + that.idTile + ' new" style="margin-top:5px" placeholder="New task"><ul id="' + that.idTile + ' todolist"></ul>'
+        elem.style.width = 'inherit';
+        elem.style.height = that.height - headerHeight - (that.borderSize*2) + 'px'; 
+        elem.innerHTML += '<div><input type="text" id="' + that.idTile + ' new" style="margin-top:5px" placeholder="New task"><ul id="' + that.idTile + ' todolist"></ul>';
 
-        if (todos != "") {
-            todos = that.todo.split(";")
+        if (todos !== "") {
+            todos = that.todo.split(";");
 
             var filtered = todos.filter(function (el) {
-                return (el != null && el != "");
+                return (el !== null && el !== "");
             });
 
             var list = document.getElementById(that.idTile + ' todolist');
-            list.style.listStyle = "none"
-            list.style.padding = "5px"
+            list.style.listStyle = "none";
+            list.style.padding = "5px";
 
-            for (var i = 0; i < filtered.length; i++) {
+            for (var i = 0; i < filtered.length; i+= 1) {
                 var li = document.createElement("li");
-                li.style.textAlign = "left"
+                li.style.textAlign = "left";
                 li.id = that.idTile + i;
                 li.style.marginBottom = "3px";
 
-                var div = document.createElement("div")
-                var item = filtered[i].split("|")
+                var div = document.createElement("div");
+                var item = filtered[i].split("|");
 
                 var chb = document.createElement("INPUT");
                 chb.setAttribute("type", "checkbox");
-                chb.id = that.idTile + " chb" + i
-                if (item[1] == "Y")
+                chb.id = that.idTile + " chb" + i;
+                if (item[1] === "Y")
                     chb.checked = true;
                 else
                     chb.checked = false;
@@ -1306,18 +1520,18 @@ class TipeeTileTodo extends TipeeTile {
                 (function (index) {
                     chb.addEventListener('change', function () {
                         var checked;
-                        var chb = document.getElementById(that.idTile + " chb" + index)
+                        var chb = document.getElementById(that.idTile + " chb" + index);
 
-                        if (chb.checked == true)
-                            checked = "Y"
+                        if (chb.checked === true)
+                            checked = "Y";
                         else
-                            checked = 'N'
+                            checked = 'N';
 
-                        filtered[index] = filtered[index].split("|")[0] + "|" + checked
+                        filtered[index] = filtered[index].split("|")[0] + "|" + checked;
 
                         var todosNew = ""
-                        for (var k = 0; k < filtered.length; k++) {
-                            if (filtered[k] != "")
+                        for (var k = 0; k < filtered.length; k+= 1) {
+                            if (filtered[k] !== "")
                                 todosNew += filtered[k] + ";"
                         }
                         that.todo = todosNew;
@@ -1333,10 +1547,10 @@ class TipeeTileTodo extends TipeeTile {
                     bt.addEventListener('click', function () {
                         filtered.splice(index, 1);
 
-                        var todosNew = ""
-                        for (var j = 0; j < filtered.length; j++) {
-                            if (filtered[j] != "")
-                                todosNew += filtered[j] + ";"
+                        var todosNew = "";
+                        for (var j = 0; j < filtered.length; j+= 1) {
+                            if (filtered[j] !== "")
+                                todosNew += filtered[j] + ";";
                         }
 
                         that.todo = todosNew;
@@ -1344,41 +1558,43 @@ class TipeeTileTodo extends TipeeTile {
                         var id = that.idTile.concat("", index);
                         var elem = document.getElementById(id);
                         elem.parentNode.removeChild(elem);
-                        that.redraw()
+                        elem =null;
+                        that.redraw();
                     })
                 })(i)
 
-                div.appendChild(chb)
-                div.appendChild(document.createTextNode(item[0]))
+                div.appendChild(chb);
+                div.appendChild(document.createTextNode(item[0]));
                 div.appendChild(bt);
                 li.appendChild(div);
                 list.appendChild(li);
             }
         }
         else {
-            todos = []
+            todos = [];
         }
 
         var addButton = document.getElementById(this.idTile + " new");
         addButton.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
-                var val = document.getElementById(that.idTile + " new").value
-                if(val != "")
-                that.todo += val  + "|N" + ";"
+                var val = document.getElementById(that.idTile + " new").value;
+                if(val !== "")
+                that.todo += val  + "|N" + ";";
                 that.redraw();
             }
         });
     }
 
     redraw() {
-        this.scene.removeElement(this.idTile + ' resizable');
+        var scene = myApp.getSceneById(this.sceneId);
+        scene.removeElement(this.idTile + ' resizable');
         this.draw();
     }
 
     resize() {
         var headerHeight = document.getElementById(this.idTile + ' header').offsetHeight;
         var elem = document.getElementById(this.idTile + ' content');
-        elem.style.height = this.height - headerHeight - (this.borderSize*2) + 'px' 
+        elem.style.height = this.height - headerHeight - (this.borderSize*2) + 'px'; 
     }
 
     toJSON() {
@@ -1392,7 +1608,8 @@ class TipeeTileTodo extends TipeeTile {
     }
 
     redraw() {
-        this.scene.removeElement(this.idTile + ' resizable');
+        var scene = myApp.getSceneById(this.sceneId);
+        scene.removeElement(this.idTile + ' resizable');
         this.draw();
     }
 }
@@ -1403,7 +1620,9 @@ class TipeeTileText extends TipeeTile {
         responseField, textBefore, textAfter, requestRefresh, textColor, textFont, textFontSize, operation) {
         super(scene, x, y, width, height, isLocked, headerColor, headerFontColor, headerFont,
             headerFontSize, borderColor, borderSize, contentBackgroundColor, title, tileTextFormTemplate);
-        this.scene.tiles.push(this);
+        
+        var scene = myApp.getSceneById(this.sceneId);
+        scene.tiles.push(this);
 
         this.requestUrl = requestUrl;
         this.reqType = reqType;
@@ -1416,7 +1635,7 @@ class TipeeTileText extends TipeeTile {
         this.textFont = textFont;
         this.textFontSize = textFontSize;
         this.operation = operation;
-        this.intervalId;
+        this.intervalId = 0;
         this.type = 'text';
     }
 
@@ -1427,15 +1646,15 @@ class TipeeTileText extends TipeeTile {
         var responseFieldChild = document.getElementById("responseFieldChild");
         var responseFieldChildLabel = document.getElementById("responseFieldChildLabel");
 
-        if (responseType.value == "XML") {
+        if (responseType.value === "XML") {
             responseFieldChildLabel.style.display = "block";
             responseFieldChild.style.display = "block";
-            this.form.validation.activateField("responseFieldChild")
+            this.form.validation.activateField("responseFieldChild");
         }
         else {
             responseFieldChildLabel.style.display = "none";
             responseFieldChild.style.display = "none";
-            this.form.validation.desactivateField("responseFieldChild")
+            this.form.validation.desactivateField("responseFieldChild");
         }
     }
 
@@ -1446,21 +1665,21 @@ class TipeeTileText extends TipeeTile {
         document.getElementById('textFont').onchange();
         document.getElementById('textFontSize').value = this.textFontSize;
         document.getElementById('textColor').value = this.textColor;
-        updatePicker("textColor")
-        document.getElementById("textBefore").value = this.textBefore
-        document.getElementById("textAfter").value = this.textAfter
-        document.getElementById("requestUrl").value = this.requestUrl
-        document.getElementById("operation").value = this.operation
-        document.getElementById("reqType").value = this.reqType
-        document.getElementById("requestRefresh").value = this.requestRefresh
-        document.getElementById('responseType').value = this.responseType
+        updatePicker("textColor");
+        document.getElementById("textBefore").value = this.textBefore;
+        document.getElementById("textAfter").value = this.textAfter;
+        document.getElementById("requestUrl").value = this.requestUrl;
+        document.getElementById("operation").value = this.operation;
+        document.getElementById("reqType").value = this.reqType;
+        document.getElementById("requestRefresh").value = this.requestRefresh;
+        document.getElementById('responseType').value = this.responseType;
 
-        if (this.responseType == 'XML') {
-            document.getElementById('responseField').value = this.responseField.split(";")[0]
+        if (this.responseType === 'XML') {
+            document.getElementById('responseField').value = this.responseField.split(";")[0];
             document.getElementById("responseFieldChild").value = this.responseField.split(";")[1];
         }
         else {
-            document.getElementById('responseField').value = this.responseField
+            document.getElementById('responseField').value = this.responseField;
         }
     }
 
@@ -1478,58 +1697,61 @@ class TipeeTileText extends TipeeTile {
         this.operation = document.getElementById('operation').value;
 
         var responseField;
-        if (this.responseType == 'XML') {
+        if (this.responseType === 'XML') {
             responseField = document.getElementById('responseField').value;
             responseField += ';';
-            responseField += document.getElementById('responseFieldChild').value
+            responseField += document.getElementById('responseFieldChild').value;
         }
         else {
             responseField = document.getElementById('responseField').value;
         }
 
-        this.responseField = responseField
+        this.responseField = responseField;
     }
 
     draw() {
         var that = this;
-        super.draw()
+        super.draw();
 
         var elem = document.getElementById(this.idTile + ' content');
         elem.innerHTML = `<p id='` + this.idTile + ` contentTxt'>Chargement...</p>`;
 
         var headerHeight = document.getElementById(this.idTile + ' header').offsetHeight;
-        elem.style.top = headerHeight + "px"
-        var height = that.height - headerHeight
+        elem.style.top = headerHeight + "px";
+        var height = that.height - headerHeight;
 
-        elem.style.height = height + "px"
-        elem.style.position = "absolute"
-        elem.style.color = that.textColor
-        elem.style.fontFamily = that.textFont
-        elem.style.fontSize = that.textFontSize
-        elem.style.display = "flex"
-        elem.style.overflow = "hidden"
+        elem.style.height = height + "px";
+        elem.style.position = "absolute";
+        elem.style.color = that.textColor;
+        elem.style.fontFamily = that.textFont;
+        elem.style.fontSize = that.textFontSize + "px";
+        elem.style.display = "flex";
+        elem.style.overflow = "hidden";
 
-        var txt = document.getElementById(this.idTile + ' contentTxt')
-        txt.style.display = "flex"
+        var txt = document.getElementById(this.idTile + ' contentTxt');
+        txt.style.display = "flex";
         txt.style.alignItems = "center";
+        txt.style.marginLeft = that.width/2 - txt.offsetWidth/2 + "px";
+
 
         var requestCallback = function (returned_data) {
             elem.innerHTML = `<p style:'color: #` + that.textColor + `;'  id='` + that.idTile + ` contentTxt'>` + that.textBefore + " " + returned_data + " " + that.textAfter + `</p>`;
-            var txt = document.getElementById(that.idTile + ' contentTxt')
-        txt.style.display = "flex"
-        txt.style.alignItems = "center";
-        }
+            var txt = document.getElementById(that.idTile + ' contentTxt');
+            txt.style.display = "flex";
+            txt.style.alignItems = "center";
+            txt.style.marginLeft = that.width/2 - txt.offsetWidth/2 + "px";
+        };
 
         if (this.requestRefresh > 0) {
             request(that.requestUrl, true, that.reqType, "", that.responseType, that.responseField, that.operation, requestCallback);
             that.intervalId = setInterval(function () {
-                if (myApp.mode != "dev")
+                if (myApp.mode !== "dev")
                     request(that.requestUrl, true, that.reqType, "", that.responseType, that.responseField, that.operation,
                         requestCallback);
             }, 1000 * this.requestRefresh);
         }
         else {
-            if (myApp.mode != "dev")
+            if (myApp.mode !== "dev")
                 request(that.requestUrl, true, that.reqType, "", that.responseType, that.responseField, that.operation, requestCallback);
         }
     }
@@ -1537,7 +1759,10 @@ class TipeeTileText extends TipeeTile {
     resize() {
         var headerHeight = document.getElementById(this.idTile + ' header').offsetHeight;
         var elem = document.getElementById(this.idTile + ' content');
-        elem.style.height = this.height - headerHeight - (this.borderSize*2) + 'px' 
+        elem.style.height = this.height - headerHeight - (this.borderSize*2) + 'px';
+
+        var txt = document.getElementById(that.idTile + ' contentTxt');
+        txt.style.marginLeft = that.width/2 - txt.offsetWidth/2 + "px";
     }
 
     toJSON() {
@@ -1558,9 +1783,10 @@ class TipeeTileText extends TipeeTile {
     }
 
     redraw() {
-        this.scene.removeElement(this.idTile + ' resizable');
-        if (this.intervalId != null)
-            clearInterval(this.intervalId)
+        var scene = myApp.getSceneById(this.sceneId);
+        scene.removeElement(this.idTile + ' resizable');
+        if (this.intervalId !== null)
+            clearInterval(this.intervalId);
         this.draw();
     }
 }
@@ -1571,7 +1797,9 @@ class TipeeTileImage extends TipeeTile {
         imgSlideInterval, imgRefresh) {
         super(scene, x, y, width, height, isLocked, headerColor, headerFontColor, headerFont,
             headerFontSize, borderColor, borderSize, contentBackgroundColor, title, tileImgFormTemplate);
-        this.scene.tiles.push(this);
+        
+        var scene = myApp.getSceneById(this.sceneId);
+        scene.tiles.push(this);
         this.imgNb = parseInt(imgNb);
         this.imgSrc = imgSrc;
         this.imgSlideInterval = parseInt(imgSlideInterval);
@@ -1593,60 +1821,60 @@ class TipeeTileImage extends TipeeTile {
         imgSlideIntervalLabel.style.display = "none";
         imgSlideInterval.style.display = "none";
 
-        this.form.validation.desactivateField("imgSlideInterval")
+        this.form.validation.desactivateField("imgSlideInterval");
 
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 10; i+= 1) {
             var elem = document.getElementById("imgSrc" + i);
             elem.style.display = "none";
-            this.form.validation.desactivateField("imgSrc" + i)
+            this.form.validation.desactivateField("imgSrc" + i);
         }
-        var nbImg;
-        if (imgType.value == "single") {
+        var nbImg = 0;
+        if (imgType.value === "single") {
             nbImg = 1;
         }
-        else if (imgType.value == "slideshow") {
+        else if (imgType.value === "slideshow") {
             imgNb.style.display = "block";
             imgNbLabel.style.display = "block";
             imgSlideIntervalLabel.style.display = "block";
             imgSlideInterval.style.display = "block";
             nbImg = imgNb.value;
-            this.form.validation.activateField("imgSlideInterval")
+            this.form.validation.activateField("imgSlideInterval");
         }
 
-        for (var i = 0; i < nbImg; i++) {
+        for (var i = 0; i < nbImg; i+= 1) {
             var elem = document.getElementById("imgSrc" + i);
             elem.style.display = "block";
-            this.form.validation.activateField("imgSrc" + i)
+            this.form.validation.activateField("imgSrc" + i);
         }
     }
 
     fillForm() {
         super.fillForm();
 
-        if (this.imgNb == 1) {
-            document.getElementById('imgType').value = 'single'
+        if (this.imgNb === 1) {
+            document.getElementById('imgType').value = 'single';
         }
         else {
-            document.getElementById('imgType').value = 'slideshow'
-            document.getElementById('imgSlideInterval').value = this.imgSlideInterval
+            document.getElementById('imgType').value = 'slideshow';
+            document.getElementById('imgSlideInterval').value = this.imgSlideInterval;
         }
 
         document.getElementById('imgRefresh').value = this.imgRefresh;
 
-        for (var i = 0; i < this.imgNb; i++)
-            document.getElementById('imgSrc' + i).value = this.imgSrc[i]
+        for (var i = 0; i < this.imgNb; i+= 1)
+            document.getElementById('imgSrc' + i).value = this.imgSrc[i];
     }
 
     update() {
-        super.update()
+        super.update();
         var imgType = document.getElementById('imgType').value;
         var imgNb = document.getElementById('imgNb').value;
-        var nb;
+        var nb = 0;
         var src = [];
-        var imgSlideInterval;
+        var imgSlideInterval = 0;
         var imgRefresh = parseInt(document.getElementById('imgRefresh').value);
 
-        if (imgType == 'single') {
+        if (imgType === 'single') {
             var imgSingleSrc = document.getElementById('imgSrc0');
             src.push(imgSingleSrc.value);
             nb = 1;
@@ -1654,7 +1882,7 @@ class TipeeTileImage extends TipeeTile {
         }
         else {
             nb = imgNb;
-            for (var i = 0; i < nb; i++) {
+            for (var i = 0; i < nb; i+= 1) {
                 var imgSingleSrcI = document.getElementById('imgSrc' + i);
                 src.push(imgSingleSrcI.value);
             }
@@ -1668,7 +1896,7 @@ class TipeeTileImage extends TipeeTile {
     }
 
     draw() {
-        super.draw()
+        super.draw();
 
         if (this.imgNb > 1)
             this.slide(this.imgSrc, 0);
@@ -1694,35 +1922,40 @@ class TipeeTileImage extends TipeeTile {
         var elem = document.getElementById(this.idTile + ' resizers');
         elem.style.cssText += `background-image: url(` + imgSrcs[index] +
             `) !important; background-size: cover !important;`;
-        index = (index + 1) % imgSrcs.length
+        index = (index + 1) % imgSrcs.length;
         setTimeout(function () { that.slide(imgSrcs, index); }, this.imgSlideInterval * 1000);
     }
 
     refreshEvery() {
         var that = this;
+        var scene = myApp.getSceneById(that.sceneId);
+
         that.intervalId = setInterval(function () {
-            that.scene.removeElement(that.idTile + ' resizable');
+            scene.removeElement(that.idTile + ' resizable');
             that.draw();
         }
             , that.imgRefresh * 1000);
     }
 
     redraw() {
-        this.scene.removeElement(this.idTile + ' resizable');
-        if (this.intervalId != null)
-            clearInterval(this.intervalId)
+        var scene = myApp.getSceneById(that.sceneId);
+        scene.removeElement(this.idTile + ' resizable');
+        if (this.intervalId !== null)
+            clearInterval(this.intervalId);
         this.draw();
         this.refreshEvery();
     }
 }
 
 class TipeeTileToggles extends TipeeTile {
-    constructor(scene, x, y, width, height, isLocked, headerColor, headerFontColor, headerFont,
+    constructor(sceneId, x, y, width, height, isLocked, headerColor, headerFontColor, headerFont,
         headerFontSize, borderColor, borderSize, contentBackgroundColor, title, nbToggles,
         togglesProperties) {
-        super(scene, x, y, width, height, isLocked, headerColor, headerFontColor, headerFont,
+        super(sceneId, x, y, width, height, isLocked, headerColor, headerFontColor, headerFont,
             headerFontSize, borderColor, borderSize, contentBackgroundColor, title, tileToggleFormTemplate);
-        this.scene.tiles.push(this);
+
+        var scene = myApp.getSceneById(this.sceneId);
+        scene.tiles.push(this);
 
         this.nbToggles = nbToggles;
         this.togglesProperties = togglesProperties;
@@ -1733,8 +1966,8 @@ class TipeeTileToggles extends TipeeTile {
         super.fillForm();
 
         var togglesNb = document.getElementById("togglesNb").value;
-        for (var i = 0; i < togglesNb; i++) {
-            document.getElementById('togglesName' + i).value = this.togglesProperties[i].name
+        for (var i = 0; i < togglesNb; i+= 1) {
+            document.getElementById('togglesName' + i).value = this.togglesProperties[i].name;
             document.getElementById('togglesURL' + i).value = this.togglesProperties[i].url;
         }
     }
@@ -1743,19 +1976,20 @@ class TipeeTileToggles extends TipeeTile {
         super.updateForm();
 
         var togglesNb = document.getElementById("togglesNb");
-        for (var i = 0; i < 10; i++) {
-            var elem = document.getElementById("togglesPropTr" + i);
-            elem.style.display = "none";
-            this.form.validation.desactivateField("togglesName" + i)
-            this.form.validation.desactivateField("togglesURL" + i)
+        for (var i = 0; i < 10; i+= 1) {
+            document.getElementById("togglesName" + i).style.display = "none";
+            document.getElementById("togglesURL" + i).style.display = "none";
+            this.form.validation.desactivateField("togglesName" + i);
+            this.form.validation.desactivateField("togglesURL" + i);
         }
 
         var nb = togglesNb.value;
-        for (var i = 0; i < nb; i++) {
-            var elem = document.getElementById("togglesPropTr" + i);
-            elem.style.display = "block";
-            this.form.validation.activateField("togglesName" + i)
-            this.form.validation.activateField("togglesURL" + i)
+        for (var i = 0; i < nb; i+= 1) {
+            document.getElementById("togglesName" + i).style.display = "block";
+            document.getElementById("togglesURL" + i).style.display = "block";
+
+            this.form.validation.activateField("togglesName" + i);
+            this.form.validation.activateField("togglesURL" + i);
         }
     }
 
@@ -1764,7 +1998,7 @@ class TipeeTileToggles extends TipeeTile {
         var nbToggles = document.getElementById('togglesNb').value;
         var properties = [];
 
-        for (var i = 0; i < nbToggles; i++) {
+        for (var i = 0; i < nbToggles; i+= 1) {
             var property = {};
             property['name'] = document.getElementById('togglesName' + i).value;
             property['url'] = document.getElementById('togglesURL' + i).value;
@@ -1777,25 +2011,25 @@ class TipeeTileToggles extends TipeeTile {
 
     draw() {
         var that = this;
-        super.draw()
+        super.draw();
         var elem = document.getElementById(this.idTile + ' content');
         var htmlContent = '<div class="buttons"><table>';
 
-        for (let i = 0; i < that.nbToggles; i++) {
-            if ((i + 1) % 2 == 1) {
+        for (let i = 0; i < that.nbToggles; i+= 1) {
+            if ((i + 1) % 2 === 1) {
                 htmlContent += "<tr><td><button id='" + that.idTile + "-button-" + i +
-                    "'>" + that.togglesProperties[i].name + "</button></td>"
+                    "'>" + that.togglesProperties[i].name + "</button></td>";
             }
             else {
                 htmlContent += "<td><button  id='" + that.idTile + "-button-" + i + "'>" +
-                    that.togglesProperties[i].name + "</button></td></tr>"
+                    that.togglesProperties[i].name + "</button></td></tr>";
             }
         }
 
         htmlContent += "</table></div>";
         elem.innerHTML = htmlContent;
 
-        for (let i = 0; i < that.nbToggles; i++) {
+        for (let i = 0; i < that.nbToggles; i+= 1) {
             var bt = document.getElementById(this.idTile + '-button-' + i);
             bt.addEventListener('click', function () {
                 that.trigger(that.togglesProperties[i].url);
@@ -1804,7 +2038,8 @@ class TipeeTileToggles extends TipeeTile {
     }
 
     redraw() {
-        this.scene.removeElement(this.idTile + ' resizable');
+        var scene = myApp.getSceneById(this.sceneId);
+        scene.removeElement(this.idTile + ' resizable');
         this.draw();
     }
 
@@ -1874,38 +2109,39 @@ function loadJSON(json) {
         }
 
         arrayTiles.forEach(t => {
-            if (t.type == "text")
-                var test = new TipeeTileText(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
+            var tile = null;
+            if (t.type === "text")
+            tile = new TipeeTileText(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
                     t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
                     t.borderSize, t.contentBackgroundColor, t.title, t.requestUrl, t.reqType, t.responseType, t.responseField,
                     t.textBefore, t.textAfter, t.requestRefresh, t.textColor, t.textFont, t.textFontSize,
                     t.operation);
-            else if (t.type == "image")
-                var test = new TipeeTileImage(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
+            else if (t.type === "image")
+            tile = new TipeeTileImage(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
                     t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
                     t.borderSize, t.contentBackgroundColor, t.title, t.imgNb, t.imgSrc, t.imgSlideInterval,
                     t.imgRefresh);
-            else if (t.type == "toggles")
-                var test = new TipeeTileToggles(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
+            else if (t.type === "toggles")
+            tile = new TipeeTileToggles(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
                     t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
                     t.borderSize, t.contentBackgroundColor, t.title, t.nbToggles, t.togglesProperties);
-            else if (t.type == "note")
+            else if (t.type === "note")
 
-                var test = new TipeeTileNote(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
+            tile = new TipeeTileNote(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
                     t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
                     t.borderSize, t.contentBackgroundColor, t.title, t.textColor, t.textFont, t.textFontSize, t.text);
             else if (t.type = "todo")
-                var test = new TipeeTileTodo(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
+            tile= new TipeeTileTodo(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
                     t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
                     t.borderSize, t.contentBackgroundColor, t.title, t.textColor, t.textFont, t.textFontSize, t.todo, "");
         });
         if (select.options.length > 2)
-            document.getElementById('sceneSelect').options[0].style.display = 'none'
+            document.getElementById('sceneSelect').options[0].style.display = 'none';
     });
 
-    myApp.activeScene = activeSceneFromFile;
-    for (var i, j = 0; i = select.options[j]; j++) {
-        if (i.value == activeSceneFromFile.sceneName) {
+    myApp.activeSceneId = activeSceneFromFile.idScene;
+    for (var i, j = 0; i = select.options[j]; j+= 1) {
+        if (i.value === activeSceneFromFile.sceneName) {
             select.selectedIndex = j;
             break;
         }
@@ -1915,29 +2151,32 @@ function loadJSON(json) {
 }
 
 function updateTileMenuAction(id) {
-    var tpTile;
-    for (var i = 0; i < myApp.activeScene.tiles.length; i++) {
-        if (myApp.activeScene.tiles[i].idTile == id) {
-            tpTile = myApp.activeScene.tiles[i];
+    var tpTile = null;
+    var scene = myApp.getSceneById(myApp.activeSceneId);
+
+    for (var i = 0; i < scene.tiles.length; i+= 1) {
+        if (scene.tiles[i].idTile === id) {
+            tpTile = scene.tiles[i];
         }
     };
-    tpTile.openForm()
+
+    if(tpTile !== null)
+        tpTile.openForm();
 }
 
 function lockTile(id) {
-    var tileToLock;
-    myApp.activeScene.tiles.forEach(tile => {
-        if (tile.idTile == id)
-            tileToLock = tile;
-    });
+    var tileToLock = null;
+    var scene = myApp.getSceneById(myApp.activeSceneId)
 
+    for(var i=0; i<scene.tiles.length; i+=1){
+        if (scene.tiles[i].idTile === id)
+            tileToLock = scene.tiles[i];
+    }
+
+    if(tileToLock !== null){
     if (tileToLock.isLocked)
         tileToLock.isLocked = false;
     else
         tileToLock.isLocked = true;
-}
-
-function deleteElement(deleteElem) {
-    myApp.activeScene.deleteTileById(deleteElem);
-    closeTileForm();
+    }
 }

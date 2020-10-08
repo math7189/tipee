@@ -12,14 +12,16 @@ tileTextFormTemplate = {
                     "description": "Enter URL",
                     "id": "requestUrl",
                     "colspan": "1",
-                    "validation" : [{
-                        "rule" : "req",
-                        "error" : "Request URL is required"
-                    },
-                    {
-                        "rule" : "url",
-                        "error" : "Request URL should be an URL"
-                    }]
+                    "validation": [
+                        {
+                            "rule": "req",
+                            "error": "Request URL is required"
+                        },
+                        {
+                            "rule": "url",
+                            "error": "Request URL should be an URL"
+                        }
+                    ]
                 }
             ],
             [
@@ -39,7 +41,7 @@ tileTextFormTemplate = {
                     ],
                     "id": "responseType",
                     "colspan": "1",
-                    "onchange" : "updateTileForm()"
+                    "onchange": "updateTileForm()"
                 },
                 {
                     "name": "responseField",
@@ -48,10 +50,12 @@ tileTextFormTemplate = {
                     "description": "Enter response field",
                     "id": "responseField",
                     "colspan": "1",
-                    "validation" : [{
-                        "rule" : "req",
-                        "error" : "Response field is required"
-                    }]
+                    "validation": [
+                        {
+                            "rule": "req",
+                            "error": "Response field is required"
+                        }
+                    ]
                 },
                 {
                     "name": "responseFieldChild",
@@ -60,11 +64,12 @@ tileTextFormTemplate = {
                     "description": "Enter response field child",
                     "id": "responseFieldChild",
                     "colspan": "1",
-                    "validation" : [{
-                        "rule" : "req",
-                        "error" : "Response field child is required"
-                    }]
-
+                    "validation": [
+                        {
+                            "rule": "req",
+                            "error": "Response field child is required"
+                        }
+                    ]
                 },
             ],
             [
@@ -75,17 +80,20 @@ tileTextFormTemplate = {
                     "description": "Enter request refresh",
                     "id": "requestRefresh",
                     "colspan": "1",
-                    "validation" : [{
-                        "rule" : "req",
-                        "error" : "Request refresh is required"
-                    },
-                    {"rule": "num",
-                    "error": "Request refresh should be a number"},
-                    {
-                        "rule": "greater=59",
-                        "error": "Request refresh should be a least 60s" 
-                    }
-                ]
+                    "validation": [
+                        {
+                            "rule": "req",
+                            "error": "Request refresh is required"
+                        },
+                        {
+                            "rule": "num",
+                            "error": "Request refresh should be a number"
+                        },
+                        {
+                            "rule": "greater=59",
+                            "error": "Request refresh should be a least 60s"
+                        }
+                    ]
                 },
                 {
                     "name": "reqType",
@@ -94,10 +102,12 @@ tileTextFormTemplate = {
                     "description": "Enter request type",
                     "id": "reqType",
                     "colspan": "1",
-                    "validation" : [{
-                        "rule" : "req",
-                        "error" : "Request type is required"
-                    }]
+                    "validation": [
+                        {
+                            "rule": "req",
+                            "error": "Request type is required"
+                        }
+                    ]
                 },
             ],
             [
@@ -157,7 +167,7 @@ tileTextFormTemplate = {
                     "id": "textColor",
                     "colspan": "1",
                     "readonly": "readonly",
-                    "val": "#000000",
+                    "value": "#000000",
                     "init": "picker"
                 }
             ]

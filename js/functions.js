@@ -1,515 +1,3 @@
-
-
-class Form {
-    constructor(form) {
-        if (form != null)
-            this.formId = form.formId;
-        this.fields = form
-        if (form != null)
-            this.validation = new ValidationForm(this.formId);
-        this.init = 0;
-    }
-
-    merge(out, in1, in2) {
-        var a = Object.keys(in1)
-        var b = Object.keys(in2)
-
-        for (var i = 0; i < a.length; i++) {
-            if (b.includes(a[i])) {
-                var c = Object.prototype.toString.call(in1[a[i]])
-                var d = Object.prototype.toString.call(in2[a[i]])
-                if (Object.prototype.toString.call(in1[a[i]]) == "[object Object]" && Object.prototype.toString.call(in1[a[i]]) == "[object Object]") {
-                    out[a[i]] = {}
-                    this.merge(out[a[i]], in1[a[i]], in2[a[i]])
-                }
-                else if (Object.prototype.toString.call(in1[a[i]]) == "[object Array]" && Object.prototype.toString.call(in1[a[i]]) == "[object Array]") {
-                    out[a[i]] = []
-                    out[a[i]] = out[a[i]].concat(in1[a[i]], in2[a[i]]);
-                }
-                else {
-                    out[a[i]] = [in1[a[i]], in2[a[i]]]
-                }
-            }
-            else {
-                out[a[i]] = in1[a[i]]
-            }
-        }
-
-        for (var i = 0; i < b.length; i++) {
-            if (!a.includes(b[i])) {
-                out[b[i]] = in2[b[i]]
-            }
-        }
-    }
-
-    buildForm() {
-        var json = this.fields;
-        var initArray = [];
-        var formDiv = document.getElementById(this.formId);
-        formDiv.innerHTML = "";
-        var content = `<p class="formTitle">` + json.formTitle + `</p>`
-
-        var nbTabs = json.formTabs.length;
-        if (nbTabs > 1) {
-            content = this.createTabList(content, json)
-            content += `<div class="tabcontents">`
-            content += `<form id='` + json.formId + `' action="javascript:void(0);" class="form-container">`
-
-            for (var i = 0; i < nbTabs; i++) {
-                content += `<div class="tabcontent" id="tab_div` + i + `" style="display: block;">`
-                content += `<table style="width: 100%;">`
-
-                var tab = json.formTabs[i]
-                var tabFieldsLines = json.formFields[tab];
-
-                for (var j = 0; j < tabFieldsLines.length; j++) {
-                    content = this.createLine(initArray, content, tabFieldsLines[j])
-                }
-
-                content += `</table>`
-                content += `</div>`
-            }
-        }
-        else {
-            content += `<div class="contents">`
-            content += `<form id='` + json.formId + `' action="javascript:void(0);" class="form-container">`
-
-            content += `<table style="width: 100%;">`
-
-            var tab = json.formTabs[0]
-            var tabFieldsLines = json.formFields[tab];
-
-            for (var j = 0; j < tabFieldsLines.length; j++) {
-                content = this.createLine(initArray, content, tabFieldsLines[j])
-            }
-
-            content += `</table>`
-        }
-
-        content += `<div id="` + json.error.id + `" class="` + json.error.class + `"><ul id= "` + json.formId + `_errorUL"></ul></div>`
-
-        var content1 = `<table style="
-            `+ json.buttonStyle + `">
-            <tr>`
-
-        for (var i = 0; i < json.buttons.length; i++) {
-
-            content1 += `<td id= "` + json.buttons[i].tdId + `" style="`  + json.buttons[i].tdstyle + `"><button id= "` + json.buttons[i].id + `" type="` + json.buttons[i].type + `" class="` + json.buttons[i].class + `" onclick="` + json.buttons[i].onclick + `">` + json.buttons[i].name + `</button>`
-        }
-        content1 += `</form>
-        </div>`
-
-        formDiv.innerHTML = content + content1;
-
-        for (var i = 0; i < json.buttons.length; i++) {
-            if (json.buttons[i].type == "submit")
-                this.submit(json.buttons[i].submit)
-        }
-
-        for (var m = 0; m < initArray.length; m++) {
-            try {
-                eval(initArray[m])
-            } catch (error) {
-
-            }
-        }
-
-        if (nbTabs > 1)
-            showActiveTab(document.getElementById("tabli_div0"))
-    }
-
-    submit(f) {
-        var that = this;
-        var form = document.getElementById(that.formId);
-
-        if (this.init == 0) {
-            form.addEventListener('submit', submitForm, true)
-            this.init++
-        }
-
-        function submitForm() {
-            var errors = document.getElementById(that.formId + '_errorUL');
-            errors.innerHTML = "";
-            that.validation.checkFields();
-
-            if (errors.children.length == 0) {
-                eval(f)
-                document.getElementById(that.formId + '_errorloc').style.display = "none";
-            }
-            else {
-                document.getElementById(that.formId + '_errorloc').style.display = "block";
-            }
-            return false;
-        }
-    }
-
-    createLine(initArray, form, line) {
-
-        var k = 0;
-        if (line[0].ligne != null) {
-            form += `<tr><td colspan="3" class="` + line[0].class + `">` + line[0].ligne + `</td></tr>`
-            k = 1;
-        }
-
-        if (line[0].trid != null) {
-            form += `<tr id="` + line[0].trid + `">`
-            k = 1;
-        }
-        else
-            form += ` <tr>`
-
-        for (k; k < line.length; k++) {
-            var fieldParam = line[k]
-            var type = fieldParam.type
-            var init = fieldParam.init
-
-            if (init != null) {
-                if (init == "initSelectFontInput")
-                    initArray.push(init + '("' + fieldParam.id + '")')
-                else if (init.startsWith("initSelectNumberInput")) {
-                    var params = init.split("initSelectNumberInput")[1].split(",");
-                    initArray.push('initSelectNumberInput("' + fieldParam.id + '",' + params[1] + "," + params[2] + "," + params[3] + ")")
-                }
-                else if (init == "picker") {
-                    initArray.push("var" + fieldParam.id + " = new Picker( '" + fieldParam.id + "', 150, 120);")
-                }
-            }
-
-            if (type == "table") {
-                form += `<table id="` + fieldParam.id + `">`
-
-                for (var m = 0; m < fieldParam.fields.length; m++)
-                    form = this.createLine(initArray, form, fieldParam.fields[m]);
-
-                form += "</table>"
-            }
-            else {
-                form = this.createField(form, fieldParam);
-            }
-        }
-        form += `</tr>`
-        return form;
-    }
-
-    createField(form, field) {
-        if (field.validation != null) {
-            for (var i = 0; i < field.validation.length; i++) {
-                if (field.validation[i].rule != null && field.validation[i].error != null)
-                    this.validation.addValidation(field.id, field.validation[i].rule, field.validation[i].error);
-            }
-        }
-
-        if (field.colspan != null) {
-            form += `<td colspan="` + field.colspan + `" id ="`+ field.tdId + `">`
-        }
-        else {
-            form += `<td id ="`+ field.tdId + `">`
-        }
-
-        if (field.label != null && field.id != null && field.style != "display:none" && field.type != "label")
-            form += `<label for="` + field.id + `" id="` + field.id + `Label"><b>` + field.label + `</b></label>`
-
-        if (field.type == "label") {
-            form += `<label for="` + field.id + `"><b>` + field.label + `</b></label>`
-        }
-
-        else if(field.type == "link"){
-            form +=   `<a id='`+ field.id + `' href="#"  onclick="` + field.onclick + `">` + field.description + `</a>`           
-        }
-
-        else if (field.type == "select") {
-            form += `<select`
-
-            if (field.description != null) {
-                form += ` placeholder="` + field.description + `"`
-            }
-
-            if (field.onchange != null) {
-                form += ` onchange="` + field.onchange + `"`
-            }
-
-            if (field.id != null) {
-                form += ` id = "` + field.id + `"`
-            }
-
-            if (field.name != null) {
-                form += ` name="` + field.name + `"`
-            }
-
-            if (field.style != null) {
-                form += ` style="` + field.style + `"`
-            }
-
-            form += `>`
-
-            var options = field.options
-            if (options != null) {
-                for (var opt = 0; opt < options.length; opt++)
-                    form += `<option value="` + options[opt].value + `">` + options[opt].name + ` </option>`
-            }
-            form += `</td>`
-        }
-        else if (field.type == "radio") {
-            var options = field.options
-            if (options != null) {
-                for (var opt = 0; opt < options.length; opt++) {
-
-                    var f = options[opt]
-                    form += `<label><input type="radio" `
-
-                    if (opt == 0)
-                        form += " checked "
-
-                    if (f.onclick != null) {
-                        form += ` onclick="` + f.onclick + `"`
-                    }
-
-                    if (f.id != null) {
-                        form += ` id = "` + f.id + `"`
-                    }
-
-                    if (f.value != null) {
-                        form += ` value = "` + f.value + `"`
-                    }
-
-                    if (f.name != null) {
-                        form += ` name="` + f.name + `"`
-                    }
-
-                    form += `>`
-
-                    if (f.img != null) {
-                        form += ` <img src="` + f.img + `"`
-                    }
-
-                    if (f.style != null) {
-                        form += ` style="` + f.style + `"`
-                    }
-
-                    form += `></label>`
-
-                }
-            }
-            form += `</td>`
-        }
-        else if (field.type == "color") {
-            form += `<input type="text" class="myColorP" `
-
-            if (field.readonly != null) {
-                form += field.readonly
-            }
-
-            if (field.id != null) {
-                form += ` id = "` + field.id + `"`
-            }
-
-            if (field.val != null) {
-                form += ` value="` + field.val + `"`
-            }
-
-            form += `></td>`
-        }
-        else {
-            form += `<input type="` + field.type + `"`
-
-            if (field.readonly != null) {
-                form += field.readonly
-            }
-
-            if (field.style != null) {
-                form += ` style="` + field.style + `"`
-            }
-
-            if (field.description != null) {
-                form += ` placeholder="` + field.description + `"`
-            }
-
-            if (field.onchange != null) {
-                form += ` onchange="` + field.onchange + `"`
-            }
-
-            if (field.id != null) {
-                form += ` id = "` + field.id + `"`
-            }
-
-            if (field.name != null) {
-                form += ` name="` + field.name + `"`
-            }
-
-            if (field.class != null) {
-                form += ` class = "` + field.class + `"`
-            }
-
-            if (field.value != null) {
-                form += ` value="` + field.value + `"`
-            }
-
-            form += `></td>`
-        }
-        return form;
-
-    }
-
-    createTabList(form, json) {
-        var nbTabs = json.formTabs.length;
-        if (nbTabs > 0) {
-            form += `<ul id="tab_ul" class="tabs">`
-            for (var i = 0; i < nbTabs; i++) {
-                if (i == 0) {
-                    form += '<li class="selected"><a id="tabli_div' + i + '" rel="tab_div' + i + '" href="#" onclick="javascript:showActiveTab(this);">' + json.formTabs[i] + '</a></li>';
-                }
-                else
-                    form += '<li class=""><a id="tabli_div' + i + '" rel="tab_div' + i + '" href="#" onclick="javascript:showActiveTab(this);">' + json.formTabs[i] + '</a></li>';
-            }
-
-            form += `</ul>`
-        }
-        return form;
-    }
-}
-
-class ValidationForm {
-    constructor(form) {
-        this.form = form;
-        this.formobj = document.forms[form]
-        this.fields = [];
-    }
-
-    clearAllValidations() {
-        this.fields = [];
-    }
-
-    addValidation(field, rule, errorMessage) {
-
-        var exists = false;
-        var r = new Rule(rule, errorMessage);
-        for (var i = 0; i < this.fields.length; i++) {
-            if (this.fields[i].name == field) {
-                this.fields[i].rules.push(r);
-                exists = true;
-            }
-        }
-
-        if (!exists) {
-            var f = new Field(field);
-            f.rules.push(r)
-            this.fields.push(f);
-        }
-    }
-
-    removeValidation(field){
-        for(var i=0; i<this.field.length; i++){
-            if(this.fields[i].name == field)
-                this.fields.splice(i,1)
-        }
-    }
-
-    desactivateField(field){
-        for(var i=0; i<this.fields.length; i++){
-            if(this.fields[i].name == field)
-                this.fields[i].isActive = false
-        }
-    }
-
-    activateField(field){
-        for(var i=0; i<this.fields.length; i++){
-            if(this.fields[i].name == field)
-                this.fields[i].isActive = true
-        }
-    }
-
-    checkFields() {
-        var errors = document.getElementById(this.form + "_errorUL");
-        for (var i = 0; i < this.fields.length; i++) {
-            if(this.fields[i].isActive){
-            for (var j = 0; j < this.fields[i].rules.length; j++) {
-                var result = this.fields[i].rules[j].validate(this.fields[i].name)
-                if (result != null) {
-                    var li = document.createElement("li");
-                    li.appendChild(document.createTextNode(result));
-                    errors.appendChild(li);
-                    break;
-                }
-            }
-        }
-        }
-    }
-}
-
-class Field {
-    constructor(field) {
-        this.name = field;
-        this.rules = [];
-        this.isActive = true;
-    }
-}
-
-class Rule {
-    constructor(rule, message) {
-        this.rule = rule;
-        this.message = message;
-    }
-
-    validate(field) {
-        var value = document.getElementById(field).value;
-        if (this.rule == 'req') {
-            if (value != '')
-                return null;
-            else
-                return this.message;
-        }
-        else if (this.rule.startsWith("same")) {
-            var sameAs = this.rule.split("=")[1];
-            if (value == document.getElementById(sameAs).value)
-                return null;
-            else
-                return this.message;
-        }
-        if (this.rule == 'email') {
-            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value))
-                return null;
-            else
-                return this.message;
-        }
-        else if(this.rule == "url"){
-            var expression = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[^\s][a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/\S*)?$/
-            var regex = new RegExp(expression);
-            if(value.match(expression))
-                return null;
-            else    
-                return this.message;
-        }
-        else if (this.rule.startsWith("minlen")) {
-            var minlength = this.rule.split("=")[1];
-            if (value.length >= minlength)
-                return null;
-            else
-                return this.message;
-        }
-        else if (this.rule.startsWith("maxlen")) {
-            var maxlength = this.rule.split("=")[1];
-            if (value.length < maxlength)
-                return null;
-            else
-                return this.message;
-        }
-        else if (this.rule == "num") {
-            if (value.match(/^[\-\+]?[\d\,]*\.?[\d]*$/))
-                return null;
-            else
-                return this.message;
-        }
-        else if (this.rule.startsWith("greater")) {
-            var than = this.rule.split("=")[1];
-            if (parseFloat(value) > parseFloat(than))
-                return null
-            else
-                return this.message;
-        }
-
-    }
-}
-
 function createUI() {
     var body = document.getElementsByTagName("body")[0];
     body.innerHTML = ` 
@@ -523,17 +11,16 @@ function createUI() {
                <li class="-hasSubmenu">
                   <a href="#">New</a>
                   <ul>
-                     <li><a href="#">New Project</a></li>
-                     <li><a href="#">New Dashboard</a></li>
+                     <li><a href="#" onclick="openSceneForm()">New Dashboard</a></li>
                   </ul>
                </li>
                <li class="-hasSubmenu">
                   <a href="#">Edit</a>
                   <ul>
-                     <li><a href="#">Delete Dashboard</a></li>
+                     <li><a href="#" onclick="myApp.deleteActiveScene()">Delete Dashboard</a></li>
                   </ul>
                </li>
-               <li><a href="#">Save</a></li>
+               <li><a href="#" onclick="myApp.save()">Save</a></li>
                <li class="-hasSubmenu">
                   <a href="#">File</a>
                   <ul>
@@ -542,6 +29,7 @@ function createUI() {
                   </ul>
                </li>
                <li><a href="#" onclick="myApp.logout()">Logout</a></li>
+               <li><a href="#" onclick="openSettingsForm()">Settings</a></li>
             </ul>
          </li>
       </ul>
@@ -550,6 +38,8 @@ function createUI() {
       <p>Tipee</p>
    </div>
    <div id='right'class="selectdiv ">
+        <div id = 'centerOpenBt'><i id='centerOpenIcon' class="fas fa-comment-alt"></i>
+        </div>
       <label>
          <select id="sceneSelect" name="sceneSelect" onchange="myApp.changeScene()">
             <option value="default">Select Dashboard</option>
@@ -563,8 +53,8 @@ function createUI() {
    <hr>
    <a href="javascript:;" data="edit" onClick='updateTileMenuAction(this.parentElement.id)'>Edit</a>
    <a href="javascript:;" data="lock" onClick='lockTile(this.parentElement.id)'>Lock</a>
-   <a href="javascript:;" data="duplicate" onClick='myApp.activeScene.duplicateTileById(this.parentElement.id)'>Duplicate</a>
-   <a href="javascript:;" data="delete" onClick='myApp.activeScene.deleteTileById(this.parentElement.id)'>Delete</a>
+   <a href="javascript:;" data="duplicate" onClick='myApp.getActiveScene().duplicateTileById(this.parentElement.id)'>Duplicate</a>
+   <a href="javascript:;" data="delete" onClick='myApp.getActiveScene().deleteTileById(this.parentElement.id)'>Delete</a>
 </menu>
 <div class"scene" id='scene'>
 <div class="tileShadow" id='shadow'></div>
@@ -584,9 +74,155 @@ function createUI() {
 <div id="info"> Math </div>`;
 }
 
-function request(urlRequest,crossOrigine, requestType, data, responseType, responseField, operation, callback) {
+function openSceneForm() {
+    document.getElementById("sceneForm").style.display = "flex";
+    document.getElementById("backgroundScreen").classList.add("backgroundScreen");
+ }
+ 
+ function closeSceneForm() {
+    myApp.reloadActiveScene();
+    document.getElementById("sceneForm").style.display = "none";
+    document.getElementById("sceneName").value = "";
+    document.getElementById("backgroundScreen").classList.remove("backgroundScreen");
+    document.getElementById("sceneForm_errorloc").style.display = "none";
+ }
+ 
+ function openSigninSignupForm() {
+    document.getElementById("signinSignupForm").style.display = "block";
+    document.getElementById("splashScreen").classList.add("splashScreen");
+ }
+ 
+ function closeSigninSignupForm() {
+    document.getElementById("signinSignupForm").style.display = "none";
+    document.getElementById("splashScreen").classList.remove("splashScreen");
+    document.getElementById("signinSignupForm_errorloc").style.display = "none";
+ }
+ 
+ function updateSigninSignupForm(action, form) {
+ 
+    if(form==null)
+       form = myApp.loginForm;
+       
+    if (action == "signin") {
+       document.getElementById("passwordTd").colSpan = "2";
+       document.getElementById("btvalLogTd").colSpan = "2";
+       document.getElementById("sign").value = "signup";
+       document.getElementById("sign").innerText = "Sign Up";
+ 
+       form.validation.desactivateField("repassword");
+       form.validation.desactivateField("lastname");
+       form.validation.desactivateField("firstname");
+       form.validation.desactivateField("email");
+ 
+       document.getElementById("repassword").style.display = "none";
+       document.getElementById("lastname").style.display = "none";
+       document.getElementById("firstname").style.display = "none";
+       document.getElementById("emailTr").style.display = "none";
+       document.getElementById("forgot").style.display = "block";
+    }
+    else {
+       form.validation.activateField("repassword");
+       form.validation.activateField("lastname");
+       form.validation.activateField("firstname");
+       form.validation.activateField("email");
+       document.getElementById("passwordTd").colSpan = "1";
+       document.getElementById("btvalLogTd").colSpan = "2";
+       document.getElementById("sign").value = "signin";
+       document.getElementById("sign").innerText = "Sign In";
+       document.getElementById("repassword").style.display = "block";
+       document.getElementById("lastname").style.display = "block";
+       document.getElementById("firstname").style.display = "block";
+       document.getElementById("emailTr").style.display = "table-row";
+       document.getElementById("forgot").style.display = "none";
+    }
+ }
+ 
+ function openTileForm(tpTile) {
+    if(tpTile != null){
+      var form = myApp.demoScene.getTilesByType(tpTile.type)[0].form;
+       myApp.tileForm.fields = form.fields;
+       myApp.tileForm.formId = form.formId;
+       myApp.tileForm.validation = form.validation;
+       myApp.tileForm.buildForm();
+       tpTile.fillForm();
+       tpTile.updateForm();
+    }
+    else{
+       var tileText = myApp.demoScene.getTilesByType("text")[0];
+ 
+       myApp.tileForm.fields = tileText.form.fields;
+       myApp.tileForm.formId = tileText.form.formId;
+       myApp.tileForm.validation = tileText.form.validation;
+       myApp.tileForm.buildForm();
+    }
+ 
+    document.getElementById("tileForm").style.display = "flex";
+    document.getElementById("backgroundScreen").classList.add("backgroundScreen");
+    document.getElementById('tileForm_errorloc').style.display = "none";
+ }
+ 
+ function closeTileForm() {
+    document.getElementById("tileForm").style.display = "none";
+    document.getElementById("idTile").value = "";
+    document.getElementById("backgroundScreen").classList.remove("backgroundScreen");
+    document.getElementById("tileForm_errorUL").innerHTML = "";
+ }
+ 
+ function updateType(elm){
+    document.getElementById("type").value = elm.value;
+ 
+    var tile;
+    if(elm.value == "note"){
+       tile = myApp.demoScene.getTilesByType(elm.value)[0];
+    }
+    else if(elm.value == "todo"){
+       tile = myApp.demoScene.getTilesByType(elm.value)[0];
+    }
+    else if(elm.value == "toggles"){      
+       tile = myApp.demoScene.getTilesByType(elm.value)[0];
+    }
+    else if(elm.value == "text"){
+       tile = myApp.demoScene.getTilesByType(elm.value)[0];
+    }
+    else if(elm.value == "image"){
+       tile = myApp.demoScene.getTilesByType(elm.value)[0];
+    }
+    myApp.tileForm.fields = tile.form.fields;
+    myApp.tileForm.formId = tile.form.formId;
+    myApp.tileForm.validation = tile.form.validation;
+    tile.idTile = "demo";
+    myApp.tileForm.buildForm();
+    tile.updateForm();
+ }
+ 
+ function updateTileForm() {
+    var idTile = document.getElementById("idTile");
+    var type = document.getElementById("type");
+    //var deletebtn = document.getElementById("deleteElem");
+    
+    if (idTile.value != '') {
+       //deletebtn.style.display = "block";
+       var tileToUpadateForm;
+         for (var j = 0; j < myApp.activeScene.tiles.length; j++) {
+             var tile = myApp.activeScene.tiles[j];
+             if (tile.idTile == idTile.value) {
+                tileToUpadateForm = tile;
+             }
+         }
+         tileToUpadateForm.updateForm();
+    }
+       else {
+          //deletebtn.style.display = "none";
+          myApp.demoScene.getTilesByType(type.value)[0].updateForm();
+ 
+          for(var i = 0; i < document.getElementsByName("test").length; i++)
+             document.getElementsByName("test")[i].disabled = false;
+       }
+ }
+
+function request(urlRequest, crossOrigine, requestType, data, responseType, responseField, operation, callback) {
     const Http1 = new XMLHttpRequest();
-    if(crossOrigine)
+    if (crossOrigine)
         Http1.open(requestType, "https://cors-anywhere.herokuapp.com/" + urlRequest, true);
     else
         Http1.open(requestType, urlRequest, true);
@@ -609,9 +245,10 @@ function request(urlRequest,crossOrigine, requestType, data, responseType, respo
             if (requestType == "GET" && responseType == "JSON") {
                 if (Http1.responseText != "") {
                     var json = JSON.parse(Http1.responseText);
-                    var fields = responseField.split('.')
+                    var fields = responseField.split('.');
+      var i = 0;
                     if (json.length > 0) {
-                        for (var i = 0; i < fields.length; i++)
+                        for (i = 0; i < fields.length; i++)
                             json = json[0][fields[i]];
                         if (operation == 'kelvinToCelcius')
                             requestResult = kelvinToCelcius(json);
@@ -620,7 +257,7 @@ function request(urlRequest,crossOrigine, requestType, data, responseType, respo
                         callback.apply(this, [requestResult]);
                     }
                     else {
-                        for (var i = 0; i < fields.length; i++)
+                        for (i = 0; i < fields.length; i++)
                             json = json[fields[i]];
                         if (operation == 'kelvinToCelcius')
                             requestResult = kelvinToCelcius(json);
@@ -673,7 +310,7 @@ function request(urlRequest,crossOrigine, requestType, data, responseType, respo
             requestResult = "207";
             callback.apply(this, [requestResult]);
         }
-    }
+    };
 
     Http1.onerror = function () {
         console.log("** An error occurred during the transaction");
@@ -687,7 +324,7 @@ function request(urlRequest,crossOrigine, requestType, data, responseType, respo
         else if (Http1.status == 403)
             // throw new Error(url + ' replied 404');
             console.log("403 Error");
-    }
+    };
 
 }
 
@@ -698,7 +335,18 @@ function kelvinToCelcius(valueKelvin) {
 }
 
 function roundDecimal(nb, precision) {
-    var precision = precision || 2;
-    var tmp = Math.pow(10, precision);
+    var tmp = Math.pow(10, precision || 2);
     return Math.round(nb * tmp) / tmp;
+}
+
+function createScene(){
+    myApp.createSceneSubmit();
+}
+
+function signin(){
+    myApp.signinSignupSubmit();
+}
+
+function createOrUpdateTpTile(){
+    myApp.createOrUpdateTpTile();
 }

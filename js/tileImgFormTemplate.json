@@ -41,17 +41,21 @@ tileImgFormTemplate = {
                     "description": "seconds",
                     "id": "imgRefresh",
                     "colspan": "1",
-                    "validation" : [{
-                        "rule" : "req",
-                        "error" : "Refresh every is required"
-                    },
-                    {"rule": "num",
-                    "error": "Refresh every should be a number"},
-                    {
-                        "rule": "greater=59",
-                        "error": "Refresh every should be a least 60s" 
-                    }
-                ]},
+                    "validation": [
+                        {
+                            "rule": "req",
+                            "error": "Refresh every is required"
+                        },
+                        {
+                            "rule": "num",
+                            "error": "Refresh every should be a number"
+                        },
+                        {
+                            "rule": "greater=59",
+                            "error": "Refresh every should be a least 60s"
+                        }
+                    ]
+                },
                 {
                     "name": "imgSlideInterval",
                     "label": "Interval",
@@ -59,18 +63,21 @@ tileImgFormTemplate = {
                     "description": "Interval en s",
                     "id": "imgSlideInterval",
                     "colspan": "1",
-                    "validation" : [{
-                        "rule" : "req",
-                        "error" : "Interval is required"
-                    },
-                    {"rule": "num",
-                    "error": "Interval should be a number"},
-                    {
-                        "rule": "greater=59",
-                        "error": "Interval should be a least 60s" 
-                    }
-                ]}
-                
+                    "validation": [
+                        {
+                            "rule": "req",
+                            "error": "Interval is required"
+                        },
+                        {
+                            "rule": "num",
+                            "error": "Interval should be a number"
+                        },
+                        {
+                            "rule": "greater=59",
+                            "error": "Interval should be a least 60s"
+                        }
+                    ]
+                }
             ],
             [
                 {
@@ -87,11 +94,12 @@ tileImgFormTemplate = {
                                 "description": "Enter Name",
                                 "id": "imgSrc0",
                                 "colspan": "1",
-                                "validation" : [{
-                                    "rule" : "req",
-                                    "error" : "Image is required"
-                                }
-                            ]
+                                "validation": [
+                                    {
+                                        "rule": "req",
+                                        "error": "Image is required"
+                                    }
+                                ]
                             }
                         ],
                         [
@@ -104,10 +112,12 @@ tileImgFormTemplate = {
                                 "description": "Enter Name",
                                 "id": "imgSrc1",
                                 "colspan": "1",
-                                "validation" : [{
-                                    "rule" : "req",
-                                    "error" : "Image is required"
-                                }]
+                                "validation": [
+                                    {
+                                        "rule": "req",
+                                        "error": "Image is required"
+                                    }
+                                ]
                             }
                         ],
                         [
@@ -120,10 +130,12 @@ tileImgFormTemplate = {
                                 "description": "Enter Name",
                                 "id": "imgSrc2",
                                 "colspan": "1",
-                                "validation" : [{
-                                    "rule" : "req",
-                                    "error" : "Image is required"
-                                }]
+                                "validation": [
+                                    {
+                                        "rule": "req",
+                                        "error": "Image is required"
+                                    }
+                                ]
                             }
                         ],
                         [
@@ -136,10 +148,12 @@ tileImgFormTemplate = {
                                 "description": "Enter Name",
                                 "id": "imgSrc3",
                                 "colspan": "1",
-                                "validation" : [{
-                                    "rule" : "req",
-                                    "error" : "Image is required"
-                                }]
+                                "validation": [
+                                    {
+                                        "rule": "req",
+                                        "error": "Image is required"
+                                    }
+                                ]
                             }
                         ],
                         [
@@ -152,10 +166,12 @@ tileImgFormTemplate = {
                                 "description": "Enter Name",
                                 "id": "imgSrc4",
                                 "colspan": "1",
-                                "validation" : [{
-                                    "rule" : "req",
-                                    "error" : "Image is required"
-                                }]
+                                "validation": [
+                                    {
+                                        "rule": "req",
+                                        "error": "Image is required"
+                                    }
+                                ]
                             }
                         ],
                         [
@@ -168,10 +184,12 @@ tileImgFormTemplate = {
                                 "description": "Enter Name",
                                 "id": "imgSrc5",
                                 "colspan": "1",
-                                "validation" : [{
-                                    "rule" : "req",
-                                    "error" : "Image is required"
-                                }]
+                                "validation": [
+                                    {
+                                        "rule": "req",
+                                        "error": "Image is required"
+                                    }
+                                ]
                             }
                         ],
                         [
@@ -184,10 +202,12 @@ tileImgFormTemplate = {
                                 "description": "Enter Name",
                                 "id": "imgSrc6",
                                 "colspan": "1",
-                                "validation" : [{
-                                    "rule" : "req",
-                                    "error" : "Image is required"
-                                }]
+                                "validation": [
+                                    {
+                                        "rule": "req",
+                                        "error": "Image is required"
+                                    }
+                                ]
                             }
                         ],
                         [
@@ -200,10 +220,12 @@ tileImgFormTemplate = {
                                 "description": "Enter Name",
                                 "id": "imgSrc7",
                                 "colspan": "1",
-                                "validation" : [{
-                                    "rule" : "req",
-                                    "error" : "Image is required"
-                                }]
+                                "validation": [
+                                    {
+                                        "rule": "req",
+                                        "error": "Image is required"
+                                    }
+                                ]
                             }
                         ],
                         [
@@ -216,10 +238,12 @@ tileImgFormTemplate = {
                                 "description": "Enter Name",
                                 "id": "imgSrc8",
                                 "colspan": "1",
-                                "validation" : [{
-                                    "rule" : "req",
-                                    "error" : "Image is required"
-                                }]
+                                "validation": [
+                                    {
+                                        "rule": "req",
+                                        "error": "Image is required"
+                                    }
+                                ]
                             }
                         ],
                         [
@@ -232,13 +256,15 @@ tileImgFormTemplate = {
                                 "description": "Enter Name",
                                 "id": "imgSrc9",
                                 "colspan": "1",
-                                "validation" : [{
-                                    "rule" : "req",
-                                    "error" : "Image is required"
-                                }]
+                                "validation": [
+                                    {
+                                        "rule": "req",
+                                        "error": "Image is required"
+                                    }
+                                ]
                             }
                         ]
-                    ],
+                    ]
                 }
             ]
         ]

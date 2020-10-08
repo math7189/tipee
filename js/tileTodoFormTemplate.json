@@ -1,40 +1,39 @@
 tileTodoFormTemplate = {
   "formFields": {
     "Style": [
-        [
-          {
-            "ligne": "Text",
-            "class" : "headerTitle"
-          },
-          {
-            "name": "textFont",
-            "label": "Font",
-            "type": "select",
-            "id": "textFont",
-            "colspan": "1",
-            "onchange": "return applyFontInput('textFont');",
-            "init": "initSelectFontInput"
-          },
-          {
-            "name": "textFontSize",
-            "label": "Font Size",
-            "type": "select",
-            "id": "textFontSize",
-            "colspan": "1",
-            "init": "initSelectNumberInput,11,72,20"
-          },
-          {
-            "name": "textColor",
-            "label": "Font Color",
-            "type": "color",
-            "id": "textColor",
-            "colspan": "1",
-            "readonly": "readonly",
-            "val": "#000000",
-            "init": "picker"
-          }
-        ]
-      
+      [
+        {
+          "ligne": "Text",
+          "class": "headerTitle"
+        },
+        {
+          "name": "textFont",
+          "label": "Font",
+          "type": "select",
+          "id": "textFont",
+          "colspan": "1",
+          "onchange": "return applyFontInput('textFont');",
+          "init": "initSelectFontInput"
+        },
+        {
+          "name": "textFontSize",
+          "label": "Font Size",
+          "type": "select",
+          "id": "textFontSize",
+          "colspan": "1",
+          "init": "initSelectNumberInput,11,72,20"
+        },
+        {
+          "name": "textColor",
+          "label": "Font Color",
+          "type": "color",
+          "id": "textColor",
+          "colspan": "1",
+          "readonly": "readonly",
+          "value": "#000000",
+          "init": "picker"
+        }
+      ]
     ]
   }
 }

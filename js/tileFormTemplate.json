@@ -1,17 +1,17 @@
 tileFormTemplate = {
-  "formId" : "tileForm",
-  "formTitle": "Hello World",
-  "error" : {
-    "id" : "tileForm_errorloc",
-    "class" : "formError"
-},
-"buttonStyle" : "bottom: 0; position: absolute;",
+  "formId": "tileForm",
+  "formTitle": "Add New Tile",
+  "error": {
+    "id": "tileForm_errorloc",
+    "class": "formError"
+  },
+  "buttonStyle": "bottom: 0; position: absolute;",
   "buttons": [
     {
       "name": "OK",
       "type": "submit",
       "class": "btn",
-      "submit" : " myApp.createOrUpdateTpTile();"
+      "submit": "createOrUpdateTpTile"
     },
     {
       "name": "Cancel",
@@ -35,18 +35,20 @@ tileFormTemplate = {
           "description": "Enter Title",
           "id": "title",
           "colspan": "1",
-          "validation" : [{
-            "rule" : "req",
-            "error" : "Title is required"
-          },
-          {
-            "rule" : "minlen=3",
-            "error" : "Title should be more than 2 characters"
-          },
-          {
-            "rule" : "maxlen=20",
-            "error" : "Title should be less than 20 characters"
-          }]
+          "validation": [
+            {
+              "rule": "req",
+              "error": "Title is required"
+            },
+            {
+              "rule": "minlen=3",
+              "error": "Title should be more than 2 characters"
+            },
+            {
+              "rule": "maxlen=20",
+              "error": "Title should be less than 20 characters"
+            }
+          ]
         },
         {
           "name": "idTile",
@@ -171,7 +173,7 @@ tileFormTemplate = {
           "id": "headerFontColor",
           "colspan": "1",
           "readonly": "readonly",
-          "val": "#ffffff",
+          "value": "#ffffff",
           "init": "picker"
         }
       ],
@@ -183,7 +185,7 @@ tileFormTemplate = {
           "id": "headerColor",
           "colspan": "1",
           "readonly": "readonly",
-          "val": "#2196f3",
+          "value": "#2196f3",
           "init": "picker"
         }
       ],
@@ -199,7 +201,7 @@ tileFormTemplate = {
           "id": "contentBackgroundColor",
           "colspan": "1",
           "readonly": "readonly",
-          "val": "#ffffff",
+          "value": "#ffffff",
           "init": "picker"
         }
       ],
@@ -219,7 +221,7 @@ tileFormTemplate = {
           "id": "borderColor",
           "colspan": "1",
           "readonly": "readonly",
-          "val": "#2196f3",
+          "value": "#2196f3",
           "init": "picker"
         }
       ],
@@ -232,41 +234,44 @@ tileFormTemplate = {
           "type": "text",
           "description": "Enter width",
           "id": "width",
-          "value" : "250",
+          "value": "250",
           "colspan": "1",
-          "validation":[{
-            "rule" : "req",
-            "error" : "Width is required"
-          },
-          {
-            "rule" : "num",
-            "error" : "Width should be a number"
-          },
-          {
-            "rule" : "greater=49",
-            "error" : "Width should be greater than 49 px"
-          }
-          ]},
+          "validation": [
+            {
+              "rule": "req",
+              "error": "Width is required"
+            },
+            {
+              "rule": "num",
+              "error": "Width should be a number"
+            },
+            {
+              "rule": "greater=49",
+              "error": "Width should be greater than 49 px"
+            }
+          ]
+        },
         {
           "name": "height",
           "label": "Height",
           "type": "text",
           "description": "Enter height",
           "id": "height",
-          "value" : "250",
+          "value": "250",
           "colspan": "1",
-          "validation":[{
-            "rule" : "req",
-            "error" : "Height is required"
-          },
-          {
-            "rule" : "num",
-            "error" : "Height should be a number"
-          },
-          {
-            "rule" : "greater=49",
-            "error" : "Height should be greater than 49 px"
-          }
+          "validation": [
+            {
+              "rule": "req",
+              "error": "Height is required"
+            },
+            {
+              "rule": "num",
+              "error": "Height should be a number"
+            },
+            {
+              "rule": "greater=49",
+              "error": "Height should be greater than 49 px"
+            }
           ]
         }
       ]

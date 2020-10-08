@@ -1,0 +1,169 @@
+
+
+.center {
+  width: 400px;
+   height: 100%;
+   position: fixed;
+   right: -800px;
+top:0;
+   background-color: rgba(232, 236, 241, 0.2);
+   /* opacity: 0.2; */
+   transition: all .8s ease-in-out;
+
+ }
+
+.notifCenterContainer{
+ position: relative;
+   width: 350px;
+   margin: auto;
+   margin-top: 10px;
+   margin-bottom: 10px;
+   transition: all 2s ease-in-out;
+
+}
+
+.notifCenter {
+  height: 100%;
+  opacity: 1;
+  transition: all 1s ease-in-out;
+
+}
+ 
+ .notifContainer {
+   width : 400px;
+   height : 70px;
+   position: fixed;
+   top: 0px;
+   right:0;
+   padding: 10px 0;
+   z-index: 13;
+   -webkit-touch-callout: none; /* iOS Safari */
+   -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+   -moz-user-select: none; /* Old versions of Firefox */
+   -ms-user-select: none; /* Internet Explorer/Edge */
+   user-select: none;
+   transition: top .8s ease-in-out;
+   box-sizing: unset;
+
+ }
+
+ .notif{
+   width : 370px;
+   height : 70px;
+   position: absolute;
+   right: -400px;
+   top: 10px;
+   display: flex;
+   flex-flow: row;
+   font-family: 'Roboto', sans-serif;
+   transition: all .8s ease-in-out;
+   opacity: 0.1;
+   background-color: #f2f2f2;
+   color:#444;
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+   border-radius: 10px;
+ }
+ 
+ .notifHeader {
+   
+   padding: 5px;
+   font-weight: 500;
+   font-size: 16px;
+   line-height: 16px;
+     
+ }
+ 
+ .notifBody {
+   padding: 5px;
+   font-size: 13px;
+   line-height: 16px;
+   font-weight: 400;
+
+ }
+ 
+ .notifLeft {
+   padding: 10px;
+   width: 80%;
+
+ }
+
+ .notifCenterLeft{
+   height: 100%;
+ }
+
+ .notifCenterBody {
+   background-color: antiquewhite;
+    height: 65%;
+   padding: 15px;
+   transition: all .8s ease-in-out;
+
+ }
+ 
+ .notifBtOK {
+   width: 20%;
+   border-left: 1px solid #d3d2d8;
+   display: flex;
+   align-items: center;
+   transition: all .8s ease-in-out;
+
+ }
+ 
+ .notifBtOK p {
+   font-weight: 400;
+
+   margin: auto;
+   -webkit-touch-callout: none; /* iOS Safari */
+   -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+   -moz-user-select: none; /* Old versions of Firefox */
+   -ms-user-select: none; /* Internet Explorer/Edge */
+   user-select: none;
+
+ }
+
+ .numberCircle {
+  position: absolute;
+    /* float: right; */
+    top: 3px;
+    right: 3px;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    padding: 5px;
+    background: #666;
+    border: 2px solid #666;
+    color: #fff;
+    text-align: center;
+    font: 9.5px Arial, sans-serif;
+}
+ 
+
+
+.notifCenterHeader {
+  background-color: #666;
+  height: 35%;
+  /* margin: 5px; */
+  padding: 2px 2px 2px 15px;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 0px;
+  /*border-top-left-radius: 15px;
+  border-top-right-radius: 15px;*/
+   transition: all .8s ease-in-out;
+     
+ }
+
+.notifCenterNotifs{
+  position: relative;
+  transition: all .8s ease-in-out;
+
+}
+
+.notifCenterDate{
+  position: relative;
+  font-size:25px;
+  padding:20px;
+  transition: all .8s ease-in-out;
+
+}
