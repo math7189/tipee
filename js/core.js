@@ -25,14 +25,14 @@ class TipeeApp {
 
         if (sessionStorage.length > 0) {
             var sessionLogin = JSON.parse(sessionStorage.user);
-            if (sessionLogin !== null) {
+            if (sessionLogin != null) {
                 that.login = sessionLogin;
             }
 
             var getUserDashboardCallback = function (returned_data) {
                 if (returned_data !== '207')
                     loadJSON(JSON.parse(returned_data));
-                if (activeScene === null) {
+                if (activeScene == null) {
                     openSceneForm();
                     that.changeScene();
                 }
