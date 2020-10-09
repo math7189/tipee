@@ -2092,6 +2092,7 @@ function loadJSON(json) {
     var tarrayScenes = json.app[0].scenes;
     var select = document.getElementById('sceneSelect');
     var activeSceneFromFile;
+    if(tarrayScenes != null && tarrayScenes.length > 0){
     tarrayScenes.forEach(t => {
         var option = document.createElement('option');
         select.options.add(option);
@@ -2139,6 +2140,7 @@ function loadJSON(json) {
             document.getElementById('sceneSelect').options[0].style.display = 'none';
     });
 
+
     myApp.activeSceneId = activeSceneFromFile.idScene;
     for (var i, j = 0; i = select.options[j]; j+= 1) {
         if (i.value === activeSceneFromFile.sceneName) {
@@ -2148,6 +2150,7 @@ function loadJSON(json) {
     }
 
     activeSceneFromFile.drawScene();
+}
 }
 
 function updateTileMenuAction(id) {
