@@ -20,7 +20,7 @@ class TipeeApp {
 
     init() {
         const that = this;
-        const activeScene = that.getSceneById(that.activeSceneId);
+        let activeScene = that.getSceneById(that.activeSceneId);
 
         this.createUI();
         notificationCenter({offsetTop:50});
@@ -40,6 +40,7 @@ class TipeeApp {
             const getUserDashboardCallback = function (returned_data) {
                 if (returned_data !== '207')
                     that.loadJSON(JSON.parse(returned_data));
+                    activeScene = that.getSceneById(that.activeSceneId);
                 if (activeScene == null) {
                     that.openSceneForm();
                     that.changeScene();
