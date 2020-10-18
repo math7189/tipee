@@ -126,10 +126,11 @@ class TipeeApp {
 
         if (arrayScenes != null && arrayScenes.length > 0) {
             const selectSceneElemnt = document.getElementById('sceneSelect');
-            const option = document.createElement('option');
 
             let activeSceneFromFile = null;
             arrayScenes.forEach(t => {
+                const option = document.createElement('option');
+
                 selectSceneElemnt.options.add(option);
                 option.text = t.sceneName;
                 option.value = t.sceneName;
