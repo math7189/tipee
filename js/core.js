@@ -147,26 +147,26 @@ class TipeeApp {
                 arrayTiles.forEach(t => {
                     let tile = null;
                     if (t.type === 'text')
-                        tile = new TipeeTileText(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
+                        tile = new TipeeTileText(sceneToCreate.idScene, t.x, t.y, t.width, t.height, t.isLocked,
                             t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
                             t.borderSize, t.contentBackgroundColor, t.title, t.requestUrl, t.reqType, t.responseType, t.responseField,
                             t.textBefore, t.textAfter, t.requestRefresh, t.textColor, t.textFont, t.textFontSize,
                             t.operation);
                     else if (t.type === 'image')
-                        tile = new TipeeTileImage(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
+                        tile = new TipeeTileImage(sceneToCreate.idScene, t.x, t.y, t.width, t.height, t.isLocked,
                             t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
                             t.borderSize, t.contentBackgroundColor, t.title, t.imgNb, t.imgSrc, t.imgSlideInterval,
                             t.imgRefresh);
                     else if (t.type === 'toggles')
-                        tile = new TipeeTileToggles(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
+                        tile = new TipeeTileToggles(sceneToCreate.idScene, t.x, t.y, t.width, t.height, t.isLocked,
                             t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
                             t.borderSize, t.contentBackgroundColor, t.title, t.togglesNb, t.togglesProperties);
                     else if (t.type === 'note')
-                        tile = new TipeeTileNote(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
+                        tile = new TipeeTileNote(sceneToCreate.idScene, t.x, t.y, t.width, t.height, t.isLocked,
                             t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
                             t.borderSize, t.contentBackgroundColor, t.title, t.textColor, t.textFont, t.textFontSize, t.text);
                     else if (t.type = 'todo')
-                        tile = new TipeeTileTodo(sceneToCreate, t.x, t.y, t.width, t.height, t.isLocked,
+                        tile = new TipeeTileTodo(sceneToCreate.idScene, t.x, t.y, t.width, t.height, t.isLocked,
                             t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
                             t.borderSize, t.contentBackgroundColor, t.title, t.textColor, t.textFont, t.textFontSize, t.todo, '');
                     sceneToCreate.tiles.push(tile);
