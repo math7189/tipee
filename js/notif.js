@@ -278,6 +278,7 @@ window.onload = function () {
   window.notificationCenter = (options) => {
     const nCenter = new NotificationCenter(options);
     nCenter.createCenter();
+    return nCenter;
   }
 
   window.notif = (options) => {
