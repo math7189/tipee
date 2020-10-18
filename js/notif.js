@@ -274,7 +274,7 @@ class Notification {
   }
 }
 
-window.onload = function () {
+(function () {
   window.notificationCenter = (options) => {
     const nCenter = new NotificationCenter(options);
     nCenter.createCenter();
@@ -286,7 +286,7 @@ window.onload = function () {
     newNotif.__showNotif();
     return newNotif;
   };
-}
+})();
 
 function sleep(milliseconds) {
   const date = Date.now();
