@@ -137,6 +137,7 @@ class TipeeApp {
                 sceneToCreate.sceneName = t.sceneName;
                 sceneToCreate.sceneId = t.sceneId;
                 sceneToCreate.isActive = t.isActive;
+                this.scenes.push(sceneToCreate);
                 const arrayTiles = t.tiles;
 
                 if (sceneToCreate.isActive) {
