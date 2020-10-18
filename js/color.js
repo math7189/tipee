@@ -1,28 +1,26 @@
 var pickers = [];
 
 class Picker {
-    constructor(field, width, height) {
+    constructor(fieldId, width, height) {
 
-        var pick = document.getElementById("color-picker " + field);
+        let picker = document.getElementById("color-picker " + fieldId);
         this.initval = 1;
-        if (pick == null) {
-            var el = document.createElement("div");
-            var el1 = document.createElement("canvas");
-            el1.setAttribute("id", "color-picker " + field);
-            el.appendChild(el1);
-
-            document.body.appendChild(el);
-            pick = el1;
+        if (picker == null) {
+            let divElmt = document.createElement("div");
+            let canvasElmt = document.createElement("canvas");
+            canvasElmt.setAttribute("id", "color-picker " + fieldId);
+            divElmt.appendChild(canvasElmt);
+            document.body.appendChild(divElmt);
+            picker = canvasElmt;
             this.initval = 0;
         }
 
-        this.target = pick;
+        this.target = picker;
         this.width = width;
         this.height = height;
-        this.fieldId = field;
-        this.field = document.getElementById(field);
-        this.target.width = this.width;
-        this.target.height = height;
+        this.fieldId = fieldId;
+        this.field = document.getElementById(fieldId);
+
         //Get context 
         this.context = this.target.getContext("2d");
         //Circle 
@@ -34,17 +32,12 @@ class Picker {
     }
 
     init() {
-        if (this.initval == 0) {
-            setInterval(() => this.draw(), 1);
+        if (this.initval === 0) {
+            setInterval(() => this.build(), 1);
         }
         this.onChange(this.hexToRgb(document.getElementById(this.fieldId).value));
         this.target.style.display = "none";
-        this.initval++;
-
-    }
-
-    draw() {
-        this.build();
+        this.initval = 1;
     }
 
     build() {
@@ -79,17 +72,18 @@ class Picker {
         this.context.closePath();
     }
 
-    componentToHex(c) {
-        var hex = c.toString(16);
-        return hex.length == 1 ? "0" + hex : hex;
-    }
-
     rgbToHex(r, g, b) {
-        return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
+
+        function componentToHex(c) {
+            var hex = c.toString(16);
+            return hex.length == 1 ? "0" + hex : hex;
+        }
+
+        return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
     }
 
     hexToRgb(hex) {
-        if (/^#([a-f0-9]{3}){1,2}$/.test(hex)) {
+        if (/^#([a-fA-F0-9]{3}){1,2}$/.test(hex)) {
             if (hex.length == 4) {
                 hex = '#' + [hex[1], hex[1], hex[2], hex[2], hex[3], hex[3]].join('');
             }
@@ -99,28 +93,29 @@ class Picker {
     }
 
     listenForEvents() {
-        var that = this;
+        const that = this;
         let isMouseDown = false;
+
         const onMouseDown = (e) => {
-            var id = "color-picker " + that.fieldId;
-            if(document.getElementById(that.fieldId) != null){
-            if (e.target.className == "myColorP" && e.target.id == document.getElementById(that.fieldId).id) {
-                show();
-            }
-            else if (e.target.id == id) {
-                let currentX = e.clientX - this.target.offsetLeft + window.pageXOffset;
-                let currentY = e.clientY - this.target.offsetTop + window.pageYOffset;
-                if (currentY > this.pickerCircle.y && currentY < this.pickerCircle.y + this.pickerCircle.width && currentX > this.pickerCircle.x && currentX < this.pickerCircle.x + this.pickerCircle.width) {
-                    isMouseDown = true;
-                } else {
-                    this.pickerCircle.x = currentX;
-                    this.pickerCircle.y = currentY;
+            const pickerId = "color-picker " + that.fieldId;
+            if (document.getElementById(that.fieldId) != null) {
+                if (e.target.className == "myColorP" && e.target.id === document.getElementById(that.fieldId).id) {
+                    show();
                 }
-                that.onChange(that.getPickedColor());
+                else if (e.target.id === pickerId) {
+                    let currentX = e.clientX - this.target.offsetLeft + window.pageXOffset;
+                    let currentY = e.clientY - this.target.offsetTop + window.pageYOffset;
+                    if (currentY > this.pickerCircle.y && currentY < this.pickerCircle.y + this.pickerCircle.width && currentX > this.pickerCircle.x && currentX < this.pickerCircle.x + this.pickerCircle.width) {
+                        isMouseDown = true;
+                    } else {
+                        this.pickerCircle.x = currentX;
+                        this.pickerCircle.y = currentY;
+                    }
+                    that.onChange(that.getPickedColor());
+                }
+                else
+                    hide();
             }
-            else
-                hide();
-        }
         };
 
         const update = () => {
@@ -145,13 +140,12 @@ class Picker {
         };
 
         const show = () => {
-            this.target.style.display = "block";
-
-            var viewportOffset = document.getElementById(this.fieldId).getBoundingClientRect();
+            const viewportOffset = document.getElementById(this.fieldId).getBoundingClientRect();
             // these are relative to the viewport, i.e. the window
-            var top = viewportOffset.top + document.getElementById(this.fieldId).clientHeight;
-            var left = viewportOffset.left;
+            const top = viewportOffset.top + document.getElementById(this.fieldId).clientHeight;
+            const left = viewportOffset.left;
 
+            this.target.style.display = "block";
             this.target.style.top = top + "px";
             this.target.style.left = left + "px";
             this.target.style.position = "absolute";
@@ -172,7 +166,7 @@ class Picker {
 
     onChange(color) {
         document.getElementById(this.fieldId).value = this.rgbToHex(color.r, color.g, color.b);
-        document.getElementById(this.fieldId).style.backgroundImage = "linear-gradient(to right, rgb(" + color.r + " " + color.g + " " + color.b + ") 0%, rgb(" + color.r + " " + color.g + " " + color.b + ") 30px, rgba(0, 0, 0, 0) 31px, rgba(0, 0, 0, 0) 100%)"; 
+        document.getElementById(this.fieldId).style.backgroundImage = "linear-gradient(to right, rgb(" + color.r + " " + color.g + " " + color.b + ") 0%, rgb(" + color.r + " " + color.g + " " + color.b + ") 30px, rgba(0, 0, 0, 0) 31px, rgba(0, 0, 0, 0) 100%)";
         document.getElementById(this.fieldId).style.paddingLeft = "30px";
     }
 }
@@ -181,14 +175,14 @@ class Picker {
     var colors = document.getElementsByClassName("myColorP");
     for (var i = 0; i < colors.length; i++) {
         let picker = new Picker(colors[i].id, 150, 120);
-        setInterval(() => picker.draw(), 1);
+        setInterval(() => picker.build(), 1);
         picker.onChange(picker.hexToRgb(picker.field.value));
     }
 })();
 
-function updatePicker(field){
-    for(var i = 0; i<pickers.length; i++){
-        if(pickers[i].fieldId == field){
+function updatePicker(field) {
+    for (var i = 0; i < pickers.length; i++) {
+        if (pickers[i].fieldId == field) {
             pickers[i].onChange(pickers[i].hexToRgb(pickers[i].field.value));
         }
     }

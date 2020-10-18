@@ -138,7 +138,7 @@ loginFormTemplate = {
         {
           "name": "sign",
           "type": "link",
-          "onclick": "updateSigninSignupForm(this.value);return false;",
+          "onclick": "tipee.updateSigninSignupForm(this.value);return false;",
           "description": "Sign up",
           "id": "sign"
         },

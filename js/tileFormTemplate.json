@@ -17,7 +17,7 @@ tileFormTemplate = {
       "name": "Cancel",
       "type": "button",
       "class": "btn cancel",
-      "onclick": "closeTileForm()"
+      "onclick": "tipee.closeTileForm()"
     }
   ],
   "formTabs": [
@@ -67,7 +67,7 @@ tileFormTemplate = {
           "id": "type",
           "colspan": "2",
           "style": "display:none",
-          "onchange": "updateTileForm()",
+          "onchange": "tipee.updateTileForm()",
           "options": [
             {
               "value": "text",
@@ -107,35 +107,35 @@ tileFormTemplate = {
             {
               "value": "text",
               "img": "tempsnip.png",
-              "onclick": "updateType(this)",
+              "onclick": "tipee.updateType(this)",
               "name": "test",
               "style": "width: 150px;"
             },
             {
               "value": "image",
               "img": "tempsnip.png",
-              "onclick": "updateType(this)",
+              "onclick": "tipee.updateType(this)",
               "name": "test",
               "style": "width: 150px;"
             },
             {
               "value": "toggles",
               "img": "tempsnip.png",
-              "onclick": "updateType(this)",
+              "onclick": "tipee.updateType(this)",
               "name": "test",
               "style": "width: 150px;"
             },
             {
               "value": "note",
               "img": "tempsnip.png",
-              "onclick": "updateType(this)",
+              "onclick": "tipee.updateType(this)",
               "name": "test",
               "style": "width: 150px;"
             },
             {
               "value": "todo",
               "img": "tempsnip.png",
-              "onclick": "updateType(this)",
+              "onclick": "tipee.updateType(this)",
               "name": "test",
               "style": "width: 150px;"
             }

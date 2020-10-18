@@ -35,81 +35,86 @@ const __notifTemplate2 = `
 const __notifications = [];
 
 class NotificationCenter {
-  
-  constructor(){
+
+  constructor(options) {
     this.__isShown = false;
+    this.__centerDateElemnt = null;
+    this.__defaultOptions = {
+      offsetTop : 120
+    }
+    this.__options = { ...this.__defaultOptions, ...options};
   }
-  
+
   static __generateNotifTemplate(id) {
     let template = __notifTemplate2;
     template = template.replace(/notifId/g, "notif_" + id);
     return template;
   }
-  
-  init(){
+
+  createCenter() {
 
     const mydiv = document.createElement('Div');
     mydiv.setAttribute('id', 'notifCenter')
     mydiv.setAttribute('class', 'center')
+    mydiv.style.paddingTop = this.__options.offsetTop + 'px';
     document.body.appendChild(mydiv)
-    
+
     var notifCenterDateDiv = document.createElement('Div');
     notifCenterDateDiv.setAttribute('id', 'notifCenterDate')
     notifCenterDateDiv.setAttribute('class', 'notifCenterDate')
-    notifCenterDateDiv.innerText = '07 Octobre 2020';
-    
+    this.__centerDateElemnt = notifCenterDateDiv;
     mydiv.appendChild(notifCenterDateDiv);
-    
+
     const notifCenterNotifs = document.createElement('Div')
     notifCenterNotifs.setAttribute('id', 'notifCenterNotifs');
     notifCenterNotifs.setAttribute('class', 'notifCenterNotifs');
-    
+
     mydiv.appendChild(notifCenterNotifs)
-     
-    var centerbt = document.getElementById("centerOpenIcon");   // Create a <button> element
-    
-    
-    
-    
+
+    var centerbt = document.getElementById("centerOpenIcon");
     var that = this;
-    
-    centerbt.addEventListener("click", function(){
+
+    centerbt.addEventListener("click", function () {
       var center = document.getElementById('notifCenter');
-      if(that.__isShown){
-      center.style.right = '-800px'
-      that.__isShown = false;
+      that.updateCenterDate();
+      if (that.__isShown) {
+        center.style.right = '-800px'
+        that.__isShown = false;
       }
-      else{
+      else {
         center.style.right = '0px'
         that.__isShown = true;
         that.populate();
       }
     });
 
-    window.addEventListener('click', function(e){
+    window.addEventListener('click', function (e) {
       var center = document.getElementById('notifCenter');
       e.stopPropagation();
-        if(!e.target.id.startsWith('notifCenter') && e.target.id != 'centerOpenIcon')
-        {
-          center.style.right = '-800px'
-      that.__isShown = false;
-        }
+      if (!e.target.id.startsWith('notifCenter') && e.target.id != 'centerOpenIcon') {
+        
+        center.style.right = '-800px'
+        that.__isShown = false;
+      }
     });
   }
-  
-  populate(){
+
+  updateCenterDate(){
+    this.__centerDateElemnt.innerText = '10 Oct 2020'
+  }
+
+  populate() {
     const center = document.getElementById("notifCenterNotifs");
-center.innerHTML = '';
-    for(var i=0; i<__notifications.length; i+=1){
+    center.innerHTML = '';
+    for (var i = 0; i < __notifications.length; i += 1) {
       const newNotif = this.constructor.__generateNotifTemplate(__notifications[i].__id);
-     center.insertAdjacentHTML("beforeend", newNotif);
-      
-      const notifCenterBt = document.getElementById('notifCenterBt-notif_'+ __notifications[i].__id);
+      center.insertAdjacentHTML("beforeend", newNotif);
+
+      const notifCenterBt = document.getElementById('notifCenterBt-notif_' + __notifications[i].__id);
       const that = __notifications[i];
-      notifCenterBt.addEventListener('click', function(){
+      notifCenterBt.addEventListener('click', function () {
         that.dissmissAndReadCenter()
       })
-      //alert('i ' + i + ' ' + newNotif)
     }
   }
 }
@@ -119,6 +124,7 @@ class Notification {
     this.__id = -1;
     this.__isRead = false;
     this.__hasDisplayed = false;
+    this.__hasDismissed = false;
 
     this.__defaultOptions = {
       title: "New Notification",
@@ -152,27 +158,23 @@ class Notification {
   static __updatePosAll() {
     let i = 0;
     for (i; i < __notifications.length; i += 1)
-    if(!__notifications[i].__hasDisplayed)
+      if (!__notifications[i].__hasDisplayed)
         __notifications[i].__updatePos();
   }
 
   dissmissAndRead() {
     this.__isRead = true;
+    this.__hasDismissed = true;
 
     const id = "notif_" + this.__id;
     const notifElem = document.getElementById(id);
     notifElem.style.opacity = "0.1";
     notifElem.style.right = -notifElem.offsetWidth + "px";
 
-
-   
-
     setTimeout(() => {
       notifElem.parentElement.parentElement.removeChild(
         notifElem.parentElement
       );
-
-      
     }, 800);
 
     for (let i = 0; i < __notifications.length; i += 1)
@@ -183,16 +185,11 @@ class Notification {
     this.__isRead = true;
     this.__hasDisplayed = true;
 
-
-
-    const id2 = "notifCenter-notif_" + this.__id;
-    const notifCenterElem = document.getElementById(id2);
+    const id = "notifCenter-notif_" + this.__id;
+    const notifCenterElem = document.getElementById(id);
     notifCenterElem.style.opacity = "0";
-   
 
     setTimeout(() => {
-
-      
       notifCenterElem.parentElement.parentElement.removeChild(
         notifCenterElem.parentElement
       );
@@ -201,15 +198,15 @@ class Notification {
     for (let i = 0; i < __notifications.length; i += 1)
       if (__notifications[i].__id == this.__id) __notifications.splice(i, 1);
   }
-  
+
   dissmiss() {
-      const id = "notif_" + this.__id;
+    const id = "notif_" + this.__id;
     const notifElem = document.getElementById(id);
     notifElem.style.opacity = "0.1";
     notifElem.style.right = -notifElem.offsetWidth + "px";
 
     this.__hasDisplayed = true;
-
+    this.__hasDismissed = true;
 
     setTimeout(() => {
       notifElem.parentElement.parentElement.removeChild(
@@ -257,7 +254,7 @@ class Notification {
         e.stopPropagation();
         console.log(e.target.id);
         for (let i = 0; i < __notifications.length; i += 1) {
-          if (e.target.id.split("_")[1] == __notifications[i].__id){
+          if (e.target.id.split("_")[1] == __notifications[i].__id) {
             __notifications[i].dissmissAndRead();
           }
         }
@@ -267,38 +264,28 @@ class Notification {
       this.constructor.__updatePosAll();
       notifElem.style.opacity = "1";
       notifElem.style.right = "15px";
-      
-      if(this.__options.autoDismiss){
-      setTimeout(() => {
-        this.dissmiss();
-      }, this.__options.dismissDelay*1000)
-    }
+
+      if (this.__options.autoDismiss && !this.__hasDismissed) {
+        setTimeout(() => {
+          this.dissmiss();
+        }, this.__options.dismissDelay * 1000)
+      }
     }, 1000);
-    
-    
   }
 }
 
-
-
-
-window.onload =function(){
-  const nCenter = new NotificationCenter();
-  nCenter.init();
+window.onload = function () {
+  window.notificationCenter = (options) => {
+    const nCenter = new NotificationCenter(options);
+    nCenter.createCenter();
+  }
 
   window.notif = (options) => {
     const newNotif = new Notification(options);
     newNotif.__showNotif();
     return newNotif;
-
-    
   };
-  notif({ title: "MyTest", subTitle: "My test notif" });
-sleep(1000);
-notif({ title: "MyTest2", subTitle: "My test notif" });
 }
-
-
 
 function sleep(milliseconds) {
   const date = Date.now();

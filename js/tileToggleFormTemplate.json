@@ -364,7 +364,7 @@ tileToggleFormTemplate = {
                     "id": "textColor",
                     "colspan": "1",
                     "readonly": "readonly",
-                    "val": "#000000",
+                    "value": "#000000",
                     "init": "picker"
                 }
             ]

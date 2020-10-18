@@ -19,7 +19,7 @@ sceneFormTemplate = {
       "name": "Cancel",
       "type": "button",
       "class": "btn cancel",
-      "onclick": "closeSceneForm()"
+      "onclick": "tipee.closeSceneForm()"
     }
   ],
   "formTabs": [
