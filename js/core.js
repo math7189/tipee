@@ -281,7 +281,7 @@ class TipeeApp {
 
             const getUserDashboardCallback = function (returned_data) {
                 if (returned_data !== '207')
-                    this.loadJSON(JSON.parse(returned_data));
+                    that.loadJSON(JSON.parse(returned_data));
                 if (activeScene === null) {
                     that.openSceneForm();
                     that.changeScene();
