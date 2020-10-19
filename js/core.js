@@ -439,7 +439,7 @@ class TipeeApp {
         if (tpTile != null) {
             const form = this.demoScene.getTilesByType(tpTile.type)[0].form;
             tpTile.form = form;
-            tpTile.form.init = 1;
+            //tpTile.form.init = 1;
             tpTile.form.build();
             tpTile.updateForm();
             tpTile.fillForm();
@@ -1748,6 +1748,7 @@ class TipeeTileNote extends TipeeTile {
 
     updateForm() {
         super.updateForm();
+        this.__FormElements = this.__getFormElements();
     }
 
     fillForm() {
