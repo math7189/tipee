@@ -447,6 +447,7 @@ class TipeeApp {
             //this.tileForm.init = 1;
             //this.tileForm.validation = form.validation;
             this.tileForm.build();
+            tpTile.form = this.tileForm;
             tpTile.updateForm();
             tpTile.fillForm();
             tpTile.updateForm();
