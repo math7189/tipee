@@ -440,7 +440,7 @@ class TipeeApp {
             const form = this.demoScene.getTilesByType(tpTile.type)[0].form;
             this.tileForm.fields = form.fields;
             this.tileForm.formId = form.formId;
-            this.tileForm.validation = tpTile.form.validation;
+            this.tileForm.validation = form.validation;
             //tpTile.form = form;
             //tpTile.form.init = this.tileForm.init;
             //tpTile.form.build();
