@@ -1519,19 +1519,19 @@ class TipeeTile {
                         that.__UIElements.UITile.style.top = that.UIAppBottomBoundary.top - that.height + 'px';
                     }
 
-                    const bleft = document.getElementById(this.idTile + ' resizers bottom-left');
+                    const bleft = document.getElementById(that.idTile + ' resizers bottom-left');
                     bleft.setAttribute('class', '');
                     bleft.style.cssText = '';
 
-                    const tleft = document.getElementById(this.idTile + ' resizers top-left');
+                    const tleft = document.getElementById(that.idTile + ' resizers top-left');
                     tleft.setAttribute('class', '');
                     tleft.style.cssText = '';
 
-                    const bright = document.getElementById(this.idTile + ' resizers bottom-right');
+                    const bright = document.getElementById(that.idTile + ' resizers bottom-right');
                     bright.setAttribute('class', '');
                     bright.style.cssText = '';
 
-                    const tright = document.getElementById(this.idTile + ' resizers top-right');
+                    const tright = document.getElementById(that.idTile + ' resizers top-right');
                     tright.setAttribute('class', '');
                     tright.style.cssText = '';
 
