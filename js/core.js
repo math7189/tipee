@@ -439,8 +439,9 @@ class TipeeApp {
         if (tpTile != null) {
             const form = this.demoScene.getTilesByType(tpTile.type)[0].form;
             tpTile.form = form;
-            //tpTile.form.init = 1;
+            tpTile.form.init = this.tileForm.init;
             tpTile.form.build();
+            this.tileForm.init = 1;
             tpTile.updateForm();
             tpTile.fillForm();
             tpTile.updateForm();
