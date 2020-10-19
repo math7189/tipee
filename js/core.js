@@ -170,7 +170,7 @@ class TipeeApp {
                     else if (t.type = 'todo')
                         tile = new TipeeTileTodo(sceneToCreate.idScene, t.x, t.y, t.width, t.height, t.isLocked,
                             t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
-                            t.borderSize, t.contentBackgroundColor, t.title, t.textColor, t.textFont, t.textFontSize, t.todo, '');
+                            t.borderSize, t.contentBackgroundColor, t.title, t.textColor, t.textFont, t.textFontSize, t.todo);
                     sceneToCreate.tiles.push(tile);
                 });
                 if (selectSceneElemnt.options.length > 2)
@@ -1853,6 +1853,7 @@ class TipeeTileTodo extends TipeeTile {
 
     updateForm() {
         super.updateForm();
+        this.__FormElements = this.__getFormElements();
     }
 
     fillForm() {
