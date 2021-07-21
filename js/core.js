@@ -170,7 +170,7 @@ class TipeeApp {
                     else if (t.type = 'todo')
                         tile = new TipeeTileTodo(sceneToCreate.idScene, t.x, t.y, t.width, t.height, t.isLocked,
                             t.headerColor, t.headerFontColor, t.headerFont, t.headerFontSize, t.borderColor,
-                            t.borderSize, t.contentBackgroundColor, t.title, t.textColor, t.textFont, t.textFontSize, t.todo);
+                            t.borderSize, t.contentBackgroundColor, t.title, t.textColor, t.textFont, t.textFontSize, t.todo, '');
                     sceneToCreate.tiles.push(tile);
                 });
                 if (selectSceneElemnt.options.length > 2)
@@ -438,16 +438,9 @@ class TipeeApp {
     openTileForm(tpTile) {
         if (tpTile != null) {
             const form = this.demoScene.getTilesByType(tpTile.type)[0].form;
-            this.tileForm.fields = form.fields;
-            this.tileForm.formId = form.formId;
-            this.tileForm.validation = form.validation;
-            //tpTile.form = form;
-            //tpTile.form.init = this.tileForm.init;
-            //tpTile.form.build();
-            //this.tileForm.init = 1;
-            //this.tileForm.validation = form.validation;
-            this.tileForm.build();
-            tpTile.form = this.tileForm;
+            tpTile.form = form;
+            tpTile.form.init = 1;
+            tpTile.form.build();
             tpTile.updateForm();
             tpTile.fillForm();
             tpTile.updateForm();
@@ -1526,19 +1519,19 @@ class TipeeTile {
                         that.__UIElements.UITile.style.top = that.UIAppBottomBoundary.top - that.height + 'px';
                     }
 
-                    const bleft = document.getElementById(that.idTile + ' resizers bottom-left');
+                    const bleft = document.getElementById(this.idTile + ' resizers bottom-left');
                     bleft.setAttribute('class', '');
                     bleft.style.cssText = '';
 
-                    const tleft = document.getElementById(that.idTile + ' resizers top-left');
+                    const tleft = document.getElementById(this.idTile + ' resizers top-left');
                     tleft.setAttribute('class', '');
                     tleft.style.cssText = '';
 
-                    const bright = document.getElementById(that.idTile + ' resizers bottom-right');
+                    const bright = document.getElementById(this.idTile + ' resizers bottom-right');
                     bright.setAttribute('class', '');
                     bright.style.cssText = '';
 
-                    const tright = document.getElementById(that.idTile + ' resizers top-right');
+                    const tright = document.getElementById(this.idTile + ' resizers top-right');
                     tright.setAttribute('class', '');
                     tright.style.cssText = '';
 
@@ -1755,7 +1748,6 @@ class TipeeTileNote extends TipeeTile {
 
     updateForm() {
         super.updateForm();
-        this.__FormElements = this.__getFormElements();
     }
 
     fillForm() {
@@ -1861,7 +1853,6 @@ class TipeeTileTodo extends TipeeTile {
 
     updateForm() {
         super.updateForm();
-        this.__FormElements = this.__getFormElements();
     }
 
     fillForm() {
@@ -2175,19 +2166,32 @@ class TipeeTileText extends TipeeTile {
                 that.__UIElements.UIContentTxt.offsetWidth / 2 + 'px';
         };
 
-        if (this.requestRefresh > 0) {
-            request(that.requestUrl, true, that.reqType, '', that.responseType, that.responseField,
-                that.operation, requestCallback);
+        var data = {
+            "url" : that.requestUrl,
+            "type" : that.reqType
+        }
+
+       if (this.requestRefresh > 0) {
+            //request(that.requestUrl, true, that.reqType, '', that.responseType, that.responseField,
+            //    that.operation, requestCallback);
+            
+
+            request('/nodejs/query/', false, 'POST', data, that.responseType, that.responseField,
+            that.operation, requestCallback)
             that.intervalId = setInterval(function () {
                 if (tipee.mode !== 'dev')
-                    request(that.requestUrl, true, that.reqType, '', that.responseType, that.responseField,
-                        that.operation, requestCallback);
+                    //request(that.requestUrl, true, that.reqType, '', that.responseType, that.responseField,
+                    //    that.operation, requestCallback);
+                        request('/nodejs/query/', false, 'POST', data, that.responseType, that.responseField,
+            that.operation, requestCallback)
             }, 1000 * this.requestRefresh);
         }
         else {
             if (tipee.mode !== 'dev')
-                request(that.requestUrl, true, that.reqType, '', that.responseType, that.responseField,
-                    that.operation, requestCallback);
+                //request(that.requestUrl, true, that.reqType, '', that.responseType, that.responseField,
+                //    that.operation, requestCallback);
+                    request('/nodejs/query/', false, 'POST', data, that.responseType, that.responseField,
+            that.operation, requestCallback)
         }
     }
 
@@ -2503,7 +2507,12 @@ class TipeeTileToggles extends TipeeTile {
     }
 
     trigger(requestUrl) {
-        request(requestUrl, true, 'POST');
+        //request(requestUrl, true, 'POST');
+        var data = {
+            "url" : requestUrl,
+            "type" : 'POST'
+        }
+        request('/nodejs/query/', false, 'POST', data)
     }
 
     toJSON() {
