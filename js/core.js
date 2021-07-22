@@ -94,14 +94,19 @@ class TipeeApp {
     initDemoScene() {
         const tileNote = new TipeeTileNote(this.demoScene.idScene);
         this.demoScene.tiles.push(tileNote);
+        this.demoScene.tiles[0].form.build();
         const tileTodo = new TipeeTileTodo(this.demoScene.idScene);
         this.demoScene.tiles.push(tileTodo);
+        this.demoScene.tiles[1].form.build();
         const tileToggles = new TipeeTileToggles(this.demoScene.idScene);
         this.demoScene.tiles.push(tileToggles);
+        this.demoScene.tiles[2].form.build();
         const tileText = new TipeeTileText(this.demoScene.idScene);
         this.demoScene.tiles.push(tileText);
+        this.demoScene.tiles[3].form.build();
         const tileImage = new TipeeTileImage(this.demoScene.idScene);
         this.demoScene.tiles.push(tileImage);
+        this.demoScene.tiles[4].form.build();
     }
 
     logout() {
