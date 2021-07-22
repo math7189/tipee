@@ -2205,7 +2205,7 @@ class TipeeTileText extends TipeeTile {
     resize() {
         this.__UIElements.UITileContent.style.height = this.height
             - this.__UIElements.UITileHeader.offsetHeight - (this.borderSize * 2) + 'px';
-        this.__UIElements.UIContentTxt.style.marginLeft = that.width / 2
+        this.__UIElements.UIContentTxt.style.marginLeft = this.width / 2
             - this.__UIElements.UIContentTxt.offsetWidth / 2 + 'px';
     }
 
