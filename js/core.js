@@ -454,6 +454,12 @@ class TipeeApp {
         }
         else {
             const tileText = this.demoScene.getTilesByType('text')[0];
+            if(this.formInitId == 0){
+                tileText.form.init = 0;
+                this.formInitId = 1;
+            }
+            else
+                tileText.form.init = 1;
             this.tileForm.fields = tileText.form.fields;
             this.tileForm.formId = tileText.form.formId;
             this.tileForm.validation = tileText.form.validation;
