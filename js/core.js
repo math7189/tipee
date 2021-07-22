@@ -2176,13 +2176,13 @@ class TipeeTileText extends TipeeTile {
             //    that.operation, requestCallback);
             
 
-            request('/nodejs/query/', false, 'POST', data, that.responseType, that.responseField,
+            request('/nodejs/query/', true, that.reqType, data, that.responseType, that.responseField,
             that.operation, requestCallback)
             that.intervalId = setInterval(function () {
                 if (tipee.mode !== 'dev')
                     //request(that.requestUrl, true, that.reqType, '', that.responseType, that.responseField,
                     //    that.operation, requestCallback);
-                        request('/nodejs/query/', false, 'POST', data, that.responseType, that.responseField,
+                        request('/nodejs/query/', true, that.reqType, data, that.responseType, that.responseField,
             that.operation, requestCallback)
             }, 1000 * this.requestRefresh);
         }
@@ -2190,7 +2190,7 @@ class TipeeTileText extends TipeeTile {
             if (tipee.mode !== 'dev')
                 //request(that.requestUrl, true, that.reqType, '', that.responseType, that.responseField,
                 //    that.operation, requestCallback);
-                    request('/nodejs/query/', false, 'POST', data, that.responseType, that.responseField,
+                    request('/nodejs/query/', true, that.reqType, data, that.responseType, that.responseField,
             that.operation, requestCallback)
         }
     }
@@ -2558,10 +2558,17 @@ function loadFile() {
 
 function request(urlRequest, crossOrigine, requestType, data, responseType, responseField, operation, callback) {
     const httpReq = new XMLHttpRequest();
+    var type = ''
     if (crossOrigine)
-        httpReq.open(requestType, 'https://cors-anywhere.herokuapp.com/' + urlRequest, true);
+    {
+        type = 'POST'
+
+    
+    }
     else
-        httpReq.open(requestType, urlRequest, true);
+        type = requestType
+
+    httpReq.open(type, urlRequest, true);
 
     httpReq.overrideMimeType('text/xml');
     httpReq.setRequestHeader('Content-type', 'application/json; charset=utf-8');
@@ -2569,7 +2576,7 @@ function request(urlRequest, crossOrigine, requestType, data, responseType, resp
     httpReq.setRequestHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
     httpReq.setRequestHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Auth-Token');
 
-    if (requestType !== 'GET' && data !== '')
+    if (type !== 'GET' && data !== '')
         httpReq.send(JSON.stringify(data));
     else
         httpReq.send();
