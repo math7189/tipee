@@ -2702,3 +2702,7 @@ function signin() {
 function createOrUpdateTpTile() {
     tipee.createOrUpdateTpTile();
 }
+
+function updateTileForm(){
+    tipee.updateTileForm();
+}
