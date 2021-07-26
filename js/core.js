@@ -2665,6 +2665,10 @@ function request(urlRequest, crossOrigine, requestType, data, responseType, resp
             requestResult = '207';
             callback.apply(this, [requestResult]);
         }
+        else if (httpReq.readyState === 4 && httpReq.status === 404) {
+            requestResult = 'Error';
+            callback.apply(this, [requestResult]);
+        }
     };
 
     httpReq.onerror = function () {
