@@ -2674,7 +2674,8 @@ function request(urlRequest, crossOrigine, requestType, data, responseType, resp
     httpReq.onerror = function () {
         console.log('** An error occurred during the transaction');
         notif({ title: 'New Notification', subTitle: 'An error occurred during the transaction' });
-
+        requestResult = 'Error';
+            callback.apply(this, [requestResult]);
     };
 
     httpReq.onloadend = function () {
@@ -2683,6 +2684,9 @@ function request(urlRequest, crossOrigine, requestType, data, responseType, resp
 
         else if (httpReq.status == 403)
         notif({ title: 'New Notification', subTitle: 'An error occurred during the transaction' });
+
+        requestResult = 'Error';
+            callback.apply(this, [requestResult]);
 
     };
 }
