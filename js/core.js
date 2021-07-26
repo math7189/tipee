@@ -2169,6 +2169,7 @@ class TipeeTileText extends TipeeTile {
 
 
         const requestCallback = function (returned_data) {
+            if(returned_data != "Error"){
             that.__UIElements.UITileContent.innerHTML = `<p style:'color: #` + that.textColor + `;'  id='`
                 + that.idTile + ` contentTxt'>` + that.textBefore + ' ' + returned_data + ' ' + that.textAfter +
                 `</p>`;
@@ -2176,6 +2177,15 @@ class TipeeTileText extends TipeeTile {
             that.__UIElements.UIContentTxt.style.alignItems = 'center';
             that.__UIElements.UIContentTxt.style.marginLeft = that.width / 2 -
                 that.__UIElements.UIContentTxt.offsetWidth / 2 + 'px';
+            }
+            else{
+                that.__UIElements.UITileContent.innerHTML = `<p style:'color: red;'  id='`
+                + that.idTile + ` contentTxt'>`  + returned_data  + `</p>`;
+            that.__UIElements.UIContentTxt.style.display = 'flex';
+            that.__UIElements.UIContentTxt.style.alignItems = 'center';
+            that.__UIElements.UIContentTxt.style.marginLeft = that.width / 2 -
+                that.__UIElements.UIContentTxt.offsetWidth / 2 + 'px';
+            }
         };
 
         var data = {
@@ -2679,14 +2689,17 @@ function request(urlRequest, crossOrigine, requestType, data, responseType, resp
     };
 
     httpReq.onloadend = function () {
-        if (httpReq.status == 404)
-        notif({ title: 'New Notification', subTitle: 'An error occurred during the transaction' });
-
-        else if (httpReq.status == 403)
-        notif({ title: 'New Notification', subTitle: 'An error occurred during the transaction' });
-
-        requestResult = 'Error';
+        if (httpReq.status == 404){
+            requestResult = 'Error';
             callback.apply(this, [requestResult]);
+            notif({ title: 'New Notification', subTitle: 'An error occurred during the transaction' });
+        }
+        else if (httpReq.status == 403){
+            requestResult = 'Error';
+            callback.apply(this, [requestResult]);
+        notif({ title: 'New Notification', subTitle: 'An error occurred during the transaction' });
+        }
+        
 
     };
 }
