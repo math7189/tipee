@@ -2169,6 +2169,13 @@ class TipeeTileText extends TipeeTile {
 
 
         const requestCallback = function (returned_data) {
+            this.__UIElements.UITileContent.style.height = height + 'px';
+        this.__UIElements.UITileContent.style.position = 'absolute';
+        this.__UIElements.UITileContent.style.color = this.textColor;
+        this.__UIElements.UITileContent.style.fontFamily = this.textFont;
+        this.__UIElements.UITileContent.style.fontSize = this.textFontSize + 'px';
+        this.__UIElements.UITileContent.style.display = 'flex';
+        this.__UIElements.UITileContent.style.overflow = 'hidden';
             if(returned_data != "Error"){
             that.__UIElements.UITileContent.innerHTML = `<p style:'color: #` + that.textColor + `;'  id='`
                 + that.idTile + ` contentTxt'>` + that.textBefore + ' ' + returned_data + ' ' + that.textAfter +
