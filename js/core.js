@@ -2171,18 +2171,23 @@ class TipeeTileText extends TipeeTile {
         const requestCallback = function (returned_data) {
             
             if(returned_data != "Error"){
-            that.__UIElements.UITileContent.innerHTML = `<p style:'color: #` + that.textColor + `;'  id='`
-                + that.idTile + ` contentTxt'>` + that.textBefore + ' ' + returned_data + ' ' + that.textAfter +
-                `</p>`;
-                that.__UIElements = that.__getUIElements();
+            //that.__UIElements.UITileContent.innerHTML = `<p style:'color: #` + that.textColor + `;'  id='`
+             //   + that.idTile + ` contentTxt'>` + that.textBefore + ' ' + returned_data + ' ' + that.textAfter +
+              //  `</p>`;
+            //    that.__UIElements = that.__getUIElements();
+                that.__UIElements.UIContentTxt.innerText = that.textBefore + ' ' + returned_data + ' ' + that.textAfter;
+                that.__UIElements.UIContentTxt.style.color = that.textColor 
             that.__UIElements.UIContentTxt.style.display = 'flex';
             that.__UIElements.UIContentTxt.style.alignItems = 'center';
             that.__UIElements.UIContentTxt.style.marginLeft = that.width / 2 -
                 that.__UIElements.UIContentTxt.offsetWidth / 2 + 'px';
             }
             else{
-                that.__UIElements.UITileContent.innerHTML = `<p style:'color: red;'  id='`
-                + that.idTile + ` contentTxt'>`  + returned_data  + `</p>`;
+            //    that.__UIElements.UITileContent.innerHTML = `<p style:'color: red;'  id='`
+              //  + that.idTile + ` contentTxt'>`  + returned_data  + `</p>`;
+              //  that.__UIElements = that.__getUIElements();
+              that.__UIElements.UIContentTxt.innerText = returned_data
+              that.__UIElements.UIContentTxt.style.color = "red" 
             that.__UIElements.UIContentTxt.style.display = 'flex';
             that.__UIElements.UIContentTxt.style.alignItems = 'center';
             that.__UIElements.UIContentTxt.style.marginLeft = that.width / 2 -
