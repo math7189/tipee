@@ -1148,12 +1148,12 @@ class TipeeTile {
             let list = [];
             let i = 0;
 
-            if (orderedTiles.length > 1) {
+            /*if (orderedTiles.length > 1) {
                 if (!scene.getTileById(orderedTiles[0].id).isDragging)
                     scene.getTileById(orderedTiles[0].id).autoResize();
                 else
                     scene.getTileById(orderedTiles[1].id).autoResize();
-            }
+            }*/
 
             for (i; i < scene.tiles.length; i += 1) {
                 if (scene.tiles[i] !== this) {
@@ -2171,10 +2171,6 @@ class TipeeTileText extends TipeeTile {
         const requestCallback = function (returned_data) {
             
             if(returned_data != "Error"){
-            //that.__UIElements.UITileContent.innerHTML = `<p style:'color: #` + that.textColor + `;'  id='`
-             //   + that.idTile + ` contentTxt'>` + that.textBefore + ' ' + returned_data + ' ' + that.textAfter +
-              //  `</p>`;
-            //    that.__UIElements = that.__getUIElements();
                 that.__UIElements.UIContentTxt.innerText = that.textBefore + ' ' + returned_data + ' ' + that.textAfter;
                 that.__UIElements.UIContentTxt.style.color = that.textColor 
             that.__UIElements.UIContentTxt.style.display = 'flex';
@@ -2183,9 +2179,6 @@ class TipeeTileText extends TipeeTile {
                 that.__UIElements.UIContentTxt.offsetWidth / 2 + 'px';
             }
             else{
-            //    that.__UIElements.UITileContent.innerHTML = `<p style:'color: red;'  id='`
-              //  + that.idTile + ` contentTxt'>`  + returned_data  + `</p>`;
-              //  that.__UIElements = that.__getUIElements();
               that.__UIElements.UIContentTxt.innerText = returned_data
               that.__UIElements.UIContentTxt.style.color = "red" 
             that.__UIElements.UIContentTxt.style.display = 'flex';
@@ -2201,24 +2194,17 @@ class TipeeTileText extends TipeeTile {
         }
 
        if (this.requestRefresh > 0) {
-            //request(that.requestUrl, true, that.reqType, '', that.responseType, that.responseField,
-            //    that.operation, requestCallback);
-            
 
             request('/nodejs/query/', true, that.reqType, data, that.responseType, that.responseField,
             that.operation, requestCallback)
             that.intervalId = setInterval(function () {
                 if (tipee.mode !== 'dev')
-                    //request(that.requestUrl, true, that.reqType, '', that.responseType, that.responseField,
-                    //    that.operation, requestCallback);
                         request('/nodejs/query/', true, that.reqType, data, that.responseType, that.responseField,
             that.operation, requestCallback)
             }, 1000 * this.requestRefresh);
         }
         else {
             if (tipee.mode !== 'dev')
-                //request(that.requestUrl, true, that.reqType, '', that.responseType, that.responseField,
-                //    that.operation, requestCallback);
                     request('/nodejs/query/', true, that.reqType, data, that.responseType, that.responseField,
             that.operation, requestCallback)
         }
