@@ -350,6 +350,7 @@ header{
 	padding: 5px;
 	background-color: white;
 	width: initial;
+	height: 80%;
 }
 
 .form-container input[type=text], .form-container input[type=password], .form-container select{
@@ -390,7 +391,7 @@ header{
 .form-popup{
     position: absolute;
     width: 800px;
-    height: 650px;
+    height: 80%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -430,17 +431,18 @@ header{
 	display: none;
 	position: absolute;
     bottom: 15px;
-    right: 10px;
+    left: 10px;
 }
 
 .formError ul{
 	color: crimson;
     border: 3px solid;
-    margin: 5px;
+    margin: 0 0 0 30px;
     border-radius: 7px;
     padding-top: 5px;
 	padding-bottom: 5px;
 	padding-right: 15px;
+	background-color: white;
 }
 
 .formError2{
