@@ -5,7 +5,7 @@ tileFormTemplate = {
     "id": "tileForm_errorloc",
     "class": "formError"
   },
-  "buttonStyle": "bottom: 0; position: absolute;",
+  "buttonStyle": "bottom: 0; position: absolute; right: 5px;",
   "buttons": [
     {
       "name": "OK",

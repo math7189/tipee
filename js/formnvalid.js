@@ -89,7 +89,8 @@ class Form {
                             htmlContent += 'class="' + json.error.class + '">';
                         else
                             htmlContent += 'class="' + defaultErrorClass + '">';
-                        htmlContent += '<ul id="' + json.formId + '_errorUL"></ul></div>';
+                            htmlContent += '<i id="' + json.formId + '_error" class="fas fa-exclamation-triangle" style="color: crimson; position: fixed; bottom: 20px; left: 20px; "></i>'
+                            htmlContent += '<ul id="' + json.formId + '_errorUL"></ul></div>';
                     }
                 }
 
@@ -160,19 +161,34 @@ class Form {
 
             function submitForm() {
                 const errors = document.getElementById(that.formId + '_errorUL');
+                const errorIcon = document.getElementById(that.formId + '_error');
+
+                errorIcon.onmouseenter = function(){
+                    errors.style.display = 'block';
+                }
+
+                errorIcon.onmouseleave = function(){
+                    errors.style.display = 'none';
+                }
+
                 if (errors != null) {
                     errors.innerHTML = '';
                     that.validation.checkFields();
 
                     if (errors.children.length == 0) {
                         window[f]();
-                        if (errors.children.length == 0)
+                        if (errors.children.length == 0){
                             document.getElementById(that.formId + '_errorloc').style.display = 'none';
-                        else
+                            document.getElementById(that.formId + '_errorUL').style.display = 'none';  
+                        }
+                        else{
                             document.getElementById(that.formId + '_errorloc').style.display = 'block';
+                            document.getElementById(that.formId + '_errorUL').style.display = 'none'; 
+                        }
                     }
                     else {
                         document.getElementById(that.formId + '_errorloc').style.display = 'block';
+                        document.getElementById(that.formId + '_errorUL').style.display = 'none'; 
                     }
                     return false;
                 }

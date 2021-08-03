@@ -2179,7 +2179,7 @@ class TipeeTileText extends TipeeTile {
                 that.__UIElements.UIContentTxt.offsetWidth / 2 + 'px';
             }
             else{
-              that.__UIElements.UIContentTxt.innerText = returned_data
+              that.__UIElements.UIContentTxt.innerHTML = '<i class="fas fa-exclamation-triangle" style="color: crimson;"></i>'
               that.__UIElements.UIContentTxt.style.color = "red" 
             that.__UIElements.UIContentTxt.style.display = 'flex';
             that.__UIElements.UIContentTxt.style.alignItems = 'center';
