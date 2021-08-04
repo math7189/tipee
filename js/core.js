@@ -197,7 +197,7 @@ class TipeeApp {
         this.autoSaveintervalId = setInterval(function () {
             that.save();
         }
-            , that.settings.autosavetime * 1000);
+            , that.settings.general.autosavetime * 1000);
     }
 
     save() {
