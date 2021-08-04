@@ -1766,6 +1766,7 @@ class TipeeTileNote extends TipeeTile {
 
     fillForm() {
         super.fillForm();
+        this.__FormElements = this.__getFormElements();
         this.__FormElements.textFont.value = this.textFont;
         this.__FormElements.textFont.onchange();
         this.__FormElements.textFontSize.value = this.textFontSize;
