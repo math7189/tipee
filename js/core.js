@@ -463,6 +463,7 @@ class TipeeApp {
             this.tileForm.fields = tileText.form.fields;
             this.tileForm.formId = tileText.form.formId;
             this.tileForm.validation = tileText.form.validation;
+            this.tileForm.init = tileText.form.init;
             this.tileForm.build();
         }
     
