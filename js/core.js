@@ -1565,6 +1565,7 @@ class TipeeTile {
         valueDict['sceneId'] = this.sceneId;
         valueDict['x'] = this.x;
         valueDict['y'] = this.y;
+        valueDict['isLocked'] = this.isLocked;
         valueDict['width'] = this.width;
         valueDict['height'] = this.height;
         valueDict['headerColor'] = this.headerColor;
