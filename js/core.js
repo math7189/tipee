@@ -17,6 +17,7 @@ class TipeeApp {
         this.autosavetime = 300;
         this.autoSaveintervalId = null;
         this.formInitId = 0;
+        this.settings = settings
     }
 
     init() {
@@ -24,7 +25,7 @@ class TipeeApp {
         let activeScene = that.getSceneById(that.activeSceneId);
 
         this.createUI();
-        notificationCenter({offsetTop:50});
+        notificationCenter({offsetTop:that.settings.notificationCenter.offsetTop});
 
         this.sceneForm.build();
         this.loginForm.build();
@@ -196,7 +197,7 @@ class TipeeApp {
         this.autoSaveintervalId = setInterval(function () {
             that.save();
         }
-            , that.autosavetime * 1000);
+            , that.settings.autosavetime * 1000);
     }
 
     save() {

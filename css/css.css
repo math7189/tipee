@@ -34,6 +34,13 @@ body {
 	text-align: center;
 }
 
+#center p {
+    font-family: 'Pacifico';
+    font-size: xx-large;
+    margin-top: -10px;
+    color: white;
+}
+
 #right {
     float:right;
 	height: 20px;

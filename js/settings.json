@@ -1,0 +1,10 @@
+settings = {
+    "notificationCenter": 
+        {
+            "offsetTop" : 50
+        },
+     "general":{
+        "autosavetime" : 300
+     }   
+    
+}
