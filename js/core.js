@@ -9,12 +9,10 @@ class TipeeApp {
         this.scenes = [];
         this.activeSceneId = '';
         this.login = '';
-        this.mode = 'prod';
         this.demoScene = new TipeeScene('demo');
         this.tileForm = new Form(tileFormTemplate);
         this.sceneForm = new Form(sceneFormTemplate);
         this.loginForm = new Form(loginFormTemplate);
-        this.autosavetime = 300;
         this.autoSaveintervalId = null;
         this.formInitId = 0;
         this.settings = settings
@@ -51,7 +49,7 @@ class TipeeApp {
 
             this.closeSigninSignupForm();
 
-            if (that.mode !== 'dev')
+            if (that.settings.general.mode !== 'dev')
                 request('/nodejs/dashboard/' + that.login, false, 'GET', '', 'JSON', 'data', '', getUserDashboardCallback);
             document.getElementById('splashScreen').classList.add('splashScreenTranslate');
         }
@@ -210,7 +208,7 @@ class TipeeApp {
                 const createDashboardOKCallback = function (returned) {
                     console.log('Dashboard sucessfully created');
                 };
-                if (that.mode !== 'dev') {
+                if (that.settings.general.mode !== 'dev') {
                     request('/nodejs/dashboards?userId=' + that.login, false, 'POST', data, '', '', '', createDashboardOKCallback);
                 }
             }
@@ -218,13 +216,13 @@ class TipeeApp {
                 const updateDashboardOKCallback = function (returned) {
                     console.log('Dashboard successfully updated');
                 };
-                if (that.mode !== 'dev') {
+                if (that.settings.general.mode !== 'dev') {
                     request('/nodejs/dashboard/' + that.login, false, 'PUT', data, '', '', '', updateDashboardOKCallback);
                 }
             }
         };
 
-        if (that.mode !== 'dev')
+        if (that.settings.general.mode !== 'dev')
             request('/nodejs/dashboard/' + this.login, false, 'GET', '', 'JSON', 'data', '', saveDashboardCallback);
         else
             notif({ title: 'New Notification', subTitle: 'Successfully saved' });
@@ -250,7 +248,7 @@ class TipeeApp {
     }
 
     export() {
-        const file = new File([this.getAppJSON()], 'myFilename.txt', {
+        const file = new File([this.getAppJSON()], this.settings.general.exportFileName, {
             type: 'application/octet-stream'
         });
 
@@ -301,7 +299,7 @@ class TipeeApp {
                     if (returned_data === 1) {
                         sessionStorage.setItem('user', JSON.stringify(login));
                         document.getElementById('signinSignupForm_errorloc').style.display = 'none';
-                        if (that.mode !== 'dev')
+                        if (that.settings.general.mode !== 'dev')
                             request('/nodejs/dashboard/' + login, false, 'GET', '', 'JSON', 'data', '', getUserDashboardCallback);
                         document.getElementById('splashScreen').classList.add('splashScreenTranslate');
                     }
@@ -318,7 +316,7 @@ class TipeeApp {
                         errors.appendChild(li);
                     }
                 };
-                if (that.mode !== 'dev') {
+                if (that.settings.general.mode !== 'dev') {
                     const data = { 'password': password };
                     request('/nodejs/user/' + login, false, 'POST', data, '', '', '', loginCallback);
                 }
@@ -341,7 +339,7 @@ class TipeeApp {
 
                     const createUserCallback = function (return_value) {
                         if (return_value === 1) {
-                            if (that.mode !== 'dev')
+                            if (that.settings.general.mode !== 'dev')
                                 request('/nodejs/dashboard/' + login, false, 'GET', '', 'JSON', 'data', '', getUserDashboardCallback);
                             document.getElementById('splashScreen').classList.add('splashScreenTranslate');
                         }
@@ -360,7 +358,7 @@ class TipeeApp {
                             errors.appendChild(li);
                         }
                     };
-                    if (that.mode !== 'dev')
+                    if (that.settings.general.mode!== 'dev')
                         request('/nodejs/users/', false, 'POST', formData, '', '', '', createUserCallback);
                 }
                 else {
@@ -896,8 +894,8 @@ class TipeeScene {
         this.tiles = [];
         this.sceneName = sceneName;
         this.isActive = false;
-        this.gridX = 50;
-        this.gridY = 50;
+        this.gridX = settings.scene.gridX;
+        this.gridY = settings.scene.gridY;
 
         if (this.sceneName !== 'demo') {
             this.idScene = Math.random().toString(36).substring(2, 15) +
@@ -1038,12 +1036,12 @@ class TipeeTile {
         this.x = x;
         this.y = y;
         if (width === '')
-            this.width = 250;
+            this.width = settings.tile.defaultWith;
         else
             this.width = parseInt(width);
 
         if (height === '')
-            this.height = 250;
+            this.height = settings.tile.defaultHeight;
         else
             this.height = parseInt(height);
         this.headerColor = headerColor;
@@ -1176,7 +1174,7 @@ class TipeeTile {
 
         loop1:
         for (k; k < j - 5; k += 1) {
-            this.y = k * scene.gridY + 50;
+            this.y = k * scene.gridY + settings.UI.topMenuHeight;
             loop2:
             for (l; l < i - 5; l += 1) {
                 let col = 0;
@@ -1294,8 +1292,8 @@ class TipeeTile {
                     that.y = (that.__UIElements.UITile.offsetTop - pos2);
                     that.x = (that.__UIElements.UITile.offsetLeft - pos1);
 
-                    if (that.__UIElements.UITile.offsetTop - pos2 < 50)
-                        that.y = 50;
+                    if (that.__UIElements.UITile.offsetTop - pos2 < settings.UI.topMenuHeight)
+                        that.y = settings.UI.topMenuHeight;
 
                     if (that.__UIElements.UITile.offsetTop - pos2 + that.height > that.UIAppBottomBoundary.top)
                         that.y = that.UIAppBottomBoundary.top - that.height;
@@ -1375,7 +1373,8 @@ class TipeeTile {
         resizers.push(document.getElementById(this.idTile + ' resizers bottom-left'));
         resizers.push(document.getElementById(this.idTile + ' resizers bottom-right'));
 
-        const minimum_size = scene.gridX;
+        const minimum_height = settings.tile.minimumHeight;
+        const minimum_width = settings.tile.minimumWidth;
         let original_width = 0;
         let original_height = 0;
         let original_x = 0;
@@ -1411,12 +1410,12 @@ class TipeeTile {
                         const width = original_width + (e.pageX - original_mouse_x);
                         const height = original_height + (e.pageY - original_mouse_y);
 
-                        if (width > minimum_size) {
+                        if (width > minimum_width) {
                             that.__UIElements.UITile.style.width = width + 'px';
                             that.width = width;
                         }
 
-                        if (height > minimum_size) {
+                        if (height > minimum_height) {
                             if (that.y + height < that.UIAppBottomBoundary.top) {
                                 that.__UIElements.UITile.style.height = height + 'px';
                                 that.height = height;
@@ -1432,7 +1431,7 @@ class TipeeTile {
                             that.height = height;
                         }
 
-                        if (width > minimum_size) {
+                        if (width > minimum_width) {
                             that.__UIElements.UITile.style.width = width + 'px';
                             that.__UIElements.UITile.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
                             that.__UIElements.UITileShadow.style.left = Math.round((original_x + (e.pageX - original_mouse_x)) / scene.gridX) * scene.gridX + 'px';
@@ -1444,16 +1443,16 @@ class TipeeTile {
                         const width = original_width + (e.pageX - original_mouse_x);
                         const height = original_height - (e.pageY - original_mouse_y);
 
-                        if (width > minimum_size) {
+                        if (width > minimum_width) {
                             that.__UIElements.UITile.style.width = width + 'px';
                             that.width = width;
                         }
 
-                        if (height > minimum_size) {
-                            if (original_y + (e.pageY - original_mouse_y) < 50) {
-                                that.__UIElements.UITile.style.top = 50 + 'px';
-                                that.__UIElements.UITileShadow.style.top = 50 + 'px';
-                                that.y = 50;
+                        if (height > minimum_height) {
+                            if (original_y + (e.pageY - original_mouse_y) < settings.UI.topMenuHeight) {
+                                that.__UIElements.UITile.style.top = settings.UI.topMenuHeight + 'px';
+                                that.__UIElements.UITileShadow.style.top = settings.UI.topMenuHeight + 'px';
+                                that.y = settings.UI.topMenuHeight;
                             }
                             else {
                                 that.__UIElements.UITile.style.height = height + 'px';
@@ -1467,7 +1466,7 @@ class TipeeTile {
                     } else if (currentResizer.classList.contains('top-left')) {
                         const width = original_width - (e.pageX - original_mouse_x);
                         const height = original_height - (e.pageY - original_mouse_y);
-                        if (width > minimum_size) {
+                        if (width > minimum_width) {
                             that.__UIElements.UITile.style.width = width + 'px';
                             that.__UIElements.UITile.style.left = original_x + (e.pageX - original_mouse_x) + 'px';
                             that.__UIElements.UITileShadow.style.left = Math.round((original_x + (e.pageX - original_mouse_x)) / scene.gridX) * scene.gridX + 'px';
@@ -1475,11 +1474,11 @@ class TipeeTile {
                             that.width = width;
 
                         }
-                        if (height > minimum_size) {
-                            if (original_y + (e.pageY - original_mouse_y) < 50) {
-                                that.__UIElements.UITile.style.top = 50 + 'px';
-                                that.__UIElements.UITileShadow.style.top = 50 + 'px';
-                                that.y = 50;
+                        if (height > minimum_height) {
+                            if (original_y + (e.pageY - original_mouse_y) < settings.UI.topMenuHeight) {
+                                that.__UIElements.UITile.style.top = settings.UI.topMenuHeight + 'px';
+                                that.__UIElements.UITileShadow.style.top = settings.UI.topMenuHeight + 'px';
+                                that.y = settings.UI.topMenuHeight;
                             }
                             else {
                                 that.__UIElements.UITile.style.height = height + 'px';
@@ -2204,13 +2203,13 @@ class TipeeTileText extends TipeeTile {
             request('/nodejs/query/', true, that.reqType, data, that.responseType, that.responseField,
             that.operation, requestCallback)
             that.intervalId = setInterval(function () {
-                if (tipee.mode !== 'dev')
+                if (that.settings.general.mode !== 'dev')
                         request('/nodejs/query/', true, that.reqType, data, that.responseType, that.responseField,
             that.operation, requestCallback)
             }, 1000 * this.requestRefresh);
         }
         else {
-            if (tipee.mode !== 'dev')
+            if (that.settings.general.mode !== 'dev')
                     request('/nodejs/query/', true, that.reqType, data, that.responseType, that.responseField,
             that.operation, requestCallback)
         }

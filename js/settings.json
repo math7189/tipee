@@ -4,7 +4,22 @@ settings = {
             "offsetTop" : 50
         },
      "general":{
-        "autosavetime" : 300
+         "mode": "prod",
+        "autosavetime" : 300,
+        "exportFileName" : "myFilename.txt"
+     },
+     "scene":{
+         "gridX" : 50,
+         "gridY" : 50,
+     },
+     "tile":{
+         "defaultWidth" : 250,
+         "defaultHeight" : 250,
+         "minimumWidth" : 50,
+         "minimumHeight" : 100,
+     },
+     "UI":{
+         "topMenuHeight" : 50,
      }   
     
 }
