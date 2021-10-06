@@ -12,6 +12,7 @@ class TipeeApp {
         this.demoScene = new TipeeScene('demo');
         this.tileForm = new Form(tileFormTemplate);
         this.sceneForm = new Form(sceneFormTemplate);
+        this.settingsForm = new Form(settingsFormTemplate);
         this.loginForm = new Form(loginFormTemplate);
         this.autoSaveintervalId = null;
         this.formInitId = 0;
@@ -27,6 +28,7 @@ class TipeeApp {
 
         this.sceneForm.build();
         this.loginForm.build();
+        this.settingsForm.build();
 
         this.openSigninSignupForm();
         this.updateSigninSignupForm('signin');
@@ -117,8 +119,17 @@ class TipeeApp {
                 if (sessionScenes !== null) {
                     this.loadJSON(sessionScenes);
                 }
+
+                const sessionSettings = JSON.parse(sessionStorage.settings);
+                if (sessionSettings !== null) {
+                    this.loadJSON(sessionSettings);
+                }
             }
         }
+    }
+
+    loadSettings(json){
+
     }
 
     loadJSON(json) {
@@ -230,6 +241,7 @@ class TipeeApp {
 
     getAppJSON() {
         let arrayApp = { 'app': [] };
+        let arraySettings = { 'settings': []};
         let arrayScene = { 'scenes': [] };
 
         this.scenes.forEach(elementScene => {
@@ -243,6 +255,7 @@ class TipeeApp {
             arrayScene['scenes'].push(scene);
         });
 
+        arrayApp['app'].push(arraySettings);
         arrayApp['app'].push(arrayScene);
         return JSON.stringify(arrayApp);
     }
@@ -406,6 +419,35 @@ class TipeeApp {
             document.getElementById('firstname').style.display = 'block';
             document.getElementById('emailTr').style.display = 'table-row';
             document.getElementById('forgot').style.display = 'none';
+        }
+    }
+    openSettingsForm(){
+        document.getElementById('settingsForm').style.display = 'flex';
+        document.getElementById('backgroundScreen').classList.add('backgroundScreen');
+    }
+
+    closeSettingsForm() {
+        document.getElementById('settingsForm').style.display = 'none';
+        document.getElementById('sceneName').value = '';
+        document.getElementById('backgroundScreen').classList.remove('backgroundScreen');
+        document.getElementById('settingsForm_errorloc').style.display = 'none';
+    }
+
+    applySettings(){
+        const that = this;
+        that.settingsForm.validation.checkFields();
+        const errors = document.getElementById('settingsForm_errorUL');
+
+        if (errors.children.length === 0) {
+            document.getElementById('settingsForm_errorloc').style.display = 'none';
+            const autosavetime = document.getElementById('autosavetime').value;
+
+            if(that.settings.autosavetime != parseInt(autosavetime)*60)
+                that.settings.autosavetime = autosavetime
+
+        }
+        else {
+            document.getElementById('settingsForm_errorloc').style.display = 'block';
         }
     }
 
@@ -622,7 +664,7 @@ class TipeeApp {
                       </ul>
                    </li>
                    <li><a href="#" onclick="tipee.logout()">Logout</a></li>
-                   <li><a href="#" onclick="openSettingsForm()">Settings</a></li>
+                   <li><a href="#" onclick="tipee.openSettingsForm()">Settings</a></li>
                 </ul>
              </li>
           </ul>
@@ -662,6 +704,7 @@ class TipeeApp {
        <div class="form-popup-3" id="signinSignupForm"></div>
     </div>
     <div class="form-popup-2" id="sceneForm"></div>
+    <div class="form-popup-2" id="settingsForm"></div>
     <div class="form-popup" id="tileForm"></div>
     <button id="addTile" class="open-button" onclick="tipee.openTileForm(null)">Add tile</button>
     <div id="info"> Math </div>`;
@@ -2708,6 +2751,10 @@ function kelvinToCelcius(valueKelvin) {
 
 function roundDecimal(nb, precision) {
     return Math.round(nb * Math.pow(10, precision || 2)) / Math.pow(10, precision || 2);
+}
+
+function applySettings(){
+    tipee.applySettings();
 }
 
 function createScene() {

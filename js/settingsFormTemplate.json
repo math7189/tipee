@@ -1,0 +1,54 @@
+settingsFormTemplate = {
+  "formId": "settingsForm",
+  "formTitle": "App settings",
+  "formTitleClass": "formTitle",
+  "error": {
+    "id": "settingsForm_errorloc",
+    "class": "formError2"
+  },
+  "buttonStyle": "margin: auto; width: 100%",
+  "buttons": [
+    {
+      "name": "OK",
+      "type": "submit",
+      "class": "btn",
+      "tdstyle": "width: 50%",
+      "submit": "applySettings"
+    },
+    {
+      "name": "Cancel",
+      "type": "button",
+      "class": "btn cancel",
+      "onclick": "tipee.closeSettingsForm()"
+    }
+  ],
+  "formTabs": [
+    "default"
+  ],
+  "formFields": {
+    "default": [
+      [
+        {
+          "name": "autosavetime",
+          "type": "text",
+          "description": "Enter autosavetime",
+          "id": "autosavetime",
+          "validation": [
+            {
+              "rule": "req",
+              "error": "autosavetime is required"
+            },
+            {
+              "rule": "num",
+              "error": "autosavetime should be a number"
+            },
+            {
+              "rule": "greater=1",
+              "error": "autosavetime should be a number"
+            }
+          ]
+        }
+      ]
+    ]
+  }
+}

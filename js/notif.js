@@ -100,7 +100,11 @@ class NotificationCenter {
   }
 
   updateCenterDate(){
-    this.__centerDateElemnt.innerText = '10 Oct 2020'
+    const months = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"]
+
+    const today = new Date();
+    this.__centerDateElemnt.innerText = today.getDate() + ' ' + months[today.getMonth()] + ' ' + today.getFullYear();
   }
 
   populate() {
