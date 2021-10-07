@@ -241,7 +241,7 @@ class TipeeApp {
 
     getAppJSON() {
         let arrayApp = { 'app': [] };
-        let arraySettings = { 'settings': []};
+        let arraySettings = { 'settings': this.settings};
         let arrayScene = { 'scenes': [] };
 
         this.scenes.forEach(elementScene => {
@@ -270,7 +270,7 @@ class TipeeApp {
     }
 
     /****************************************************************************/
-    /* Forms functions                                                   */
+    /* Forms functions                                                          */
     /****************************************************************************/
 
     openSigninSignupForm() {
