@@ -133,7 +133,7 @@ class TipeeApp {
     }
 
     loadJSON(json) {
-        const arrayScenes = json.app[0].scenes;
+        const arrayScenes = json.app.scenes;
 
         if (arrayScenes != null && arrayScenes.length > 0) {
             const selectSceneElemnt = document.getElementById('sceneSelect');
@@ -240,7 +240,7 @@ class TipeeApp {
     }
 
     getAppJSON() {
-        let arrayApp = { 'app': [] };
+        let arrayApp = { 'app': {} };
         let arraySettings = { 'settings': []};
         let arrayScene = { 'scenes': [] };
 
