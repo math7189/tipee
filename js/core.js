@@ -241,7 +241,7 @@ class TipeeApp {
 
     getAppJSON() {
         let arrayApp = { 'app': [] };
-        let arraySettings = { 'settings': this.settings};
+        let arraySettings = { 'settings': this.settings.toJSON()};
         let arrayScene = { 'scenes': [] };
 
         this.scenes.forEach(elementScene => {
